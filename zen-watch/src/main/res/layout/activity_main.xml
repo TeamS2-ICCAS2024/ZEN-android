@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    tools:context="com.iccas.zen_watch.presentation.MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 나머지 UI 요소들을 RelativeLayout로 감싸줌 -->
+        <LinearLayout
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical">
+
+            <!-- 나머지 UI 요소들을 배치 -->
+            <!-- 1. Phase Status -->
+
+            <!-- 2. Remaining Time -->
+
+            <!-- 3. Custom Progress Bar -->
+
+
+            <!-- 4. Heart Rate -->
+            <TextView
+                android:id="@+id/heartRateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Heart Rate: "
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="100dp" />
+
+            <!-- 5. Start Running Button -->
+
+
+
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
