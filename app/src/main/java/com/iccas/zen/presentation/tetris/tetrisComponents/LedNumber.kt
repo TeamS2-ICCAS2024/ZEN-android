@@ -1,4 +1,4 @@
-package com.iccas.zen.presentation.tetris
+package com.iccas.zen.presentation.tetris.tetrisComponents
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing
