@@ -150,6 +150,7 @@ class GameViewModel : ViewModel() {
                         }
                     }
                     Action.Mute -> state.copy(isMute = !state.isMute)
+                    Action.GameOver -> state.copy(gameStatus = GameStatus.GameOver)
                 })
             }
         }
@@ -217,6 +218,7 @@ class GameViewModel : ViewModel() {
 
     private fun isGameOver(state: ViewState): Boolean {
         val gameOverLine = state.matrix.second - 1
+        state.gameStatus = GameStatus.GameOver
         return state.bricks.any { it.location.y <= gameOverLine }
     }
 
@@ -225,7 +227,7 @@ class GameViewModel : ViewModel() {
         val spirit: Spirit = Empty,
         val spiritReserve: List<Spirit> = emptyList(),
         val matrix: Pair<Int, Int> = MatrixWidth to MatrixHeight,
-        val gameStatus: GameStatus = GameStatus.Onboard,
+        var gameStatus: GameStatus = GameStatus.Onboard,
         val score: Int = 0,
         val line: Int = 0,
         val isMute: Boolean = false,
@@ -254,6 +256,7 @@ sealed interface Action {
     object Drop : Action
     object GameTick : Action
     object Mute : Action
+    object GameOver: Action
 }
 
 enum class GameStatus {
