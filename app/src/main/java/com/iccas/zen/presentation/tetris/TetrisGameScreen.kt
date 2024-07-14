@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.tetris.logic.Action
@@ -57,17 +58,23 @@ import com.iccas.zen.presentation.tetris.logic.GameStatus
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.tetris.logic.NextMatrix
 import com.iccas.zen.presentation.tetris.logic.Spirit
+import com.iccas.zen.presentation.tetris.tetrisComponents.LedClock
+import com.iccas.zen.presentation.tetris.tetrisComponents.LedNumber
 import com.iccas.zen.presentation.heart.HighHeartRateScreen
-import com.iccas.zen.ui.theme.Blue80
 import com.iccas.zen.ui.theme.BrickMatrix
 import com.iccas.zen.ui.theme.BrickSpirit
-import com.iccas.zen.ui.theme.ScreenBackground
+import com.iccas.zen.ui.theme.Brown40
+import com.iccas.zen.ui.theme.Brown50
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.min
 
 @Composable
-fun TetrisGameScreen(measureHeartViewModel: MeasureHeartViewModel, gameViewModel: GameViewModel, modifier: Modifier = Modifier) {
+fun TetrisGameScreen(
+    measureHeartViewModel: MeasureHeartViewModel,
+    gameViewModel: GameViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier) {
     val viewState by gameViewModel.viewState
     val isHeartRateHigh by measureHeartViewModel.isHeartRateHigh.collectAsState()
     val lives = remember { mutableIntStateOf(5) }
@@ -115,6 +122,12 @@ fun TetrisGameScreen(measureHeartViewModel: MeasureHeartViewModel, gameViewModel
                 heartRateExceeded.value = false
                 gameViewModel.dispatch(Action.Resume)
             }
+            if (viewState.gameStatus == GameStatus.GameOver) {
+                val currentDateTime = java.time.LocalDateTime.now().toString()
+                navController.navigate(
+                    "tetris_game_over/level=${viewState.level}/score=${viewState.score}/lives=${lives.value}/dateTime=$currentDateTime"
+                )
+            }
             GameBody(
                 combinedClickable(
                     onMove = { direction: Direction ->
@@ -133,16 +146,17 @@ fun TetrisGameScreen(measureHeartViewModel: MeasureHeartViewModel, gameViewModel
                             gameViewModel.dispatch(Action.Resume)
                         }
                     },
-                    onMute = { gameViewModel.dispatch(Action.Mute) }
+                    onMute = { gameViewModel.dispatch(Action.Mute) },
+                    onGameOver = { gameViewModel.dispatch(Action.GameOver) }
                 ),
                 measureHeartViewModel = measureHeartViewModel,
-                lives = lives.value
+                lives = lives.intValue
             ) {
                 Box(
                     modifier
                         .background(Color.Black)
                         .padding(1.dp)
-                        .background(ScreenBackground)
+                        .background(Brown50)
                         .padding(10.dp)
                 ) {
                     val animateValue by rememberInfiniteTransition(label = "").animateFloat(
@@ -199,7 +213,7 @@ fun GameScoreboard(
 
 ) {
     Row(modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.weight(0.65f))
+        Spacer(modifier = Modifier.weight(0.55f))
         val textSize = 12.sp
         val margin = 10.dp
 
@@ -207,7 +221,7 @@ fun GameScoreboard(
             Modifier
                 .fillMaxHeight()
                 .weight(0.15f)
-                .background(Blue80)
+                .background(Brown40)
         ) {
             Text("Score", fontSize = textSize)
             LedNumber(Modifier.fillMaxWidth(), score, 6)
