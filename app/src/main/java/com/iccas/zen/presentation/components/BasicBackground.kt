@@ -42,7 +42,7 @@ fun BasicBackgroundWithLogo(
     BasicBackground {
         Row() {
             Image(
-                painter = painterResource(id = R.drawable.zen_logo),
+                painter = painterResource(id = R.drawable.zen_brown_logo),
                 contentDescription = null,
                 modifier = Modifier.width(65.dp),
                 contentScale = ContentScale.Crop
