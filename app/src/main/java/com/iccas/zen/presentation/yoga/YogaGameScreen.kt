@@ -13,7 +13,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
@@ -114,6 +113,7 @@ fun YogaGameScreen(
                                 leafCount += 1
                                 isInstructionShowing = true
                             } else {
+                                leafCount += 1
                                 showDialog = true
                             }
                         },
@@ -130,10 +130,10 @@ fun YogaGameScreen(
                         painter = painterResource(id = currentPose.poseImgId),
                         contentDescription = "Yoga Pose",
                         modifier = Modifier
-                            .height(200.dp)
-                            .width(200.dp)
-                            .padding(bottom = 16.dp)
+                            .size(200.dp, 200.dp)
+                            .padding(bottom = 5.dp)
                     )
+
                     CameraPreview(
                         model = moveNetModel,
                         onPoseMatch = { isMatched ->
@@ -143,18 +143,23 @@ fun YogaGameScreen(
                         isTimerPaused = isTimerPaused,
                         cameraPreviewSize = 300.dp
                     )
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        items(leafCount) {
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Row() {
+                        Spacer(modifier = Modifier.width(10.dp))
+                        repeat(5) { index ->
                             Image(
-                                painter = painterResource(id = R.drawable.leaf),
+                                painter = painterResource(
+                                    id = if (index < leafCount) {
+                                        R.drawable.yoga_leaf_filled
+                                    } else {
+                                        R.drawable.yoga_leaf_unfilled
+                                    }
+                                ),
                                 contentDescription = "Leaf Icon",
-                                modifier = Modifier.size(70.dp)
+                                modifier = Modifier.size(35.dp)
                             )
+                            Spacer(modifier = Modifier.width(10.dp))
                         }
                     }
                 }
