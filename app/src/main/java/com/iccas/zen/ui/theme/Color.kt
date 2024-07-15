@@ -13,12 +13,14 @@ val Pink40 = Color(0xFF7D5260)
 
 // basic-custom
 val Gray80 = Color(0xFFD9D9D9)
+val Brown50 = Color(0xFFB19E9E)
 val Brown40 = Color(0xFF705E5E)
 val Brown30 = Color(0xFF3C3C3C)
 
 // tetris
-val Blue80 = Color(0xFF0E6DC6)
 val BrickSpirit = Color(0xDDFFFFFF)
 val BrickMatrix = Color(0x1F000000)
-val ScreenBackground = Color(0xFF0F2A52)
-val BodyColor = Color(0xFF000000)
+
+// tetris play control button
+val Green50 = Color(0xFFC3F436)
+val Red50 = Color(0xFFF44336)

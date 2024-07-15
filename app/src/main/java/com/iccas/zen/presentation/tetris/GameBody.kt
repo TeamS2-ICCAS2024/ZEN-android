@@ -2,18 +2,18 @@ package com.iccas.zen.presentation.tetris
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,20 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iccas.zen.R
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.tetris.logic.Direction
-import com.iccas.zen.ui.theme.Blue80
-import com.iccas.zen.ui.theme.BodyColor
-import com.iccas.zen.ui.theme.ScreenBackground
+import com.iccas.zen.presentation.tetris.tetrisComponents.GameButton
+import com.iccas.zen.presentation.components.BasicBackground
 
 @Composable
 fun GameBody(
@@ -54,196 +54,191 @@ fun GameBody(
             fontSize = 17.sp
         )
     }
-
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .background(BodyColor, RoundedCornerShape(10.dp))
-            .padding(top = 25.dp)
-            .padding(bottom = 10.dp)
-    ) {
-        // Header
-        Box(Modifier.align(Alignment.CenterHorizontally)) {
-            Box(
-                Modifier
-                    .width(350.dp)
-                    .height(35.dp)
-                    .align(Alignment.TopStart)
-                    .background(BodyColor)
+    BasicBackground {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "\t\tZEN",
-                    color = Color.White,
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(end = 16.dp)
+                Image(
+                    painter = painterResource(id = R.drawable.zen_brown_logo),
+                    contentDescription = null,
+                    modifier = Modifier.width(65.dp),
+                    contentScale = ContentScale.Crop
                 )
 
-                GameButton(
-                    size = 40.dp,
-                    onClick = { clickable.onMute() },
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(40.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.tetris_baseline_music),
                         contentDescription = "Center-aligned image",
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier
+                            .size(25.dp)
+                            .clickable { clickable.onMute() },
+                        colorFilter = ColorFilter.tint(Color.Black)
+                    )
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Image(
+                        painter = painterResource(id = R.drawable.heart_rate_icon),
+                        contentDescription = "BPM icon",
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Text(
+                        text = currentHeartRate,
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp, end = 15.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(5) { index ->
+                    val heartIcon = if (index < (lives ?: 0)) {
+                        R.drawable.tetris_game_heart_filled
+                    } else {
+                        R.drawable.tetris_game_heart_unfilled
+                    }
+                    Image(
+                        painter = painterResource(id = heartIcon),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(360.dp, 440.dp)
+                    .padding(start = 5.dp, end = 5.dp, top = 5.dp, bottom = 5.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    drawScreenBorder(
+                        Offset(0f, 0f),
+                        Offset(size.width, 0f),
+                        Offset(0f, size.height),
+                        Offset(size.width, size.height)
                     )
                 }
 
                 Box(
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 16.dp)
+                        .fillMaxSize()
+                        .padding(5.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.tetris_bpm),
-                        contentDescription = "BPM icon",
-                        modifier = Modifier
-                            .size(40.dp)
-                    )
-
-                    Text(
-                        text = currentHeartRate,
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(start = 48.dp, top = 8.dp)
-                    )
+                    screen()
                 }
             }
-        }
+            Spacer(modifier = Modifier.height(10.dp))
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 5.dp)
-        ) {
-            repeat(lives) {
-                Image(
-                    painter = painterResource(id = R.drawable.tetris_bpm),
-                    contentDescription = "Heart",
-                    modifier = Modifier
-                        .size(25.dp)
-                        .padding(2.dp)
-                )
-            }
-        }
+            Column(
+                modifier = Modifier
+                    .padding(start = 40.dp, end = 40.dp)
+            ) {
+                Spacer(modifier = Modifier.height(5.dp))
 
-        Spacer(modifier = Modifier.height(1.dp))
-
-        Box(
-            Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(360.dp, 440.dp)
-                .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 5.dp)
-        ) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawScreenBorder(
-                    Offset(0f, 0f),
-                    Offset(size.width, 0f),
-                    Offset(0f, size.height),
-                    Offset(size.width, size.height)
-                )
+                Row {
+                    GameButton(
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .padding(start = 10.dp, end = 10.dp),
+                        onClick = { clickable.onRestart() },
+                        size = StopButtonSize / 4
+                    ) {
+                        ButtonText(it, "replay")
+                    }
+                    GameButton(
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .padding(start = 15.dp, end = 10.dp),
+                        onClick = { clickable.onGameOver() },
+                        size = StopButtonSize / 4
+                    ) {
+                        ButtonText(it, "quit")
+                    }
+                }
             }
 
-            Box(
+            Spacer(modifier = Modifier.height(25.dp))
+
+            Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(5.dp)
-                    .background(ScreenBackground)
-                    .background(Blue80)
+                    .padding(top = 5.dp)
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-                screen()
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
+                // DIRECTION BTN
+                Box(
+                    modifier = Modifier.size(DirectionButtonSize*3)
+                ) {
+                    GameButton(
+                        Modifier.align(Alignment.TopCenter),
+                        onClick = { clickable.onMove(Direction.Up) },
+                        autoInvokeWhenPressed = false,
+                        size = DirectionButtonSize
+                    ) {
+                        ButtonText(it, stringResource(id = R.string.button_up))
+                    }
+                    GameButton(
+                        Modifier.align(Alignment.CenterStart),
+                        onClick = { clickable.onMove(Direction.Left) },
+                        autoInvokeWhenPressed = true,
+                        size = DirectionButtonSize
+                    ) {
+                        ButtonText(it, stringResource(id = R.string.button_left))
+                    }
+                    GameButton(
+                        Modifier.align(Alignment.CenterEnd),
+                        onClick = { clickable.onMove(Direction.Right) },
+                        autoInvokeWhenPressed = true,
+                        size = DirectionButtonSize
+                    ) {
+                        ButtonText(it, stringResource(id = R.string.button_right))
+                    }
+                    GameButton(
+                        Modifier.align(Alignment.BottomCenter),
+                        onClick = { clickable.onMove(Direction.Down) },
+                        autoInvokeWhenPressed = true,
+                        size = DirectionButtonSize
+                    ) {
+                        ButtonText(it, stringResource(id = R.string.button_down))
+                    }
+                }
+                Spacer(modifier = Modifier.width(20.dp))
 
-        Column(
-            modifier = Modifier
-                .padding(start = 40.dp, end = 40.dp)
-        ) {
-            Spacer(modifier = Modifier.height(5.dp))
-            Row {
-                GameButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 20.dp, end = 20.dp),
-                    onClick = { clickable.onRestart() },
-                    size = StopButtonSize / 4
+                // ROTATE BTN
+                Box(
+                    modifier = Modifier.size(DirectionButtonSize*3)
                 ) {
-                    ButtonText(it, stringResource(id = R.string.button_down))
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Row(
-            modifier = Modifier
-                .padding(start = 40.dp, end = 40.dp)
-                .height(160.dp)
-        ) {
-            // DIRECTION BTN
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-            ) {
-                GameButton(
-                    Modifier.align(Alignment.TopCenter),
-                    onClick = { clickable.onMove(Direction.Up) },
-                    autoInvokeWhenPressed = false,
-                    size = DirectionButtonSize
-                ) {
-                    ButtonText(it, stringResource(id = R.string.button_up))
-                }
-                GameButton(
-                    Modifier.align(Alignment.CenterStart),
-                    onClick = { clickable.onMove(Direction.Left) },
-                    autoInvokeWhenPressed = true,
-                    size = DirectionButtonSize
-                ) {
-                    ButtonText(it, stringResource(id = R.string.button_left))
-                }
-                GameButton(
-                    Modifier.align(Alignment.CenterEnd),
-                    onClick = { clickable.onMove(Direction.Right) },
-                    autoInvokeWhenPressed = true,
-                    size = DirectionButtonSize
-                ) {
-                    ButtonText(it, stringResource(id = R.string.button_right))
-                }
-                GameButton(
-                    Modifier.align(Alignment.BottomCenter),
-                    onClick = { clickable.onMove(Direction.Down) },
-                    autoInvokeWhenPressed = true,
-                    size = DirectionButtonSize
-                ) {
-                    ButtonText(it, stringResource(id = R.string.button_down))
-                }
-            }
-
-            // ROTATE BTN
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
-                GameButton(
-                    Modifier.align(Alignment.CenterEnd),
-                    onClick = { clickable.onRotate() },
-                    autoInvokeWhenPressed = false,
-                    size = RotateButtonSize
-                ) {
-                    ButtonText(it, stringResource(id = R.string.button_rotate))
+                    GameButton(
+                        Modifier.align(Alignment.CenterEnd),
+                        onClick = { clickable.onRotate() },
+                        autoInvokeWhenPressed = false,
+                        size = RotateButtonSize
+                    ) {
+                        ButtonText(it, stringResource(id = R.string.button_rotate))
+                    }
                 }
             }
         }
@@ -295,7 +290,8 @@ data class Clickable constructor(
     val onRotate: () -> Unit,
     val onRestart: () -> Unit,
     val onPause: () -> Unit,
-    val onMute: () -> Unit
+    val onMute: () -> Unit,
+    val onGameOver: () -> Unit
 )
 
 fun combinedClickable(
@@ -303,9 +299,10 @@ fun combinedClickable(
     onRotate: () -> Unit = {},
     onRestart: () -> Unit = {},
     onPause: () -> Unit = {},
-    onMute: () -> Unit = {}
-) = Clickable(onMove, onRotate, onRestart, onPause, onMute)
+    onMute: () -> Unit = {},
+    onGameOver: () -> Unit = {}
+) = Clickable(onMove, onRotate, onRestart, onPause, onMute, onGameOver)
 
 val StopButtonSize = 100.dp
-val DirectionButtonSize = 50.dp
-val RotateButtonSize = 100.dp
+val DirectionButtonSize = 35.dp
+val RotateButtonSize = 85.dp

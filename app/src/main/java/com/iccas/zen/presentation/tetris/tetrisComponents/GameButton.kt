@@ -1,4 +1,4 @@
-package com.iccas.zen.presentation.tetris
+package com.iccas.zen.presentation.tetris.tetrisComponents
 
 import android.view.MotionEvent.*
 import androidx.compose.foundation.background
@@ -52,10 +52,10 @@ fun GameButton(
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         Color.White,
-                        Color.Black
+                        Color(0xFF524646)
                     ),
                     startY = 0f,
-                    endY = 80f
+                    endY = 60f
                 )
             ).indication(interactionSource = interactionSource, indication = rememberRipple())
             .run {
