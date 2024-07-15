@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -114,4 +117,16 @@ dependencies {
 
     // kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // 카메라 설정
+    implementation("androidx.camera:camera-core:1.2.3")
+    implementation("androidx.camera:camera-camera2:1.2.3")
+    implementation("androidx.camera:camera-lifecycle:1.2.3")
+    implementation("androidx.camera:camera-view:1.2.3")
+    implementation("androidx.camera:camera-extensions:1.2.3")
+
+    // 텐서플로우 라이트 라이브러리
+    implementation ("org.tensorflow:tensorflow-lite:2.7.0")
+    implementation ("org.tensorflow:tensorflow-lite-metadata:0.1.0")
+    implementation ("org.tensorflow:tensorflow-lite-support:0.2.0")
 }
