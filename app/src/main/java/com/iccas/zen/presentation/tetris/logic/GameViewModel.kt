@@ -8,16 +8,87 @@ import androidx.lifecycle.viewModelScope
 import com.iccas.zen.presentation.tetris.logic.Spirit.Companion.Empty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.min
+
+enum class Hindrance {
+    RandomDirection,
+    DisableRotation,
+    ReverseControl;
+
+    fun getName(): String {
+        return when (this) {
+            RandomDirection -> "RandomDirection"
+            DisableRotation -> "DisableRotation"
+            ReverseControl -> "ReverseControl"
+        }
+    }
+}
 
 class GameViewModel : ViewModel() {
 
     private val _viewState: MutableState<ViewState> = mutableStateOf(ViewState())
     val viewState: State<ViewState> = _viewState
 
+    private var hindranceActive = false
+    private var hindranceBlockCount = 0
+    private var fastDropActive = false
+    private val _currentBlocks = MutableStateFlow<Pair<Spirit, Spirit>>(Empty to Empty)
+    val currentBlocks: StateFlow<Pair<Spirit, Spirit>> = _currentBlocks
+
+    init {
+        startHindranceTimer()
+    }
+
     fun dispatch(action: Action) = reduce(viewState.value, action)
+    var currentDirection = Direction.Right // 초기 방향
+
+    private fun startHindranceTimer() {
+        viewModelScope.launch {
+            while (true) {
+                delay(10000) // 10 seconds
+                if (!hindranceActive) {
+                    activateHindrance()
+                }
+            }
+        }
+    }
+
+    private fun activateHindrance() {
+        viewModelScope.launch {
+            hindranceActive = true
+            hindranceBlockCount = 0
+            val hindrance = Hindrance.values().random()
+            emit(viewState.value.copy(currentHindrance = hindrance, showHindranceAlert = true))
+
+            // Pause the game before showing the alert
+            dispatch(Action.Pause)
+            delay(3000) // 3 seconds to show alert
+
+            // Resume the game after the alert is dismissed
+            dispatch(Action.Resume)
+            hideHindranceAlert()
+            emit(viewState.value.copy(showHindranceAlert = false))
+
+            while (hindranceBlockCount < 3) {
+                delay(100) // Adjust delay as needed
+            }
+
+            hindranceActive = false
+            emit(viewState.value.copy(currentHindrance = null))
+        }
+    }
+
+    private fun randomizeDirection(): Direction {
+        return Direction.values().random()
+    }
+
+    fun hideHindranceAlert() {
+        _viewState.value = viewState.value.copy(showHindranceAlert = false)
+    }
 
     private fun reduce(state: ViewState, action: Action) {
         viewModelScope.launch {
@@ -36,7 +107,7 @@ class GameViewModel : ViewModel() {
                                 clearScreen(state = state)
                                 emit(
                                     ViewState(
-                                        gameStatus = GameStatus.Running,
+                                        gameStatus = GameStatus.Onboard,
                                         isMute = state.isMute
                                     )
                                 )
@@ -52,7 +123,22 @@ class GameViewModel : ViewModel() {
                     is Action.Move -> run {
                         if (!state.isRunning) return@run state
                         SoundUtil.play(state.isMute, SoundType.Move)
-                        val offset = action.direction.toOffset()
+                        //val offset = action.direction.toOffset()
+                        val effectiveDirection = when {
+                            state.currentHindrance == Hindrance.RandomDirection && action.direction == Direction.Up -> null
+                            state.currentHindrance == Hindrance.ReverseControl -> when (action.direction) {
+                                Direction.Left -> Direction.Right
+                                Direction.Right -> Direction.Left
+                                else -> action.direction
+                            }
+                            else -> action.direction
+                        } ?: return@run state // 무효화된 방향키일 경우, 상태 변경 없이 종료
+
+                        val offset = if (state.currentHindrance == Hindrance.RandomDirection) {
+                            randomizeDirection().toOffset()
+                        } else {
+                            effectiveDirection.toOffset()
+                        }
                         val spirit = state.spirit.moveBy(offset)
                         if (spirit.isValidInMatrix(state.bricks, state.matrix)) {
                             state.copy(spirit = spirit)
@@ -60,8 +146,9 @@ class GameViewModel : ViewModel() {
                             state
                         }
                     }
+
                     Action.Rotate -> run {
-                        if (!state.isRunning) return@run state
+                        if (!state.isRunning || state.currentHindrance == Hindrance.DisableRotation) return@run state
                         SoundUtil.play(state.isMute, SoundType.Rotate)
                         val spirit = state.spirit.rotate().adjustOffset(state.matrix)
                         if (spirit.isValidInMatrix(state.bricks, state.matrix)) {
@@ -71,7 +158,7 @@ class GameViewModel : ViewModel() {
                         }
                     }
                     Action.Drop -> run {
-                        if (!state.isRunning) return@run state
+                        if (!state.isRunning || state.currentHindrance == Hindrance.RandomDirection) return@run state
                         SoundUtil.play(state.isMute, SoundType.Drop)
                         var i = 0
                         while (state.spirit.moveBy(0 to ++i).isValidInMatrix(state.bricks, state.matrix)) {
@@ -149,6 +236,10 @@ class GameViewModel : ViewModel() {
                             }
                         } else {
                             newState.copy(bricks = noClear)
+                        }.also { finalState ->
+                            if (finalState.currentHindrance != null) {
+                                hindranceBlockCount++
+                            }
                         }
                     }
                     Action.Mute -> state.copy(isMute = !state.isMute)
@@ -233,7 +324,10 @@ class GameViewModel : ViewModel() {
         val score: Int = 0,
         val line: Int = 0,
         val isMute: Boolean = false,
-        val initialSpawn: Boolean = true
+        val initialSpawn: Boolean = true,
+        val currentHindrance: Hindrance? = null,
+        val hindranceBlocksRemaining: Int = 0,
+        val showHindranceAlert: Boolean = false
     ) {
         val level: Int
             get() = min(10, 1 + line / 20)

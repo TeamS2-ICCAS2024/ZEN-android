@@ -1,6 +1,7 @@
 package com.iccas.zen.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,7 +27,7 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "game_select") {
+    NavHost(navController, startDestination = "tetris_game") {
         composable("game_select") {
             GameSelectScreen(navController = navController)
         }
