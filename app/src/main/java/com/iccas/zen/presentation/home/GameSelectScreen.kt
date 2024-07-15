@@ -37,6 +37,10 @@ fun GameSelectScreen(
                 onClick = { navController.navigate("guide_measure_base") })
             Spacer(modifier = Modifier.height(30.dp))
             GameSelectBox(type = "yoga", onClick = {})
+            GameSelectBox(
+                type = "chat",
+                onClick = { navController.navigate("") })
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
