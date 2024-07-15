@@ -36,10 +36,10 @@ fun GameSelectScreen(
                 type = "tetris",
                 onClick = { navController.navigate("guide_measure_base") })
             Spacer(modifier = Modifier.height(30.dp))
-            GameSelectBox(type = "yoga", onClick = {})
+
             GameSelectBox(
-                type = "chat",
-                onClick = { navController.navigate("") })
+                type = "yoga",
+                onClick = { navController.navigate("start_yoga") })
             Spacer(modifier = Modifier.height(30.dp))
         }
     }

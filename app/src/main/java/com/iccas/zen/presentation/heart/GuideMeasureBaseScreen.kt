@@ -40,7 +40,7 @@ fun GuideMeasureBaseScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "To measure your\nheart rate\nPlease put on your\nwatch!",
+                text = "To measure your\nheart rate,\nPlease put on your\nwatch !",
                 fontSize = 23.sp,
                 textAlign = TextAlign.Center,
                 lineHeight = 30.sp
