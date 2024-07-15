@@ -14,7 +14,7 @@ class MoveNetModel(context: Context) {
 
     init {
         interpreter = Interpreter(loadModelFile(context, "movenet.tflite"))
-        poseClassifierInterpreter = Interpreter(loadModelFile(context, "dense_model.tflite"))
+        poseClassifierInterpreter = Interpreter(loadModelFile(context, "denseModel.tflite"))
         analyzer = ImageAnalyzer(this)
     }
 
@@ -46,11 +46,11 @@ class MoveNetModel(context: Context) {
 
     private fun getPoseClassName(classIndex: Int): String {
         return when (classIndex) {
-            0 -> "Bend Pose"
+            0 -> "Cobra Pose"
             1 -> "Bridge Pose"
             2 -> "Cow Pose"
             3 -> "Child Pose"
-            4 -> "Corpse Pose"
+            4 -> "Tree Pose"
             else -> "unknown"
         }
     }
