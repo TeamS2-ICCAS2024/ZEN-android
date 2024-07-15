@@ -1,17 +1,17 @@
-package com.cookandroid.myapplication
+package com.iccas.zen.presentation.yoga
 
-import androidx.annotation.DrawableRes
+import com.iccas.zen.R
 
 data class YogaPose(
     val name: String,
-    @DrawableRes val imageRes: Int,
+    val poseImgId: Int,
     val durationSeconds: Int
 )
 
 val yogaPoses = listOf(
     YogaPose("Bend Pose", R.drawable.standing_forward_bend, 3),
-    YogaPose("Bridge Pose", R.drawable.bridge_pose, 100),
-    YogaPose("Cow Pose", R.drawable.cat_cow_pose, 100),
-    YogaPose("Child Pose", R.drawable.child, 100),
-    YogaPose("Corpse Pose", R.drawable.corpose, 100)
+    YogaPose("Bridge Pose", R.drawable.bridge_pose, 3),
+    YogaPose("Cow Pose", R.drawable.cat_cow_pose, 3),
+    YogaPose("Child Pose", R.drawable.child, 3),
+    YogaPose("Corpse Pose", R.drawable.corpose, 3)
 )

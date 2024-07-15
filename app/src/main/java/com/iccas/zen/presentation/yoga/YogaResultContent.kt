@@ -1,4 +1,4 @@
-package com.cookandroid.myapplication
+package com.iccas.zen.presentation.yoga
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.iccas.zen.R
 
 @Composable
 fun ResultContent(onDismiss: () -> Unit) {
@@ -28,23 +29,26 @@ fun ResultContent(onDismiss: () -> Unit) {
             color = Color.Black
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.Start
         ) {
-            ResultItem(R.drawable.easy_pose, "Crow Pose")
-            ResultItem(R.drawable.bridge_pose, "Pigeon Pose")
-            ResultItem(R.drawable.cat_cow_pose, "Triangle Pose")
-            ResultItem(R.drawable.standing_forward_bend, "Plough Pose")
-            ResultItem(R.drawable.child_pose, "Plank Pose")
+            YogaResultItem(R.drawable.easy_pose, "Crow Pose")
+            YogaResultItem(R.drawable.bridge_pose, "Pigeon Pose")
+            YogaResultItem(R.drawable.cat_cow_pose, "Triangle Pose")
+            YogaResultItem(R.drawable.standing_forward_bend, "Plough Pose")
+            YogaResultItem(R.drawable.child_pose, "Plank Pose")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "+ 30 Leaf",
             fontSize = 30.sp,
             color = Color.Green
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = onDismiss,
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD3C4D1))
@@ -55,7 +59,10 @@ fun ResultContent(onDismiss: () -> Unit) {
 }
 
 @Composable
-fun ResultItem(imageRes: Int, poseName: String) {
+fun YogaResultItem(
+    poseImgId: Int,
+    poseName: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,7 +70,7 @@ fun ResultItem(imageRes: Int, poseName: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = imageRes),
+            painter = painterResource(id = poseImgId),
             contentDescription = poseName,
             modifier = Modifier.size(40.dp)
         )

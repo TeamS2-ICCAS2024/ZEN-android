@@ -1,5 +1,4 @@
-package com.cookandroid.myapplication
-
+package com.iccas.zen.presentation.yoga
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -20,21 +19,18 @@ class ImageAnalyzer(private val model: MoveNetModel) : ImageAnalysis.Analyzer {
 
     override fun analyze(imageProxy: ImageProxy) {
         val bitmap = imageProxy.toBitmap()
-        if (bitmap != null) {
-            val resizedBitmap = resizeBitmap(bitmap)
-            val inputArray = convertBitmapToInputArray(resizedBitmap)
-            val output = model.runMoveNetModel(inputArray)
-            processOutput(output)
+        val resizedBitmap = resizeBitmap(bitmap)
+        val inputArray = convertBitmapToInputArray(resizedBitmap)
+        val output = model.runMoveNetModel(inputArray)
+        processOutput(output)
 
-            // Pose classification
-            val keypoints = extractKeypoints(output)
-            val poseClass = model.classifyPose(keypoints)
-            Log.d("PoseClassifier", "Predicted pose class: $poseClass")
-            onPoseClassified?.invoke(poseClass)
-        }
+        // Pose classification
+        val keypoints = extractKeypoints(output)
+        val poseClass = model.classifyPose(keypoints)
+        Log.d("PoseClassifier", "Predicted pose class: $poseClass")
+        onPoseClassified?.invoke(poseClass)
         imageProxy.close()
     }
-
 
     private fun processOutput(output: Array<Array<FloatArray>>) {
         Log.d("ImageAnalyzer", "processOutput() called")
@@ -58,7 +54,7 @@ class ImageAnalyzer(private val model: MoveNetModel) : ImageAnalysis.Analyzer {
         val modelHeight = 256 // 모델이 예상하는 높이
         val modelWidth = 256 // 모델이 예상하는 너비
 
-        // 이미지를 회전합니다.
+        // 이미지를 회전
         val matrix = Matrix().apply {
             postScale(-1f, 1f, modelWidth / 2f, modelHeight / 2f) // 좌우 반전
             postRotate(90f) // 90도 회전

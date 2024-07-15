@@ -1,4 +1,4 @@
-package com.cookandroid.myapplication
+package com.iccas.zen.presentation.yoga
 
 import android.content.Context
 import org.tensorflow.lite.Interpreter
@@ -17,7 +17,6 @@ class MoveNetModel(context: Context) {
         poseClassifierInterpreter = Interpreter(loadModelFile(context, "dense_model.tflite"))
         analyzer = ImageAnalyzer(this)
     }
-
 
     @Throws(IOException::class)
     private fun loadModelFile(context: Context, modelPath: String): MappedByteBuffer {
@@ -42,7 +41,7 @@ class MoveNetModel(context: Context) {
         val outputList = outputArray[0].toList()
         val maxScore = outputList.maxOrNull() ?: 0f
         val classIndex = outputList.indexOf(maxScore)
-        return if (maxScore > 0.7) getPoseClassName(classIndex) else "not detect"
+        return if (maxScore > 0.7) getPoseClassName(classIndex) else "Not Detected"
     }
 
     private fun getPoseClassName(classIndex: Int): String {
