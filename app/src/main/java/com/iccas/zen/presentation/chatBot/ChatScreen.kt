@@ -131,7 +131,7 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
                         .background(Color(0xFF0087B3), CircleShape) // Sky blue background with circular shape
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.arrow_up), // Use the specified icon resource
+                        painter = painterResource(id = R.drawable.chat_arrow_up), // Use the specified icon resource
                         contentDescription = "Send",
                         modifier = Modifier.size(24.dp)
                     )
@@ -152,7 +152,7 @@ fun MessageItem(message: Message, emojiResId: Int) {
     ) {
         if (!message.isUser) {
             Image(
-                painter = painterResource(id = R.drawable.bao),
+                painter = painterResource(id = R.drawable.chat_bao),
                 contentDescription = "BAO",
                 modifier = Modifier.size(50.dp).padding(end = 8.dp)
             )
