@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.tetris.tetrisComponents.ReplayAndExitControlButtons
 import com.iccas.zen.ui.theme.Green50
@@ -31,11 +30,11 @@ import com.iccas.zen.ui.theme.Red50
 
 @Composable
 fun TetrisGameOverScreen(
-    navController: NavHostController,
     level: Int?,
     score: Int?,
     lives: Int?,
-    dateTime: String?
+    onReplay: () -> Unit,
+    onExit: () -> Unit
 ) {
     val stats = listOf(
         "level" to (level ?: 0),
@@ -92,8 +91,8 @@ fun TetrisGameOverScreen(
         Spacer(modifier = Modifier.height(50.dp))
 
         ReplayAndExitControlButtons(
-            onReplay = { navController.navigate("tetris_game") },
-            onExit = { navController.navigate("game_select") },
+            onReplay = onReplay,
+            onExit = onExit,
             replayButtonBackground = Green50,
             exitButtonBackground = Red50,
             replayIconColor = Color.Black,

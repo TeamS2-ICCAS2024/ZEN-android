@@ -36,7 +36,7 @@ class GameViewModel : ViewModel() {
                                 clearScreen(state = state)
                                 emit(
                                     ViewState(
-                                        gameStatus = GameStatus.Onboard,
+                                        gameStatus = GameStatus.Running,
                                         isMute = state.isMute
                                     )
                                 )
@@ -87,6 +87,8 @@ class GameViewModel : ViewModel() {
                             val spirit = state.spirit.moveBy(Direction.Down.toOffset())
                             if (spirit.isValidInMatrix(state.bricks, state.matrix)) {
                                 return@run state.copy(spirit = spirit)
+                            } else if(spirit.location.any { it.y <= 0 }) {
+                                return@run state.copy(gameStatus = GameStatus.GameOver)
                             }
                         }
 
