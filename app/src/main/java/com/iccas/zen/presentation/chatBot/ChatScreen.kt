@@ -1,6 +1,6 @@
-package com.iccas.zen.presentation.chatBot
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,13 +20,47 @@ import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
 import kotlinx.coroutines.launch
 import com.iccas.zen.R
 import androidx.navigation.NavHostController
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.iccas.zen.presentation.chatBot.ChatViewModel
+import com.iccas.zen.presentation.chatBot.Message
 
 @Composable
-fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: ChatViewModel = viewModel()) {
+fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: ChatViewModel = viewModel(), scrollState: ScrollState) {
     BasicBackgroundWithLogo {
         val messages by viewModel.messages.collectAsState()
         var inputText by remember { mutableStateOf("") }
         val coroutineScope = rememberCoroutineScope()
+        val listState = rememberLazyListState()
+        val view = LocalView.current
+        var imeHeight by remember { mutableStateOf(0.dp) }
+        val density = LocalDensity.current
+
+        LaunchedEffect(messages.size) {
+            listState.animateScrollToItem(0)
+        }
+
+        DisposableEffect(view) {
+            val listener = ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                // IME(키보드)가 보이는지 여부를 확인합니다.
+
+                imeHeight = if (imeVisible) {
+                    with(density) { insets.getInsets(WindowInsetsCompat.Type.ime()).bottom.toDp() }
+                } else {
+                    0.dp
+                }
+                // IME가 보이면 IME의 높이를 dp로 변환하여 imeHeight 상태에 저장합니다.
+                // 그렇지 않으면 imeHeight를 0dp로 설정합니다.
+
+                insets
+            }
+            onDispose { ViewCompat.setOnApplyWindowInsetsListener(view, null) }
+        }
+
 
         Column(
             modifier = Modifier
@@ -35,11 +68,14 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
                 .padding(16.dp)
         ) {
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(16.dp)
+                    .padding(16.dp),
+                reverseLayout = true, // Use reverse layout
+                verticalArrangement = Arrangement.Top
             ) {
-                items(messages) { message ->
+                items(messages.asReversed()) { message -> // Reverse the message order
                     MessageItem(message, emojiResId)
                 }
             }
@@ -70,10 +106,10 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .size(48.dp)
-                        .background(Color(0xFF0087B3), CircleShape) // 하늘색 배경과 원형 모양
+                        .background(Color(0xFF0087B3), CircleShape) // Sky blue background with circular shape
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.arrow_up), // 해당 아이콘 리소스를 사용
+                        painter = painterResource(id = R.drawable.arrow_up), // Use the specified icon resource
                         contentDescription = "Send",
                         modifier = Modifier.size(24.dp)
                     )
@@ -81,7 +117,7 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
             }
         }
     }
-    }
+}
 
 @Composable
 fun MessageItem(message: Message, emojiResId: Int) {
@@ -116,7 +152,7 @@ fun MessageItem(message: Message, emojiResId: Int) {
         }
         if (message.isUser) {
             Image(
-                painter = painterResource(id = emojiResId), // 사용자 이모지 리소스
+                painter = painterResource(id = emojiResId), // User emoji resource
                 contentDescription = "User",
                 modifier = Modifier.size(50.dp).padding(start = 8.dp)
             )
