@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import com.iccas.zen.R
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
@@ -160,8 +161,8 @@ fun MessageItem(message: Message, emojiResId: Int) {
         Box(
             modifier = Modifier
                 .background(
-                    if (message.isUser) Color(135, 206, 235) else Color.White,
-                    MaterialTheme.shapes.medium
+                    color = if (message.isUser) Color(135, 206, 235) else Color.White,
+                    shape = RoundedCornerShape(12.dp) // 둥근 모서리를 위해 RoundedCornerShape 사용
                 )
                 .padding(16.dp)
         ) {
