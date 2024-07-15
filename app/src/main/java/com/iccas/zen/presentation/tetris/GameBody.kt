@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -44,6 +46,7 @@ fun GameBody(
     screen: @Composable () -> Unit,
 ) {
     val currentHeartRate = measureHeartViewModel.receivedData.collectAsState().value
+    val isMute = remember { mutableStateOf(true) }
 
     // Game Button
     val ButtonText = @Composable { modifier: Modifier,
@@ -77,11 +80,14 @@ fun GameBody(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.tetris_baseline_music),
-                        contentDescription = "Center-aligned image",
+                        painter = painterResource(id = if (isMute.value) R.drawable.tetris_game_volume_on else R.drawable.tetris_game_volume_off),
+                        contentDescription = "Music icon",
                         modifier = Modifier
                             .size(25.dp)
-                            .clickable { clickable.onMute() },
+                            .clickable {
+                                isMute.value = !isMute.value
+                                clickable.onMute()
+                            },
                         colorFilter = ColorFilter.tint(Color.Black)
                     )
 
