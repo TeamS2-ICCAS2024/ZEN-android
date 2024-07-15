@@ -1,6 +1,5 @@
 package com.iccas.zen.navigation
 
-import ChatScreen
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -10,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.iccas.zen.R
 import com.iccas.zen.SelectEmotionScreen
+import com.iccas.zen.presentation.chatBot.ChatScreen
 import com.iccas.zen.presentation.heart.BaseResultScreen
 import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
 import com.iccas.zen.presentation.heart.MeasureBaseScreen
@@ -80,7 +80,7 @@ fun NavGraph(
             arguments = listOf(navArgument("emojiResId") { type = NavType.IntType })
         ) { backStackEntry ->
             val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: R.drawable.happy
-            ChatScreen(navController = navController, emojiResId = emojiResId, scrollState = scrollState)
+            ChatScreen(navController = navController, emojiResId = emojiResId)
         }
     }
 }

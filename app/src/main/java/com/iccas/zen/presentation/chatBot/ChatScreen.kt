@@ -1,3 +1,4 @@
+package com.iccas.zen.presentation.chatBot
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -29,7 +30,7 @@ import com.iccas.zen.presentation.chatBot.ChatViewModel
 import com.iccas.zen.presentation.chatBot.Message
 
 @Composable
-fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: ChatViewModel = viewModel(), scrollState: ScrollState) {
+fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: ChatViewModel = viewModel()) {
     BasicBackgroundWithLogo {
         val messages by viewModel.messages.collectAsState()
         var inputText by remember { mutableStateOf("") }
@@ -39,44 +40,65 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
         var imeHeight by remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
 
-        LaunchedEffect(messages.size) {
-            listState.animateScrollToItem(0)
-        }
-
         DisposableEffect(view) {
             val listener = ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
                 val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                // IME(키보드)가 보이는지 여부를 확인합니다.
 
                 imeHeight = if (imeVisible) {
                     with(density) { insets.getInsets(WindowInsetsCompat.Type.ime()).bottom.toDp() }
                 } else {
                     0.dp
                 }
-                // IME가 보이면 IME의 높이를 dp로 변환하여 imeHeight 상태에 저장합니다.
-                // 그렇지 않으면 imeHeight를 0dp로 설정합니다.
 
                 insets
             }
             onDispose { ViewCompat.setOnApplyWindowInsetsListener(view, null) }
         }
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
-            LazyColumn(
-                state = listState,
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+                Text(
+                    text = "chat",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            // Chat and input section
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(16.dp),
-                reverseLayout = true, // Use reverse layout
-                verticalArrangement = Arrangement.Top
+                    .padding(16.dp)
             ) {
-                items(messages.asReversed()) { message -> // Reverse the message order
-                    MessageItem(message, emojiResId)
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    reverseLayout = true, // Use reverse layout
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    items(messages.asReversed()) { message -> // Reverse the message order
+                        MessageItem(message, emojiResId)
+                    }
                 }
             }
 
