@@ -24,3 +24,5 @@ val BrickMatrix = Color(0x1F000000)
 // tetris play control button
 val Green50 = Color(0xFFC3F436)
 val Red50 = Color(0xFFF44336)
+
+val Green30 = Color(0xFF45A186)
