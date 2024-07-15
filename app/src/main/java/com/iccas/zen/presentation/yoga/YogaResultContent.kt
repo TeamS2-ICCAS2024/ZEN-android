@@ -10,12 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iccas.zen.R
+import com.iccas.zen.ui.theme.Green30
 
 @Composable
-fun ResultContent(onDismiss: () -> Unit) {
+fun ResultContent(onDismiss: () -> Unit, leafCount: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,34 +29,39 @@ fun ResultContent(onDismiss: () -> Unit) {
         Text(
             text = "Result",
             fontSize = 40.sp,
+            fontFamily = FontFamily.SansSerif,
             color = Color.Black
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.Start
         ) {
-            YogaResultItem(R.drawable.easy_pose, "Crow Pose")
-            YogaResultItem(R.drawable.bridge_pose, "Pigeon Pose")
-            YogaResultItem(R.drawable.cat_cow_pose, "Triangle Pose")
-            YogaResultItem(R.drawable.standing_forward_bend, "Plough Pose")
-            YogaResultItem(R.drawable.child_pose, "Plank Pose")
+            YogaResultItem(R.drawable.yoga_tree_pose, "Tree Pose", leafCount, 0)
+            YogaResultItem(R.drawable.yoga_bridge_pose, "Bridge Pose", leafCount, 1)
+            YogaResultItem(R.drawable.yoga_cat_cow_pose, "Cow Pose", leafCount, 2)
+            YogaResultItem(R.drawable.yoga_child_pose, "Child Pose", leafCount, 3)
+            YogaResultItem(R.drawable.yoga_cobra_pose, "Cobra Pose", leafCount, 4)
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-        Text(
-            text = "+ 30 Leaf",
-            fontSize = 30.sp,
-            color = Color.Green
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        Row() {
+            Text(
+                text = "+ $leafCount Leaf",
+                fontSize = 25.sp,
+                fontFamily = FontFamily.Serif,
+                fontWeight = FontWeight.SemiBold,
+                color = Green30
+            )
+        }
+        Spacer(modifier = Modifier.height(7.dp))
 
         Button(
             onClick = onDismiss,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD3C4D1))
+            colors = ButtonDefaults.buttonColors(containerColor = Green30)
         ) {
-            Text("Return to Home", color = Color.Black, fontSize = 24.sp)
+            Text("Return to Home", color = Color.White, fontSize = 24.sp)
         }
     }
 }
@@ -61,26 +69,44 @@ fun ResultContent(onDismiss: () -> Unit) {
 @Composable
 fun YogaResultItem(
     poseImgId: Int,
-    poseName: String
+    poseName: String,
+    leafCount: Int,
+    index: Int
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = poseImgId),
+                contentDescription = poseName,
+                modifier = Modifier.size(38.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = poseName,
+                fontSize = 22.sp,
+                color = Color.Black
+            )
+        }
+
         Image(
-            painter = painterResource(id = poseImgId),
-            contentDescription = poseName,
-            modifier = Modifier.size(40.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = poseName, fontSize = 24.sp, color = Color.Black)
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = R.drawable.leaf),
+            painter = painterResource(
+                id = if (index < leafCount) {
+                    R.drawable.yoga_leaf_filled
+                } else {
+                    R.drawable.yoga_leaf_unfilled
+                }
+            ),
             contentDescription = "Leaf Icon",
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(35.dp)
         )
     }
 }
