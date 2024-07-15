@@ -57,7 +57,7 @@ fun Spirit.isValidInMatrix(blocks: List<Brick>, matrix: Pair<Int, Int>): Boolean
 
 fun generateSpiritReverse(matrix: Pair<Int, Int>): List<Spirit> {
     return SpiritType.map {
-        Spirit(it, Offset(Random.nextInt(matrix.first - 1).toFloat(), -1F)).adjustOffset(matrix, false)
+        Spirit(it, Offset(Random.nextInt(matrix.first - 1).toFloat(), 0F)).adjustOffset(matrix, false)
     }.shuffled().filter {
         it.isValidInMatrix(emptyList(), matrix)
     }

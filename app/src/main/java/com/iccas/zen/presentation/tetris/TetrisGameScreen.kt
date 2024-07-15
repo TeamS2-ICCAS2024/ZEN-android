@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +48,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,9 +64,11 @@ import com.iccas.zen.presentation.tetris.logic.GameStatus
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.tetris.logic.NextMatrix
 import com.iccas.zen.presentation.tetris.logic.Spirit
+import com.iccas.zen.presentation.heart.HighHeartRateScreen
+import com.iccas.zen.presentation.tetris.logic.Hindrance
 import com.iccas.zen.presentation.tetris.tetrisComponents.LedClock
 import com.iccas.zen.presentation.tetris.tetrisComponents.LedNumber
-import com.iccas.zen.presentation.heart.HighHeartRateScreen
+import com.iccas.zen.ui.theme.Blue80
 import com.iccas.zen.ui.theme.BrickMatrix
 import com.iccas.zen.ui.theme.BrickSpirit
 import com.iccas.zen.ui.theme.Brown40
@@ -209,6 +216,54 @@ fun TetrisGameScreen(
                         )
                     }
                 }
+                if (viewState.showHindranceAlert) {
+                    HindranceAlert(
+                        hindrance = viewState.currentHindrance,
+                        onDismiss = {
+                            gameViewModel.hideHindranceAlert()
+                            gameViewModel.dispatch(Action.Resume)
+                        }
+                    )
+
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
+    LaunchedEffect(Unit) {
+        delay(3000)
+        onDismiss()
+    }
+    if(hindrance!=null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.7f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.warning),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp)) // 이미지와 텍스트 사이의 공간
+                Text(
+                    text = "${hindrance.getName()}이(가) 시작됩니다",
+                    color = Color.White,
+                    modifier = Modifier
+                        .background(
+                            Color.Red,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(16.dp)
+                )
             }
         }
     }
@@ -397,3 +452,4 @@ private fun DrawScope.drawBrick(
         size = Size(innerSize, innerSize)
     )
 }
+
