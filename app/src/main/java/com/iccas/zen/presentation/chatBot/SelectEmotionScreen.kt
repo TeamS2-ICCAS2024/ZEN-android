@@ -38,7 +38,7 @@ fun SelectEmotionScreen(navController: NavHostController) {
                     modifier = Modifier.padding(end = 16.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.bao), // 추가한 이미지 리소스 사용
+                        painter = painterResource(id = R.drawable.chat_bao), // 추가한 이미지 리소스 사용
                         contentDescription = "Bao",
                         modifier = Modifier.size(60.dp)
                     )
@@ -68,8 +68,8 @@ fun SelectEmotionScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                EmotionButton(navController, R.drawable.happy, "Happy")
-                EmotionButton(navController, R.drawable.soso, "Soso")
+                EmotionButton(navController, R.drawable.chat_happy, "Happy")
+                EmotionButton(navController, R.drawable.chat_soso, "Soso")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -78,8 +78,8 @@ fun SelectEmotionScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                EmotionButton(navController, R.drawable.sad, "Sad")
-                EmotionButton(navController, R.drawable.angry, "Angry")
+                EmotionButton(navController, R.drawable.chat_sad, "Sad")
+                EmotionButton(navController, R.drawable.chat_angry, "Angry")
             }
         }
     }

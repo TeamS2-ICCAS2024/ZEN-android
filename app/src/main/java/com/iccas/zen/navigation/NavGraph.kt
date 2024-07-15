@@ -79,7 +79,7 @@ fun NavGraph(
             route = "chat_screen/{emojiResId}",
             arguments = listOf(navArgument("emojiResId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: R.drawable.happy
+            val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: R.drawable.chat_happy
             ChatScreen(navController = navController, emojiResId = emojiResId)
         }
     }
