@@ -60,8 +60,6 @@ fun YogaGameScreen(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             confirmButton = {},
-            title = { Text(text = "Result") },
-            text = { ResultContent(onDismiss = { navController.navigate("game_select") }) }
             title = {},
             text = { ResultContent(onDismiss = { navController.navigate("game_select") }, leafCount = leafCount) }
         )
@@ -102,9 +100,9 @@ fun YogaGameScreen(
                         poseIndex = currentPoseIndex.intValue,
                         onInstructionComplete = {
                             isInstructionShowing = false
+                            isTimerPaused = true
                         }
                     )
-                    isTimerPaused = true
                 } else {
                     TimerText(
                         totalTime = currentPose.durationSeconds,
