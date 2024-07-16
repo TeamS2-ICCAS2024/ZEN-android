@@ -9,9 +9,9 @@ data class YogaPose(
 )
 
 val yogaPoses = listOf(
-    YogaPose("Bend Pose", R.drawable.standing_forward_bend, 3),
-    YogaPose("Bridge Pose", R.drawable.bridge_pose, 3),
-    YogaPose("Cow Pose", R.drawable.cat_cow_pose, 3),
-    YogaPose("Child Pose", R.drawable.child, 3),
-    YogaPose("Corpse Pose", R.drawable.corpose, 3)
+    YogaPose("Tree Pose", R.drawable.yoga_tree_pose, 3),
+    YogaPose("Bridge Pose", R.drawable.yoga_bridge_pose, 3),
+    YogaPose("Cow Pose", R.drawable.yoga_cat_cow_pose, 3),
+    YogaPose("Child Pose", R.drawable.yoga_child_pose, 3),
+    YogaPose("Cobra Pose", R.drawable.yoga_cobra_pose, 3)
 )

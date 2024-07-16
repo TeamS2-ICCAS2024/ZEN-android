@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -249,7 +248,7 @@ fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.warning),
+                    painter = painterResource(id = R.drawable.tetris_game_warning),
                     contentDescription = null,
                     modifier = Modifier.size(100.dp)
                 )
