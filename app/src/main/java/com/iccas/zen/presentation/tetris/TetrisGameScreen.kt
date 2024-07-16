@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -43,6 +47,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,9 +63,11 @@ import com.iccas.zen.presentation.tetris.logic.GameStatus
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.tetris.logic.NextMatrix
 import com.iccas.zen.presentation.tetris.logic.Spirit
+import com.iccas.zen.presentation.heart.HighHeartRateScreen
+import com.iccas.zen.presentation.tetris.logic.Hindrance
 import com.iccas.zen.presentation.tetris.tetrisComponents.LedClock
 import com.iccas.zen.presentation.tetris.tetrisComponents.LedNumber
-import com.iccas.zen.presentation.heart.HighHeartRateScreen
+import com.iccas.zen.ui.theme.Blue80
 import com.iccas.zen.ui.theme.BrickMatrix
 import com.iccas.zen.ui.theme.BrickSpirit
 import com.iccas.zen.ui.theme.Brown40
@@ -74,11 +81,13 @@ fun TetrisGameScreen(
     measureHeartViewModel: MeasureHeartViewModel,
     gameViewModel: GameViewModel,
     navController: NavController,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val viewState by gameViewModel.viewState
     val isHeartRateHigh by measureHeartViewModel.isHeartRateHigh.collectAsState()
     val lives = remember { mutableIntStateOf(5) }
     val heartRateExceeded = remember { mutableStateOf(false) }
+    var showGameOverScreen by remember { mutableStateOf(false) }
 
     // Lifecycle observer for the viewModel
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -123,78 +132,137 @@ fun TetrisGameScreen(
                 gameViewModel.dispatch(Action.Resume)
             }
             if (viewState.gameStatus == GameStatus.GameOver) {
-                val currentDateTime = java.time.LocalDateTime.now().toString()
-                navController.navigate(
-                    "tetris_game_over/level=${viewState.level}/score=${viewState.score}/lives=${lives.value}/dateTime=$currentDateTime"
-                )
+                showGameOverScreen = true
             }
-            GameBody(
-                combinedClickable(
-                    onMove = { direction: Direction ->
-                        if (direction == Direction.Up) gameViewModel.dispatch(Action.Drop)
-                        else gameViewModel.dispatch(Action.Move(direction))
-                    },
-                    onRotate = { gameViewModel.dispatch(Action.Rotate) },
-                    onRestart = {
+            if (showGameOverScreen) {
+                TetrisGameOverScreen(
+                    level = viewState.level,
+                    score = viewState.score,
+                    lives = lives.value,
+                    onReplay = {
+                        showGameOverScreen = false
                         gameViewModel.dispatch(Action.Reset)
                         lives.value = 5
                     },
-                    onPause = {
-                        if (viewState.isRunning) {
-                            gameViewModel.dispatch(Action.Pause)
-                        } else {
-                            gameViewModel.dispatch(Action.Resume)
-                        }
-                    },
-                    onMute = { gameViewModel.dispatch(Action.Mute) },
-                    onGameOver = { gameViewModel.dispatch(Action.GameOver) }
-                ),
-                measureHeartViewModel = measureHeartViewModel,
-                lives = lives.intValue
-            ) {
-                Box(
-                    modifier
-                        .background(Color.Black)
-                        .padding(1.dp)
-                        .background(Brown50)
-                        .padding(10.dp)
+                    onExit = { navController.navigate("game_select") }
+                )
+            } else {
+                GameBody(
+                    combinedClickable(
+                        onMove = { direction: Direction ->
+                            if (direction == Direction.Up) gameViewModel.dispatch(Action.Drop)
+                            else gameViewModel.dispatch(Action.Move(direction))
+                        },
+                        onRotate = { gameViewModel.dispatch(Action.Rotate) },
+                        onRestart = {
+                            gameViewModel.dispatch(Action.Reset)
+                            lives.value = 5
+                        },
+                        onPause = {
+                            if (viewState.isRunning) {
+                                gameViewModel.dispatch(Action.Pause)
+                            } else {
+                                gameViewModel.dispatch(Action.Resume)
+                            }
+                        },
+                        onMute = { gameViewModel.dispatch(Action.Mute) },
+                        onGameOver = { gameViewModel.dispatch(Action.GameOver) }
+                    ),
+                    measureHeartViewModel = measureHeartViewModel,
+                    lives = lives.intValue
                 ) {
-                    val animateValue by rememberInfiniteTransition(label = "").animateFloat(
-                        initialValue = 0f, targetValue = 0.7f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(durationMillis = 1500),
-                            repeatMode = RepeatMode.Reverse,
-                        ),
-                        label = "",
-                    )
-
-                    Canvas(
-                        modifier = Modifier.fillMaxSize()
+                    Box(
+                        modifier
+                            .background(Color.Black)
+                            .padding(1.dp)
+                            .background(Brown50)
+                            .padding(10.dp)
                     ) {
-                        val brickSize = min(
-                            size.width / viewState.matrix.first,
-                            size.height / viewState.matrix.second
+                        val animateValue by rememberInfiniteTransition(label = "").animateFloat(
+                            initialValue = 0f, targetValue = 0.7f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(durationMillis = 1500),
+                                repeatMode = RepeatMode.Reverse,
+                            ),
+                            label = "",
                         )
 
-                        drawMatrix(brickSize, viewState.matrix)
-                        drawMatrixBorder(brickSize, viewState.matrix)
-                        drawBricks(viewState.bricks, brickSize, viewState.matrix)
-                        drawSpirit(viewState.spirit, brickSize, viewState.matrix)
-                        drawText(viewState.gameStatus, brickSize, viewState.matrix, 0.7f)
-                    }
+                        Canvas(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            val brickSize = min(
+                                size.width / viewState.matrix.first,
+                                size.height / viewState.matrix.second
+                            )
 
-                    GameScoreboard(
-                        spirit = run {
-                            if (viewState.spirit == Spirit.Empty) Spirit.Empty
-                            else viewState.spiritNext.rotate()
-                        },
-                        score = viewState.score,
-                        line = viewState.line,
-                        level = viewState.level,
-                        isMute = viewState.isMute,
-                        isPaused = viewState.isPaused
-                    )
+                            drawMatrix(brickSize, viewState.matrix)
+                            drawMatrixBorder(brickSize, viewState.matrix)
+                            drawBricks(viewState.bricks, brickSize, viewState.matrix)
+                            drawSpirit(viewState.spirit, brickSize, viewState.matrix)
+                            drawText(viewState.gameStatus, brickSize, viewState.matrix, 0.7f)
+                        }
+
+                        GameScoreboard(
+                            spirit = run {
+                                if (viewState.spirit == Spirit.Empty) Spirit.Empty
+                                else viewState.spiritNext.rotate()
+                            },
+                            score = viewState.score,
+                            line = viewState.line,
+                            level = viewState.level,
+                            isMute = viewState.isMute,
+                            isPaused = viewState.isPaused
+                        )
+                    }
                 }
+                if (viewState.showHindranceAlert) {
+                    HindranceAlert(
+                        hindrance = viewState.currentHindrance,
+                        onDismiss = {
+                            gameViewModel.hideHindranceAlert()
+                            gameViewModel.dispatch(Action.Resume)
+                        }
+                    )
+
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
+    LaunchedEffect(Unit) {
+        delay(3000)
+        onDismiss()
+    }
+    if(hindrance!=null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.7f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.tetris_game_warning),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp)) // 이미지와 텍스트 사이의 공간
+                Text(
+                    text = "${hindrance.getName()}이(가) 시작됩니다",
+                    color = Color.White,
+                    modifier = Modifier
+                        .background(
+                            Color.Red,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(16.dp)
+                )
             }
         }
     }
@@ -210,7 +278,6 @@ fun GameScoreboard(
     level: Int = 1,
     isMute: Boolean = false,
     isPaused: Boolean = false
-
 ) {
     Row(modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.weight(0.55f))
@@ -249,7 +316,6 @@ fun GameScoreboard(
                 drawSpirit(
                     spirit.adjustOffset(NextMatrix),
                     brickSize = brickSize, NextMatrix
-
                 )
             }
 
@@ -275,13 +341,11 @@ private fun DrawScope.drawText(
     matrix: Pair<Int, Int>,
     alpha: Float,
 ) {
-
     val center = Offset(
         brickSize * matrix.first / 2,
         brickSize * matrix.second / 2
     )
     val drawText = { text: String, size: Float ->
-
         drawIntoCanvas {
             it.nativeCanvas.drawText(
                 text,
@@ -295,7 +359,6 @@ private fun DrawScope.drawText(
                     strokeWidth = size / 12
                 }
             )
-
         }
     }
     if (gameStatus == GameStatus.GameOver) {
@@ -316,7 +379,6 @@ private fun DrawScope.drawMatrix(brickSize: Float, matrix: Pair<Int, Int>) {
 }
 
 private fun DrawScope.drawMatrixBorder(brickSize: Float, matrix: Pair<Int, Int>) {
-
     val gap = matrix.first * brickSize * 0.05f
     drawRect(
         Color.Black,
@@ -365,7 +427,6 @@ private fun DrawScope.drawBrick(
     offset: Offset,
     color: Color
 ) {
-
     val actualLocation = Offset(
         offset.x * brickSize,
         offset.y * brickSize
@@ -390,3 +451,4 @@ private fun DrawScope.drawBrick(
         size = Size(innerSize, innerSize)
     )
 }
+

@@ -41,11 +41,13 @@ data class Spirit(
 }
 
 val SpiritType = listOf(
-    listOf(Offset(1F, -1F), Offset(1F, 0F), Offset(0F, 0F), Offset(0F, 1F)),//Z
-    listOf(Offset(0F, -1F), Offset(0F, 0F), Offset(1F, 0F), Offset(1F, 1F)),//S
-    listOf(Offset(0F, 1F), Offset(0F, 0F), Offset(0F, -1F), Offset(1F, 0F)),//T
-    listOf(Offset(0F, -1F), Offset(1F, -1F), Offset(1F, 0F), Offset(1F, 1F)),//L
-    listOf(Offset(1F, -1F), Offset(0F, -1F), Offset(0F, 0F), Offset(0F, 1F))//J
+    listOf(Offset(1, -1), Offset(1, 0), Offset(0, 0), Offset(0, 1)),//Z
+    listOf(Offset(0, -1), Offset(0, 0), Offset(1, 0), Offset(1, 1)),//S
+    listOf(Offset(0, -1), Offset(0, 0), Offset(0, 1), Offset(0, 2)),//I
+    listOf(Offset(0, 1), Offset(0, 0), Offset(0, -1), Offset(1, 0)),//T
+    listOf(Offset(1, 0), Offset(0, 0), Offset(1, -1), Offset(0, -1)),//O
+    listOf(Offset(0, -1), Offset(1, -1), Offset(1, 0), Offset(1, 1)),//L
+    listOf(Offset(1, -1), Offset(0, -1), Offset(0, 0), Offset(0, 1))//J
 )
 
 fun Spirit.isValidInMatrix(blocks: List<Brick>, matrix: Pair<Int, Int>): Boolean {
@@ -57,7 +59,7 @@ fun Spirit.isValidInMatrix(blocks: List<Brick>, matrix: Pair<Int, Int>): Boolean
 
 fun generateSpiritReverse(matrix: Pair<Int, Int>): List<Spirit> {
     return SpiritType.map {
-        Spirit(it, Offset(Random.nextInt(matrix.first - 1).toFloat(), -1F)).adjustOffset(matrix, false)
+        Spirit(it, Offset(Random.nextInt(matrix.first - 1).toFloat(), 0F)).adjustOffset(matrix, false)
     }.shuffled().filter {
         it.isValidInMatrix(emptyList(), matrix)
     }
