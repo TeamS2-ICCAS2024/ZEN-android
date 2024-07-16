@@ -28,6 +28,8 @@ import com.iccas.zen.presentation.onBoarding.OnboardingPage4
 import com.iccas.zen.presentation.signup.SignupScreen
 import com.iccas.zen.presentation.signup.LoginScreen
 import com.iccas.zen.presentation.signup.WelcomeScreen
+import com.iccas.zen.presentation.yoga.StartYogaGameScreen
+import com.iccas.zen.presentation.yoga.YogaGameScreen
 
 
 @Composable

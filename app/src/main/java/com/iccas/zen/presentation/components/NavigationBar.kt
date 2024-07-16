@@ -39,7 +39,7 @@ fun BottomNavigationBar(navController: NavController) {
                 navController.navigate("game_select")
             }
             NavigationBarItem(Icons.Default.Home, "Diary") {
-                // Diary 화면으로 이동하는 로직
+                navController.navigate("select_emotion")
             }
             NavigationBarItem(Icons.Default.Home, "Report") {
             }
