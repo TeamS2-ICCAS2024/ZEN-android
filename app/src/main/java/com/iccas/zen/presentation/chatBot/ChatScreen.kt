@@ -1,12 +1,12 @@
 package com.iccas.zen.presentation.chatBot
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,13 +22,12 @@ import kotlinx.coroutines.launch
 import com.iccas.zen.R
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.iccas.zen.presentation.chatBot.ChatViewModel
-import com.iccas.zen.presentation.chatBot.Message
+import com.iccas.zen.presentation.chatBot.components.TopBar
+import com.iccas.zen.ui.theme.Blue80
 
 @Composable
 fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: ChatViewModel = viewModel()) {
@@ -60,29 +59,7 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left),
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-                Text(
-                    text = "chat",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            TopBar(navController)
 
             // Chat and input section
             Box(
@@ -141,7 +118,6 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
         }
     }
 }
-
 @Composable
 fun MessageItem(message: Message, emojiResId: Int) {
     Row(
@@ -161,7 +137,7 @@ fun MessageItem(message: Message, emojiResId: Int) {
         Box(
             modifier = Modifier
                 .background(
-                    color = if (message.isUser) Color(135, 206, 235) else Color.White,
+                    color = if (message.isUser) Blue80 else Color.White,
                     shape = RoundedCornerShape(12.dp) // 둥근 모서리를 위해 RoundedCornerShape 사용
                 )
                 .padding(16.dp)

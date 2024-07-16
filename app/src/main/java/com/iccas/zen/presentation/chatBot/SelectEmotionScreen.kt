@@ -5,18 +5,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.iccas.zen.R
+import com.iccas.zen.presentation.chatBot.components.EmotionHeader
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.chatBot.components.TopBar
+import com.iccas.zen.ui.theme.Blue80
 
 @Composable
 fun SelectEmotionScreen(navController: NavHostController) {
@@ -24,69 +31,55 @@ fun SelectEmotionScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
-            // 상단 이미지와 텍스트를 나란히 배치
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(end = 16.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.chat_bao), // 추가한 이미지 리소스 사용
-                        contentDescription = "Bao",
-                        modifier = Modifier.size(60.dp)
-                    )
-                    Text(
-                        text = "BAO",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "How are you feeling today?",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+            TopBar(navController)
 
-            Spacer(modifier = Modifier.height(120.dp))
+            EmotionHeader(
+                imageResId = R.drawable.chat_bao,
+                //imageDescription = "Bao",
+                imageSize = 60.dp,
+                title = "BAO",
+                message = "What happened today?"
+            )
+
+            EmotionHeader(
+                imageResId = R.drawable.chat_bao,
+                //imageDescription = "Bao",
+                imageSize = 60.dp,
+                title = "BAO",
+                message = "How are you feeling today?"
+            )
+
+
+            EmotionHeader(
+                imageResId = R.drawable.chat_bao,
+                imageDescription = "Bao",
+                imageSize = 60.dp,
+                title = "BAO",
+                message = "Why do you feel that way?"
+            )
+
+
 
             // 버튼들을 화면에 꽉 차게 배치
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
-                EmotionButton(navController, R.drawable.chat_happy, "Happy")
-                EmotionButton(navController, R.drawable.chat_soso, "Soso")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                EmotionButton(navController, R.drawable.chat_sad, "Sad")
-                EmotionButton(navController, R.drawable.chat_angry, "Angry")
+                EmotionButton(navController, R.drawable.chat_happy, "Happy", 65.dp)
+                EmotionButton(navController, R.drawable.chat_soso, "Soso", 83.dp)
+                EmotionButton(navController, R.drawable.chat_sad, "Sad", 67.dp)
+                EmotionButton(navController, R.drawable.chat_angry, "Angry", 65.dp)
             }
         }
     }
 }
 
 @Composable
-fun EmotionButton(navController: NavHostController, imageResId: Int, label: String) {
+fun EmotionButton(navController: NavHostController, imageResId: Int, label: String, size: Dp) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -99,7 +92,7 @@ fun EmotionButton(navController: NavHostController, imageResId: Int, label: Stri
             painter = painterResource(id = imageResId),
             contentDescription = label,
             modifier = Modifier
-                .size(100.dp) // 크기를 키워서 꽉 차게 보이도록 설정
+                .size(size) // 크기를 줄여서 한 줄에 4개가 잘 들어가도록 설정
                 .background(Color.Transparent, CircleShape) // 배경색 제거
         )
         Text(
