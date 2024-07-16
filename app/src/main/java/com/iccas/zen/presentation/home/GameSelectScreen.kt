@@ -30,19 +30,14 @@ fun GameSelectScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 40.dp),
+                .padding(bottom = 100.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             GameSelectBox(
-                type = "character",
-                onClick = { navController.navigate("char_main") })
-            Spacer(modifier = Modifier.height(30.dp))
-
-            GameSelectBox(
                 type = "tetris",
                 onClick = { navController.navigate("guide_measure_base") })
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             GameSelectBox(
                 type = "yoga",

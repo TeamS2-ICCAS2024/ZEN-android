@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.iccas.zen.R
 import com.iccas.zen.SelectEmotionScreen
 import com.iccas.zen.presentation.character.CharScreen
+import com.iccas.zen.presentation.character.CollectionScreen
 import com.iccas.zen.presentation.chatBot.ChatScreen
 import com.iccas.zen.presentation.heart.BaseResultScreen
 import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
@@ -79,6 +80,9 @@ fun NavGraph(
         }
         composable("char_main") {
             CharScreen(navController = navController)
+        }
+        composable("collection") {
+            CollectionScreen(navController = navController)
         }
 
     }

@@ -41,11 +41,10 @@ fun BottomNavigationBar(navController: NavController) {
             NavigationBarItem(Icons.Default.Home, "Diary") {
                 // Diary 화면으로 이동하는 로직
             }
-            NavigationBarItem(Icons.Default.Home, "Collection") {
-                // Collection 화면으로 이동하는 로직
-            }
             NavigationBarItem(Icons.Default.Home, "Report") {
-                // Report 화면으로 이동하는 로직
+            }
+            NavigationBarItem(Icons.Default.Home, "Collection") {
+                navController.navigate("collection")
             }
         }
     }
