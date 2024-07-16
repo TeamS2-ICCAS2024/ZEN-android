@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
 import com.iccas.zen.presentation.home.components.GameSelectBox
 import com.iccas.zen.presentation.home.components.TitleSticker
 
@@ -20,10 +21,11 @@ import com.iccas.zen.presentation.home.components.TitleSticker
 fun GameSelectScreen(
     navController: NavController
 ) {
-    BasicBackgroundWithLogo {
+    BasicBackgroundWithNavBar(navController= navController) {
         Spacer(modifier = Modifier.height(40.dp))
 
         TitleSticker(R.drawable.home_title_pink_sticker, "Play Game")
+
 
         Column(
             modifier = Modifier
@@ -33,13 +35,18 @@ fun GameSelectScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             GameSelectBox(
+                type = "character",
+                onClick = { navController.navigate("char_main") })
+            Spacer(modifier = Modifier.height(30.dp))
+
+            GameSelectBox(
                 type = "tetris",
                 onClick = { navController.navigate("guide_measure_base") })
             Spacer(modifier = Modifier.height(30.dp))
-            GameSelectBox(type = "yoga", onClick = {})
+
             GameSelectBox(
-                type = "chat",
-                onClick = { navController.navigate("") })
+                type = "yoga",
+                onClick = { navController.navigate("start_yoga") })
             Spacer(modifier = Modifier.height(30.dp))
         }
     }

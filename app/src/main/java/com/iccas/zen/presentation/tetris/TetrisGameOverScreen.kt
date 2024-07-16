@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iccas.zen.R
-import com.iccas.zen.presentation.tetris.tetrisComponents.ReplayAndExitControlButtons
+import com.iccas.zen.presentation.components.ReplayAndExitControlButtons
 import com.iccas.zen.ui.theme.Green50
 import com.iccas.zen.ui.theme.Red50
 
@@ -91,12 +91,14 @@ fun TetrisGameOverScreen(
         Spacer(modifier = Modifier.height(50.dp))
 
         ReplayAndExitControlButtons(
+            modifier  = Modifier.size(110.dp, 50.dp),
             onReplay = onReplay,
             onExit = onExit,
             replayButtonBackground = Green50,
             exitButtonBackground = Red50,
             replayIconColor = Color.Black,
-            exitIconColor = Color.Black
+            exitIconColor = Color.Black,
+            iconSize = 30.dp
         )
     }
 }

@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.iccas.zen.R
 import com.iccas.zen.SelectEmotionScreen
+import com.iccas.zen.presentation.character.CharScreen
 import com.iccas.zen.presentation.chatBot.ChatScreen
 import com.iccas.zen.presentation.heart.BaseResultScreen
 import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
@@ -58,8 +59,11 @@ fun NavGraph(
         composable("base_result") {
             BaseResultScreen(measureHeartViewModel = measureHeartViewModel, navController = navController)
         }
-        composable("countdown") {
-            CountDownScreen(navController = navController)
+        composable("countdown/{route}",
+            arguments = listOf(navArgument("route") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val route = backStackEntry.arguments?.getString("route") ?: "tetris_game"
+            CountDownScreen(navController = navController, route = route)
         }
        /* composable("game_select") {
             GameSelectScreen(navController = navController)
@@ -81,5 +85,15 @@ fun NavGraph(
             val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: R.drawable.happy
             ChatScreen(navController = navController, emojiResId = emojiResId)
         }
+        composable("start_yoga") {
+            StartYogaGameScreen(navController = navController)
+        }
+        composable(route = "yoga_game") {
+            YogaGameScreen(initialPoseIndex = 0, navController = navController)
+        }
+        composable("char_main") {
+            CharScreen(navController = navController)
+        }
+
     }
 }

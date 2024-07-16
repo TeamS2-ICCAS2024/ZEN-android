@@ -1,0 +1,10 @@
+<!-- res/layout/camera_preview.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/camera_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <!-- Placeholder for the PreviewView, which will be added programmatically -->
+</LinearLayout>

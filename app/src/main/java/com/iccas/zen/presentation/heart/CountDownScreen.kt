@@ -19,7 +19,8 @@ import com.iccas.zen.presentation.components.BasicBackground
 
 @Composable
 fun CountDownScreen(
-    navController: NavController
+    navController: NavController,
+    route: String
 ) {
     var currentImageIndex by remember { mutableIntStateOf(0) }
     val images = listOf(
@@ -34,7 +35,7 @@ fun CountDownScreen(
             currentImageIndex = (currentImageIndex + 1) % images.size
         }
         delay(1000L)
-        navController.navigate("tetris_game")
+        navController.navigate(route)
     }
 
     BasicBackground {
