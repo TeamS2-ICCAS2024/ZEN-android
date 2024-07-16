@@ -48,10 +48,17 @@ class GameViewModel : ViewModel() {
 
     private fun startHindranceTimer() {
         viewModelScope.launch {
+            delay(15000) // Initial delay before the first hindrance
             while (true) {
-                delay(10000) // 10 seconds
                 if (!hindranceActive) {
                     activateHindrance()
+                    // Wait for hindrance to deactivate
+                    while (hindranceActive) {
+                        delay(100) // Small delay to prevent a tight loop
+                    }
+                    delay(15000) // Delay after hindrance is deactivated
+                } else {
+                    delay(100) // Small delay to prevent a tight loop
                 }
             }
         }

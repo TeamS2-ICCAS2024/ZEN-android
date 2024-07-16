@@ -21,8 +21,14 @@ import com.iccas.zen.presentation.heart.CountDownScreen
 import com.iccas.zen.presentation.heart.HighHeartRateScreen
 import com.iccas.zen.presentation.heart.RecommendMeasureBaseScreen
 import com.iccas.zen.presentation.home.GameSelectScreen
-import com.iccas.zen.presentation.yoga.StartYogaGameScreen
-import com.iccas.zen.presentation.yoga.YogaGameScreen
+import com.iccas.zen.presentation.onBoarding.OnboardingPage1
+import com.iccas.zen.presentation.onBoarding.OnboardingPage2
+import com.iccas.zen.presentation.onBoarding.OnboardingPage3
+import com.iccas.zen.presentation.onBoarding.OnboardingPage4
+import com.iccas.zen.presentation.signup.SignupScreen
+import com.iccas.zen.presentation.signup.LoginScreen
+import com.iccas.zen.presentation.signup.WelcomeScreen
+
 
 @Composable
 fun NavGraph(
@@ -31,7 +37,14 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "tetris_game") {
+    NavHost(navController, startDestination = "onboarding1") {
+        composable("onboarding1") { OnboardingPage1(navController) }
+        composable("onboarding2") { OnboardingPage2(navController) }
+        composable("onboarding3") { OnboardingPage3(navController) }
+        composable("onboarding4") { OnboardingPage4(navController) }
+        composable("welcome") { WelcomeScreen(navController) }
+        composable("login") { LoginScreen(navController) }
+        composable("signup") { SignupScreen(navController) }
         composable("game_select") {
             GameSelectScreen(navController = navController)
         }
@@ -53,15 +66,16 @@ fun NavGraph(
             val route = backStackEntry.arguments?.getString("route") ?: "tetris_game"
             CountDownScreen(navController = navController, route = route)
         }
-        composable("game_select") {
+       /* composable("game_select") {
             GameSelectScreen(navController = navController)
-        }
+        }*/
         composable("tetris_game") {
             TetrisGameScreen(measureHeartViewModel = measureHeartViewModel, gameViewModel = gameViewModel, navController = navController)
         }
         composable("high_heart_rate") {
             HighHeartRateScreen()
         }
+
         composable("select_emotion") {
             SelectEmotionScreen(navController = navController)
         }
