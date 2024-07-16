@@ -76,11 +76,15 @@ fun NavGraph(
             TetrisGameOverScreen(navController, level, score, lives, dateTime)
         }
         composable(
-            route = "chat_screen/{emojiResId}",
-            arguments = listOf(navArgument("emojiResId") { type = NavType.IntType })
+            "chat_screen/{emojiResId}?prompt={prompt}",
+            arguments = listOf(
+                navArgument("emojiResId") { type = NavType.IntType },
+                navArgument("prompt") { type = NavType.StringType; defaultValue = "" }
+            )
         ) { backStackEntry ->
-            val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: R.drawable.chat_happy
-            ChatScreen(navController = navController, emojiResId = emojiResId)
+            val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: 0
+            val prompt = backStackEntry.arguments?.getString("prompt") ?: ""
+            ChatScreen(navController, emojiResId, prompt)
         }
     }
 }

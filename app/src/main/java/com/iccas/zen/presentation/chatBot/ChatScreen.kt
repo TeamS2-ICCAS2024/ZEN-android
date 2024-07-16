@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.chatBot
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,12 +29,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.iccas.zen.presentation.chatBot.components.TopBar
 import com.iccas.zen.ui.theme.Blue80
+import com.iccas.zen.presentation.chatBot.components.EmotionHeader
 
 @Composable
-fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: ChatViewModel = viewModel()) {
+fun ChatScreen(navController: NavHostController, emojiResId: Int, basicPrompt: String, viewModel: ChatViewModel = viewModel()) {
+    var userInput by remember { mutableStateOf("") }
+    val messages by viewModel.messages.collectAsState()
+
+
     BasicBackgroundWithLogo {
-        val messages by viewModel.messages.collectAsState()
-        var inputText by remember { mutableStateOf("") }
         val coroutineScope = rememberCoroutineScope()
         val listState = rememberLazyListState()
         val view = LocalView.current
@@ -61,7 +65,6 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
         ) {
             TopBar(navController)
 
-            // Chat and input section
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -71,10 +74,10 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
                     state = listState,
                     modifier = Modifier
                         .fillMaxSize(),
-                    reverseLayout = true, // Use reverse layout
+                    reverseLayout = true,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    items(messages.asReversed()) { message -> // Reverse the message order
+                    items(messages.asReversed()) { message ->
                         MessageItem(message, emojiResId)
                     }
                 }
@@ -87,8 +90,8 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = inputText,
-                    onValueChange = { inputText = it },
+                    value = userInput,
+                    onValueChange = { userInput = it },
                     modifier = Modifier.weight(1f),
                     placeholder = { Text("Type your message...") },
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White)
@@ -96,20 +99,20 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
 
                 IconButton(
                     onClick = {
-                        if (inputText.isNotBlank()) {
+                        if (userInput.isNotBlank()) {
                             coroutineScope.launch {
-                                viewModel.sendMessage(inputText)
-                                inputText = ""
+                                viewModel.sendMessage(userInput, basicPrompt)
+                                userInput = ""
                             }
                         }
                     },
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .size(48.dp)
-                        .background(Color(0xFF0087B3), CircleShape) // Sky blue background with circular shape
+                        .background(Color(0xFF0087B3), CircleShape)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.chat_arrow_up), // Use the specified icon resource
+                        painter = painterResource(id = R.drawable.chat_arrow_up),
                         contentDescription = "Send",
                         modifier = Modifier.size(24.dp)
                     )
@@ -118,6 +121,7 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, viewModel: Cha
         }
     }
 }
+
 @Composable
 fun MessageItem(message: Message, emojiResId: Int) {
     Row(
@@ -131,7 +135,9 @@ fun MessageItem(message: Message, emojiResId: Int) {
             Image(
                 painter = painterResource(id = R.drawable.chat_bao),
                 contentDescription = "BAO",
-                modifier = Modifier.size(50.dp).padding(end = 8.dp)
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(end = 8.dp)
             )
         }
         Box(
@@ -143,7 +149,7 @@ fun MessageItem(message: Message, emojiResId: Int) {
                 .padding(16.dp)
         ) {
             Text(
-                text = message.text,
+                text = message.text, // 사용자에게는 입력한 내용만 표시
                 color = if (message.isUser) Color.Black else Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
@@ -151,9 +157,11 @@ fun MessageItem(message: Message, emojiResId: Int) {
         }
         if (message.isUser) {
             Image(
-                painter = painterResource(id = emojiResId), // User emoji resource
+                painter = painterResource(id = emojiResId),
                 contentDescription = "User",
-                modifier = Modifier.size(50.dp).padding(start = 8.dp)
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(start = 8.dp)
             )
         }
     }

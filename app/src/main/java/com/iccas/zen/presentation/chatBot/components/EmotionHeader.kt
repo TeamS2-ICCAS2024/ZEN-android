@@ -23,7 +23,9 @@ fun EmotionHeader(
     imageDescription: String,
     imageSize: Dp,
     title: String,
-    message: String
+    message: String,
+    question: String,
+    inputState: MutableState<String>
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,12 +66,11 @@ fun EmotionHeader(
         }
 
         Spacer(modifier = Modifier.height(5.dp))
-        var inputText by remember { mutableStateOf("") }
         Box(modifier = Modifier.padding(horizontal = 12.dp)) {
             androidx.compose.material.TextField(
-                value = inputText,
-                onValueChange = { inputText = it },
-                placeholder = { Text("Type your response here...") },
+                value = inputState.value,
+                onValueChange = { inputState.value = it },
+                placeholder = { Text(question) },
                 textStyle = TextStyle(color = Color.White, fontSize = 20.sp),
                 modifier = Modifier
                     .fillMaxWidth()

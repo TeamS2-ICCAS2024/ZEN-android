@@ -25,10 +25,11 @@ class ChatViewModel : ViewModel() {
 
     private val client = HttpClient()
 
-    fun sendMessage(text: String) {
-        _messages.value = _messages.value + Message(text, true)
+    fun sendMessage(userInput: String, prompt: String? = null) {
+        val finalText = prompt?.let { "$it $userInput" } ?: userInput
+        _messages.value = _messages.value + Message(userInput, true) // 사용자 입력만 표시
         viewModelScope.launch {
-            val response = getResponseFromApi(text)
+            val response = getResponseFromApi(finalText)
             _messages.value = _messages.value + Message(response, false)
         }
     }
@@ -59,13 +60,9 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-
-
-
     private fun parseApiResponse(responseBody: String): String {
         val json = kotlinx.serialization.json.Json.parseToJsonElement(responseBody)
         val messageContent = json.jsonObject["choices"]?.jsonArray?.get(0)?.jsonObject?.get("message")?.jsonObject?.get("content")?.jsonPrimitive?.content
         return messageContent ?: "Error parsing response"
     }
-
 }
