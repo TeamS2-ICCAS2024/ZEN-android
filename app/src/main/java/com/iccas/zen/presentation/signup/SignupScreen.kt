@@ -155,7 +155,7 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(100.dp))
 
                 Button(
-                    onClick = { navController.navigate("tetris_game") },
+                    onClick = { navController.navigate("char_main") },
                     colors = ButtonDefaults.buttonColors(containerColor = Brown40),
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier

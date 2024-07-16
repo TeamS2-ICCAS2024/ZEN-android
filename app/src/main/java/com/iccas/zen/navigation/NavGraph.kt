@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.iccas.zen.R
 import com.iccas.zen.SelectEmotionScreen
 import com.iccas.zen.presentation.character.CharScreen
+import com.iccas.zen.presentation.character.CollectionScreen
 import com.iccas.zen.presentation.chatBot.ChatScreen
 import com.iccas.zen.presentation.heart.BaseResultScreen
 import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
@@ -27,6 +28,8 @@ import com.iccas.zen.presentation.onBoarding.OnboardingPage4
 import com.iccas.zen.presentation.signup.SignupScreen
 import com.iccas.zen.presentation.signup.LoginScreen
 import com.iccas.zen.presentation.signup.WelcomeScreen
+import com.iccas.zen.presentation.yoga.StartYogaGameScreen
+import com.iccas.zen.presentation.yoga.YogaGameScreen
 
 
 @Composable
@@ -93,6 +96,9 @@ fun NavGraph(
         }
         composable("char_main") {
             CharScreen(navController = navController)
+        }
+        composable("collection") {
+            CollectionScreen(navController = navController)
         }
 
     }
