@@ -28,5 +28,7 @@ val BodyColor = Color(0xFF000000)
 val Green50 = Color(0xFFC3F436)
 val Red50 = Color(0xFFF44336)
 
+//chat
+val Blue80 = Color(135, 206, 235)
 
 val Green30 = Color(0xFF45A186)
