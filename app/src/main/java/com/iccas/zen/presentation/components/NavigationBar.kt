@@ -42,6 +42,8 @@ fun BottomNavigationBar(navController: NavController) {
                 navController.navigate("select_emotion")
             }
             NavigationBarItem(Icons.Default.Home, "Report") {
+                navController.navigate("report")
+
             }
             NavigationBarItem(Icons.Default.Home, "Collection") {
                 navController.navigate("collection")

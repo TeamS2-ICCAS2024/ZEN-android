@@ -26,6 +26,11 @@ import com.iccas.zen.presentation.onBoarding.OnboardingPage1
 import com.iccas.zen.presentation.onBoarding.OnboardingPage2
 import com.iccas.zen.presentation.onBoarding.OnboardingPage3
 import com.iccas.zen.presentation.onBoarding.OnboardingPage4
+import com.iccas.zen.presentation.report.AngerGameReport
+import com.iccas.zen.presentation.report.AngerGameSelect
+import com.iccas.zen.presentation.report.EmotionDiarySelect
+import com.iccas.zen.presentation.report.ReportScreen
+import com.iccas.zen.presentation.report.SelfDiagnosisSelect
 import com.iccas.zen.presentation.signup.SignupScreen
 import com.iccas.zen.presentation.signup.LoginScreen
 import com.iccas.zen.presentation.signup.WelcomeScreen
@@ -40,7 +45,8 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "onboarding1") {
+    NavHost(navController, startDestination = "report") {
+//    NavHost(navController, startDestination = "onboarding1") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }
@@ -58,22 +64,33 @@ fun NavGraph(
             RecommendMeasureBaseScreen(navController = navController)
         }
         composable("measure_base") {
-            MeasureBaseScreen(measureHeartViewModel = measureHeartViewModel, navController = navController)
+            MeasureBaseScreen(
+                measureHeartViewModel = measureHeartViewModel,
+                navController = navController
+            )
         }
         composable("base_result") {
-            BaseResultScreen(measureHeartViewModel = measureHeartViewModel, navController = navController)
+            BaseResultScreen(
+                measureHeartViewModel = measureHeartViewModel,
+                navController = navController
+            )
         }
-        composable("countdown/{route}",
+        composable(
+            "countdown/{route}",
             arguments = listOf(navArgument("route") { type = NavType.StringType })
         ) { backStackEntry ->
             val route = backStackEntry.arguments?.getString("route") ?: "tetris_game"
             CountDownScreen(navController = navController, route = route)
         }
-       /* composable("game_select") {
-            GameSelectScreen(navController = navController)
-        }*/
+        /* composable("game_select") {
+             GameSelectScreen(navController = navController)
+         }*/
         composable("tetris_game") {
-            TetrisGameScreen(measureHeartViewModel = measureHeartViewModel, gameViewModel = gameViewModel, navController = navController)
+            TetrisGameScreen(
+                measureHeartViewModel = measureHeartViewModel,
+                gameViewModel = gameViewModel,
+                navController = navController
+            )
         }
         composable("high_heart_rate") {
             HighHeartRateScreen()
@@ -123,6 +140,28 @@ fun NavGraph(
         }
         composable("collection") {
             CollectionScreen(navController = navController)
+        }
+        composable("report") {
+            ReportScreen(navController = navController)
+        }
+        composable("report/emotion_diary") {
+            EmotionDiarySelect(navController = navController)
+        }
+        composable("report/self_diagnosis") {
+            SelfDiagnosisSelect(navController = navController)
+        }
+        composable("report/anger_game") {
+            AngerGameSelect(navController = navController)
+        }
+        composable("report/anger_game/select") {
+            AngerGameSelect(navController = navController)
+        }
+        composable(
+            route = "anger_game_report/{gameName}",
+            arguments = listOf(navArgument("gameName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val gameName = backStackEntry.arguments?.getString("gameName") ?: "unknown"
+            AngerGameReport(navController = navController, gameName = gameName)
         }
 
     }
