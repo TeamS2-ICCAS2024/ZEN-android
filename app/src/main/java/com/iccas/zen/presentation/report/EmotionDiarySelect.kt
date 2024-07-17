@@ -1,28 +1,21 @@
 package com.iccas.zen.presentation.report
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
-import com.iccas.zen.presentation.report.ReportBox.ReportSelectBox
 
 @Composable
 fun EmotionDiarySelect(navController: NavController) {
@@ -31,9 +24,10 @@ fun EmotionDiarySelect(navController: NavController) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
-
             Text(
                 text = "Emotional Diary",
                 fontSize = 30.sp,
@@ -56,7 +50,6 @@ fun EmotionDiarySelect(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Spacer(modifier = Modifier.height(20.dp))
 
             Row(
@@ -70,12 +63,14 @@ fun EmotionDiarySelect(navController: NavController) {
                     modifier = Modifier
                         .background(Color(0xFF8B4513).copy(alpha = 0.2f), RoundedCornerShape(4.dp)) // 어두운 갈색 형광펜 효과
                 ) {
+
                     Text(
                         text = "recent conversation",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
                         color = Color.Gray,
-                        modifier = Modifier.padding(8.dp) // 내부 패딩 추가
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .background(Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                     )
                 }
             }
@@ -92,3 +87,33 @@ fun EmotionDiarySelect(navController: NavController) {
         }
     }
 }
+@Composable
+fun ReportSelectBox(navController: NavController, imageRes: Int, character: String, date: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray, RoundedCornerShape(8.dp))
+            .padding(16.dp)
+            .clickable {
+                navController.navigate("report_detail/${character.encode()}/${date.encode()}")
+            }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            androidx.compose.foundation.Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(text = character, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(text = date, color = Color.Gray, fontSize = 14.sp)
+            }
+        }
+    }
+}
+
+fun String.encode(): String = java.net.URLEncoder.encode(this, "UTF-8")
+

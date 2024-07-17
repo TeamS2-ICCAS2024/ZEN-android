@@ -10,32 +10,15 @@ import com.iccas.zen.SelectEmotionScreen
 import com.iccas.zen.presentation.character.CharScreen
 import com.iccas.zen.presentation.character.CollectionScreen
 import com.iccas.zen.presentation.chatBot.ChatScreen
-import com.iccas.zen.presentation.heart.BaseResultScreen
-import com.iccas.zen.presentation.heart.CountDownScreen
-import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
-import com.iccas.zen.presentation.heart.HighHeartRateScreen
-import com.iccas.zen.presentation.heart.MeasureBaseScreen
-import com.iccas.zen.presentation.heart.RecommendMeasureBaseScreen
+import com.iccas.zen.presentation.heart.*
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
-import com.iccas.zen.presentation.home.GameSelectScreen
-import com.iccas.zen.presentation.home.PersonalSettingScreen
-import com.iccas.zen.presentation.home.SettingScreen
-import com.iccas.zen.presentation.onBoarding.OnboardingPage1
-import com.iccas.zen.presentation.onBoarding.OnboardingPage2
-import com.iccas.zen.presentation.onBoarding.OnboardingPage3
-import com.iccas.zen.presentation.onBoarding.OnboardingPage4
-import com.iccas.zen.presentation.report.AngerGameReport
-import com.iccas.zen.presentation.report.AngerGameSelect
-import com.iccas.zen.presentation.report.EmotionDiarySelect
-import com.iccas.zen.presentation.report.ReportScreen
-import com.iccas.zen.presentation.report.SelfDiagnosisSelect
-import com.iccas.zen.presentation.signup.LoginScreen
-import com.iccas.zen.presentation.signup.SignupScreen
-import com.iccas.zen.presentation.signup.WelcomeScreen
+import com.iccas.zen.presentation.home.*
+import com.iccas.zen.presentation.onBoarding.*
+import com.iccas.zen.presentation.report.*
+import com.iccas.zen.presentation.signup.*
 import com.iccas.zen.presentation.tetris.TetrisGameScreen
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
-import com.iccas.zen.presentation.yoga.StartYogaGameScreen
-import com.iccas.zen.presentation.yoga.YogaGameScreen
+import com.iccas.zen.presentation.yoga.*
 
 @Composable
 fun NavGraph(
@@ -45,7 +28,6 @@ fun NavGraph(
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "char_main") {
-//    NavHost(navController, startDestination = "onboarding1") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }
@@ -99,7 +81,6 @@ fun NavGraph(
             SelectEmotionScreen(navController = navController)
         }
         composable(
-
             route = "tetris_game_over/level={level}/score={score}/lives={lives}/dateTime={dateTime}",
             arguments = listOf(
                 navArgument("level") { type = NavType.IntType },
@@ -162,6 +143,17 @@ fun NavGraph(
         ) { backStackEntry ->
             val gameName = backStackEntry.arguments?.getString("gameName") ?: "unknown"
             AngerGameReport(navController = navController, gameName = gameName)
+        }
+        composable(
+            route = "report_detail/{character}/{date}",
+            arguments = listOf(
+                navArgument("character") { type = NavType.StringType },
+                navArgument("date") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val character = backStackEntry.arguments?.getString("character") ?: ""
+            val date = backStackEntry.arguments?.getString("date") ?: ""
+            ReportDetailScreen(navController, character, date)
         }
         composable("setting") {
             SettingScreen(navController = navController)
