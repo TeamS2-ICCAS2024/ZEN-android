@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.iccas.zen.ui.theme.Blue80
+import com.iccas.zen.ui.theme.Blue90
 
 @Composable
 fun EmotionHeader(
@@ -77,7 +77,7 @@ fun EmotionHeader(
                     .background(Color.White),
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = Color.White,
-                    backgroundColor = Blue80,
+                    backgroundColor = Blue90,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 )

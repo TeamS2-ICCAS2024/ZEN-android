@@ -1,6 +1,5 @@
 package com.iccas.zen.presentation.chatBot
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,8 +27,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.iccas.zen.presentation.chatBot.components.TopBar
-import com.iccas.zen.ui.theme.Blue80
-import com.iccas.zen.presentation.chatBot.components.EmotionHeader
+import com.iccas.zen.ui.theme.Blue90
 
 @Composable
 fun ChatScreen(navController: NavHostController, emojiResId: Int, basicPrompt: String, viewModel: ChatViewModel = viewModel()) {
@@ -143,7 +141,7 @@ fun MessageItem(message: Message, emojiResId: Int) {
         Box(
             modifier = Modifier
                 .background(
-                    color = if (message.isUser) Blue80 else Color.White,
+                    color = if (message.isUser) Blue90 else Color.White,
                     shape = RoundedCornerShape(12.dp) // 둥근 모서리를 위해 RoundedCornerShape 사용
                 )
                 .padding(16.dp)

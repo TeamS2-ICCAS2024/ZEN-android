@@ -22,7 +22,6 @@ import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
 import com.iccas.zen.presentation.chatBot.components.TopBar
 import com.iccas.zen.presentation.chatBot.components.EmotionHeader
-import com.iccas.zen.ui.theme.Blue80
 
 @Composable
 fun SelectEmotionScreen(navController: NavHostController) {
