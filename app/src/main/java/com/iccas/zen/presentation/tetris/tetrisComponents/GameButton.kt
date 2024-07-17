@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.tetris.tetrisComponents
 
+import android.annotation.SuppressLint
 import android.view.MotionEvent.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GameButton(
