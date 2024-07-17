@@ -77,13 +77,13 @@ fun EmotionDiarySelect(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            ReportSelectBox(navController, R.drawable.temp_char, "with BAO", "24/03/03")
+            ReportSelectBox(navController, R.drawable.char_mozzi1, "with BAO", "24/03/03")
             Spacer(modifier = Modifier.height(16.dp))
-            ReportSelectBox(navController, R.drawable.temp_char, "with KINI", "24/03/03")
+            ReportSelectBox(navController, R.drawable.char_mozzi1, "with KINI", "24/03/03")
             Spacer(modifier = Modifier.height(16.dp))
-            ReportSelectBox(navController, R.drawable.temp_char, "with LUCY", "24/03/03")
+            ReportSelectBox(navController, R.drawable.char_mozzi1, "with LUCY", "24/03/03")
             Spacer(modifier = Modifier.height(16.dp))
-            ReportSelectBox(navController, R.drawable.temp_char, "with SKY", "24/03/03")
+            ReportSelectBox(navController, R.drawable.char_mozzi1, "with SKY", "24/03/03")
         }
     }
 }

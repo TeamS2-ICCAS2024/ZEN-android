@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -16,82 +17,151 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
 import com.iccas.zen.presentation.home.components.TitleSticker
 
 @Composable
-fun CollectionScreen(navController: NavController) {
+fun CollectionScreen(
+    navController: NavController,
+    characterViewModel: CharacterViewModel = viewModel()
+) {
     var selectedCharacter by remember { mutableStateOf<CharacterInfo?>(null) }
+    val user = characterViewModel.user
+
+    // 캐릭터 선택 로직
+    val leaf = user?.leaf ?: 0
+
+    // Leaf 수치에 따라 보여줄 캐릭터 수 계산
+    var charactersToShowInSection1 = minOf(3, leaf / 100)
+    var charactersToShowInSection2 = 0
+    var charactersToShowInSection3 = 0
+    if (leaf >= 300)
+        charactersToShowInSection2 = minOf(3, (leaf - 300) / 100 + 1)
+    if (leaf >= 600)
+        charactersToShowInSection3 = minOf(3, (leaf - 600) / 100 + 1)
 
     BasicBackgroundWithNavBar(navController = navController) {
         Spacer(modifier = Modifier.height(40.dp))
 
         TitleSticker(R.drawable.home_title_blue_sticker, "Collection")
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 100.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(bottom = 100.dp)
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
+            item {
+                Spacer(modifier = Modifier.height(40.dp))
 
-            // First section
-            SectionTitle("2/3 Red House", R.drawable.temp_background)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                CollectionItem(
-                    imageResId = R.drawable.temp_char,
-                    label = "MOZZI",
-                    onClick = { selectedCharacter = CharacterInfo("MOZZI", R.drawable.temp_char, "Character description here.") }
-                )
-                CollectionItem(
-                    imageResId = R.drawable.temp_char,
-                    label = "BAO",
-                    onClick = { selectedCharacter = CharacterInfo("BAO", R.drawable.temp_char, "Character description here.") }
-                )
-                CollectionItem(
-                    imageResId = R.drawable.question_mark,
-                    label = null,
-                    onClick = { selectedCharacter = null }
-                )
+                // First section
+                SectionTitle(charactersToShowInSection1.toString() +"/3 Red House", R.drawable.temp_background)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    for (index in 0 until charactersToShowInSection1) {
+                        CollectionItem(
+                            imageResId = Characters[index].charImgId,
+                            label = Characters[index].name,
+                            onClick = {
+                                selectedCharacter = CharacterInfo(
+                                    Characters[index].name,
+                                    Characters[index].charImgId,
+                                    "Mozzi is a soft friend.\n" +
+                                            "mozzi loves ice cream"
+                                )
+                            }
+                        )
+                    }
+
+
+                    if (charactersToShowInSection1 < 3) {
+                        // Placeholder for remaining items
+                        CollectionItem(
+                            imageResId = R.drawable.question_mark,
+                            label = "?",
+                            onClick = {}
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // Second section
+                SectionTitle(charactersToShowInSection2.toString() +"/3 Blue House", R.drawable.temp_background)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    for (index in 3 until (3 + charactersToShowInSection2)) {
+                        CollectionItem(
+                            imageResId = Characters[index].charImgId,
+                            label = Characters[index].name,
+                            onClick = {
+                                selectedCharacter = CharacterInfo(
+                                    Characters[index].name,
+                                    Characters[index].charImgId,
+                                    "Character description here."
+                                )
+                            }
+                        )
+                    }
+                    if (charactersToShowInSection2 < 3) {
+                        // Placeholder for remaining items
+                        for (i in 0 until 3 - charactersToShowInSection2) {
+                            CollectionItem(
+                                imageResId = R.drawable.question_mark,
+                                label = "?",
+                                onClick = {}
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // Third section
+                SectionTitle(charactersToShowInSection3.toString() +"/3 Green House", R.drawable.temp_background)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    for (index in 6 until (6 + charactersToShowInSection3)) {
+                        CollectionItem(
+                            imageResId = Characters[index].charImgId,
+                            label = Characters[index].name,
+                            onClick = {
+                                selectedCharacter = CharacterInfo(
+                                    Characters[index].name,
+                                    Characters[index].charImgId,
+                                    "Character description here."
+                                )
+                            }
+                        )
+                    }
+                    if (charactersToShowInSection3 < 3) {
+                        // Placeholder for remaining items
+                        for (i in 0 until 3 - charactersToShowInSection3) {
+                            CollectionItem(
+                                imageResId = R.drawable.question_mark,
+                                label = "?",
+                                onClick = {}
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(60.dp))
             }
-
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // Second section
-            SectionTitle("0/3 Blue House", R.drawable.temp_background)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                CollectionItem(
-                    imageResId = R.drawable.question_mark,
-                    label = null,
-                    onClick = { selectedCharacter = null }
-                )
-                CollectionItem(
-                    imageResId = R.drawable.question_mark,
-                    label = null,
-                    onClick = { selectedCharacter = null }
-                )
-                CollectionItem(
-                    imageResId = R.drawable.question_mark,
-                    label = null,
-                    onClick = { selectedCharacter = null }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 
@@ -101,7 +171,12 @@ fun CollectionScreen(navController: NavController) {
 }
 
 @Composable
-fun CollectionItem(imageResId: Int, label: String?, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun CollectionItem(
+    imageResId: Int,
+    label: String?,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
