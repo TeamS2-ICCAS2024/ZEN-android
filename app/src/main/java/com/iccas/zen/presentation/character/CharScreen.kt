@@ -2,7 +2,17 @@ package com.iccas.zen.presentation.character
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -21,8 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
-import com.iccas.zen.presentation.components.BottomNavigationBar
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
 
@@ -44,7 +52,9 @@ fun CharScreen(navController: NavController) {
             ) {
                 // Left side is handled by BasicBackgroundWithLogo
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { /*TODO: Settings Navigation*/ }) {
+                IconButton(onClick = {
+                    navController.navigate("setting")
+                }) {
                     Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
                 }
             }
@@ -94,7 +104,8 @@ fun CharScreen(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.temp_background), // 첫 번째 이미지
                     contentDescription = "Character Background",
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .clip(RoundedCornerShape(60.dp))
                         .alpha(0.6f),
                     contentScale = ContentScale.Crop

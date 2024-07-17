@@ -1,27 +1,25 @@
 package com.iccas.zen.navigation
 
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.iccas.zen.R
 import com.iccas.zen.SelectEmotionScreen
 import com.iccas.zen.presentation.character.CharScreen
 import com.iccas.zen.presentation.character.CollectionScreen
 import com.iccas.zen.presentation.chatBot.ChatScreen
 import com.iccas.zen.presentation.heart.BaseResultScreen
-import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
-import com.iccas.zen.presentation.heart.MeasureBaseScreen
-import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
-import com.iccas.zen.presentation.tetris.logic.GameViewModel
-import com.iccas.zen.presentation.tetris.TetrisGameScreen
 import com.iccas.zen.presentation.heart.CountDownScreen
+import com.iccas.zen.presentation.heart.GuideMeasureBaseScreen
 import com.iccas.zen.presentation.heart.HighHeartRateScreen
+import com.iccas.zen.presentation.heart.MeasureBaseScreen
 import com.iccas.zen.presentation.heart.RecommendMeasureBaseScreen
+import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.home.GameSelectScreen
+import com.iccas.zen.presentation.home.PersonalSettingScreen
+import com.iccas.zen.presentation.home.SettingScreen
 import com.iccas.zen.presentation.onBoarding.OnboardingPage1
 import com.iccas.zen.presentation.onBoarding.OnboardingPage2
 import com.iccas.zen.presentation.onBoarding.OnboardingPage3
@@ -31,10 +29,11 @@ import com.iccas.zen.presentation.report.AngerGameSelect
 import com.iccas.zen.presentation.report.EmotionDiarySelect
 import com.iccas.zen.presentation.report.ReportScreen
 import com.iccas.zen.presentation.report.SelfDiagnosisSelect
-import com.iccas.zen.presentation.signup.SignupScreen
 import com.iccas.zen.presentation.signup.LoginScreen
+import com.iccas.zen.presentation.signup.SignupScreen
 import com.iccas.zen.presentation.signup.WelcomeScreen
-import com.iccas.zen.presentation.tetris.TetrisGameOverScreen
+import com.iccas.zen.presentation.tetris.TetrisGameScreen
+import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.yoga.StartYogaGameScreen
 import com.iccas.zen.presentation.yoga.YogaGameScreen
 
@@ -45,7 +44,7 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "select_emotion") {
+    NavHost(navController, startDestination = "char_main") {
 //    NavHost(navController, startDestination = "onboarding1") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
@@ -164,6 +163,11 @@ fun NavGraph(
             val gameName = backStackEntry.arguments?.getString("gameName") ?: "unknown"
             AngerGameReport(navController = navController, gameName = gameName)
         }
-
+        composable("setting") {
+            SettingScreen(navController = navController)
+        }
+        composable("personal_setting") {
+            PersonalSettingScreen(navController = navController)
+        }
     }
 }
