@@ -37,7 +37,6 @@ import com.iccas.zen.presentation.signup.WelcomeScreen
 import com.iccas.zen.presentation.yoga.StartYogaGameScreen
 import com.iccas.zen.presentation.yoga.YogaGameScreen
 
-
 @Composable
 fun NavGraph(
     measureHeartViewModel: MeasureHeartViewModel,
@@ -45,7 +44,7 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "report") {
+    NavHost(navController, startDestination = "select_emotion") {
 //    NavHost(navController, startDestination = "onboarding1") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
@@ -113,7 +112,11 @@ fun NavGraph(
             val score = backStackEntry.arguments?.getInt("score")
             val lives = backStackEntry.arguments?.getInt("lives")
             val dateTime = backStackEntry.arguments?.getString("dateTime")
-            TetrisGameOverScreen(navController, level, score, lives, dateTime)
+            TetrisGameScreen(
+                measureHeartViewModel = measureHeartViewModel,
+                gameViewModel = gameViewModel,
+                navController = navController
+            )
         }
         composable(
             "chat_screen/{emojiResId}?prompt={prompt}",
@@ -121,9 +124,6 @@ fun NavGraph(
                 navArgument("emojiResId") { type = NavType.IntType },
                 navArgument("prompt") { type = NavType.StringType; defaultValue = "" }
             )
-            route = "chat_screen/{emojiResId}",
-            arguments = listOf(navArgument("emojiResId") { type = NavType.IntType })
-
         ) { backStackEntry ->
             val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: 0
             val prompt = backStackEntry.arguments?.getString("prompt") ?: ""
