@@ -19,23 +19,15 @@ enum class Hindrance {
     DisableRotation,
     ReverseControl;
 
-    fun getName(): String {
-        return when (this) {
-            RandomDirection -> "RandomDirection"
-            DisableRotation -> "DisableRotation"
-            ReverseControl -> "ReverseControl"
-        }
-    }
+
 }
 
 class GameViewModel : ViewModel() {
-
     private val _viewState: MutableState<ViewState> = mutableStateOf(ViewState())
     val viewState: State<ViewState> = _viewState
 
-    private var hindranceActive = false
-    private var hindranceBlockCount = 0
-    private var fastDropActive = false
+    var hindranceActive = false
+    var hindranceBlockCount = 0
     private val _currentBlocks = MutableStateFlow<Pair<Spirit, Spirit>>(Empty to Empty)
     val currentBlocks: StateFlow<Pair<Spirit, Spirit>> = _currentBlocks
 
@@ -46,20 +38,19 @@ class GameViewModel : ViewModel() {
     fun dispatch(action: Action) = reduce(viewState.value, action)
     var currentDirection = Direction.Right // 초기 방향
 
-    private fun startHindranceTimer() {
+    fun startHindranceTimer() {
         viewModelScope.launch {
             delay(15000) // Initial delay before the first hindrance
             while (true) {
                 if (!hindranceActive) {
                     activateHindrance()
-                    // Wait for hindrance to deactivate
-                    while (hindranceActive) {
-                        delay(100) // Small delay to prevent a tight loop
-                    }
-                    delay(15000) // Delay after hindrance is deactivated
                 } else {
                     delay(100) // Small delay to prevent a tight loop
                 }
+                while (hindranceActive) {
+                    delay(100) // Wait until the hindrance is deactivated
+                }
+                delay(15000) // Delay after hindrance is deactivated
             }
         }
     }
@@ -80,12 +71,18 @@ class GameViewModel : ViewModel() {
             hideHindranceAlert()
             emit(viewState.value.copy(showHindranceAlert = false))
 
+            // Log the hindrance activation
+            println("Hindrance activated: $hindrance")
+
             while (hindranceBlockCount < 3) {
                 delay(100) // Adjust delay as needed
             }
 
             hindranceActive = false
             emit(viewState.value.copy(currentHindrance = null))
+
+            // Log the hindrance deactivation
+            println("Hindrance deactivated")
         }
     }
 
@@ -101,25 +98,14 @@ class GameViewModel : ViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 emit(when (action) {
-                    Action.Reset -> run {
-                        if (state.gameStatus == GameStatus.Onboard || state.gameStatus == GameStatus.GameOver)
-                            return@run ViewState(
-                                gameStatus = GameStatus.Running,
-                                isMute = state.isMute
-                            )
-                        state.copy(
-                            gameStatus = GameStatus.ScreenClearing
-                        ).also {
-                            launch {
-                                clearScreen(state = state)
-                                emit(
-                                    ViewState(
-                                        gameStatus = GameStatus.Onboard,
-                                        isMute = state.isMute
-                                    )
-                                )
-                            }
-                        }
+                    Action.Reset -> {
+                        hindranceActive = false
+                        hindranceBlockCount = 0
+                        startHindranceTimer() // Reset 시 타이머 다시 시작
+                        ViewState(
+                            gameStatus = GameStatus.Running,
+                            isMute = state.isMute
+                        )
                     }
                     Action.Pause -> if (state.isRunning) {
                         state.copy(gameStatus = GameStatus.Paused)
@@ -130,7 +116,7 @@ class GameViewModel : ViewModel() {
                     is Action.Move -> run {
                         if (!state.isRunning) return@run state
                         SoundUtil.play(state.isMute, SoundType.Move)
-                        //val offset = action.direction.toOffset()
+
                         val effectiveDirection = when {
                             state.currentHindrance == Hindrance.RandomDirection && action.direction == Direction.Up -> null
                             state.currentHindrance == Hindrance.ReverseControl -> when (action.direction) {
@@ -153,7 +139,6 @@ class GameViewModel : ViewModel() {
                             state
                         }
                     }
-
                     Action.Rotate -> run {
                         if (!state.isRunning || state.currentHindrance == Hindrance.DisableRotation) return@run state
                         SoundUtil.play(state.isMute, SoundType.Rotate)
@@ -246,6 +231,8 @@ class GameViewModel : ViewModel() {
                         }.also { finalState ->
                             if (finalState.currentHindrance != null) {
                                 hindranceBlockCount++
+                                // Log the block count
+                                println("Hindrance block count: $hindranceBlockCount")
                             }
                         }
                     }
@@ -255,6 +242,7 @@ class GameViewModel : ViewModel() {
             }
         }
     }
+
 
     private suspend fun clearScreen(state: ViewState): ViewState {
         SoundUtil.play(state.isMute, SoundType.Start)

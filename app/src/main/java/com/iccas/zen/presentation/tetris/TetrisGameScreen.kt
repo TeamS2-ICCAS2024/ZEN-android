@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -157,6 +158,7 @@ fun TetrisGameScreen(
                         onRestart = {
                             gameViewModel.dispatch(Action.Reset)
                             lives.value = 5
+
                         },
                         onPause = {
                             if (viewState.isRunning) {
@@ -233,7 +235,7 @@ fun TetrisGameScreen(
 @Composable
 fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
     LaunchedEffect(Unit) {
-        delay(3000)
+        delay(4000)
         onDismiss()
     }
     if(hindrance!=null) {
@@ -247,15 +249,26 @@ fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                val imageResource = when (hindrance) {
+                    Hindrance.RandomDirection -> R.drawable.random3
+                    Hindrance.DisableRotation -> R.drawable.disable_rotate3
+                    Hindrance.ReverseControl -> R.drawable.reverse_control4
+                }
                 Image(
-                    painter = painterResource(id = R.drawable.tetris_game_warning),
+                    painter = painterResource(id = imageResource),
                     contentDescription = null,
-                    modifier = Modifier.size(100.dp)
+                    modifier = Modifier.size(250.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp)) // 이미지와 텍스트 사이의 공간
                 Text(
-                    text = "${hindrance.getName()}이(가) 시작됩니다",
+                    text = when (hindrance) {
+                        Hindrance.RandomDirection -> "Now, You can't move as you want."
+                        Hindrance.DisableRotation -> "Now, You can't use the rotate button."
+                        Hindrance.ReverseControl -> "The left and right are reversed."
+                    },
                     color = Color.White,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .background(
                             Color.Red,
