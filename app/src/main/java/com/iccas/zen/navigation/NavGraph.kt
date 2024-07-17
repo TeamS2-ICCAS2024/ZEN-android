@@ -18,6 +18,7 @@ import com.iccas.zen.presentation.heart.MeasureBaseScreen
 import com.iccas.zen.presentation.heart.RecommendMeasureBaseScreen
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.home.GameSelectScreen
+import com.iccas.zen.presentation.home.PersonalSettingScreen
 import com.iccas.zen.presentation.home.SettingScreen
 import com.iccas.zen.presentation.onBoarding.OnboardingPage1
 import com.iccas.zen.presentation.onBoarding.OnboardingPage2
@@ -164,6 +165,9 @@ fun NavGraph(
         }
         composable("setting") {
             SettingScreen(navController = navController)
+        }
+        composable("personal_setting") {
+            PersonalSettingScreen(navController = navController)
         }
     }
 }

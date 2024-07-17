@@ -48,7 +48,7 @@ fun SettingScreen(navController: NavController) {
 
             VolumeSettingItem(title = "Volume", description = "Adjust the volume")
             SettingItem(title = "Personal Information Settings", description = "Manage your imformation", isClickable = true) {
-                // Implement privacy settings logic here
+                navController.navigate("personal_setting")
             }
             SettingItem(title = "Logout", description = "Sign out from your account", isClickable = true) {
                 // Implement logout logic here
