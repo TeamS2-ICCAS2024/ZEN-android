@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.character
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +31,40 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
 
 @Composable
-fun CharScreen(navController: NavController) {
+fun CharScreen(navController: NavController, characterViewModel: CharacterViewModel = viewModel()) {
+    val user = characterViewModel.user
+
+    // 캐릭터 선택 로직
+    val selectedCharacter = user?.let {
+        when {
+            it.leaf >= 800 -> Characters[8]
+            it.leaf >= 700 -> Characters[7]
+            it.leaf >= 600 -> Characters[6]
+            it.leaf >= 500 -> Characters[5]
+            it.leaf >= 400 -> Characters[4]
+            it.leaf >= 300 -> Characters[3]
+            it.leaf >= 200 -> Characters[2]
+            it.leaf >= 100 -> Characters[1]
+            else -> Characters[0]
+        }
+    }
+
+    // 경험치 및 레벨 계산 로직
+    val (level, experience) = user?.leaf?.let { leaf ->
+        val level = (leaf / 100) % 3 + 1
+        val experience = leaf % 100
+        Pair(level, experience)
+    } ?: Pair(1, 0)
+
+    // 경험치 바 채우기 애니메이션을 위한 상태 변수
+    val animatedProgress = animateFloatAsState(targetValue = experience / 100f)
+
     BasicBackgroundWithNavBar(navController = navController) {
         Column(
             modifier = Modifier
@@ -68,8 +97,8 @@ fun CharScreen(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
 
-                Text(text = "MOZZI", fontSize = 40.sp, color = Color.Black)
-                Text(text = "LV. 1  80 / 100", fontSize = 30.sp, color = Color.Black)
+                Text(text = selectedCharacter?.name ?: "Loading...", fontSize = 40.sp, color = Color.Black)
+                Text(text = "LV. $level  $experience / 100", fontSize = 30.sp, color = Color.Black)
                 Spacer(modifier = Modifier.height(18.dp))
 
                 Box(
@@ -79,13 +108,12 @@ fun CharScreen(navController: NavController) {
                         .clip(CircleShape)
                         .background(Color.LightGray)
                 ) {
-
                     Box(
                         modifier = Modifier
                             .padding(6.dp)
                             .height(12.dp)
                             .fillMaxHeight()
-                            .fillMaxWidth(0.8f)
+                            .fillMaxWidth(animatedProgress.value) // 경험치 바의 너비를 애니메이션으로 조절
                             .clip(CircleShape)
                             .background(Color(0xFF66CC66)) // 짙은 녹색
                     )
@@ -110,14 +138,15 @@ fun CharScreen(navController: NavController) {
                         .alpha(0.6f),
                     contentScale = ContentScale.Crop
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.temp_char), // 두 번째 이미지
-                    contentDescription = "Character",
-                    modifier = Modifier.size(250.dp)
-                )
+                selectedCharacter?.let {
+                    Image(
+                        painter = painterResource(id = it.charImgId), // 두 번째 이미지
+                        contentDescription = "Character",
+                        modifier = Modifier.size(250.dp)
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(50.dp))
-
         }
     }
 }
