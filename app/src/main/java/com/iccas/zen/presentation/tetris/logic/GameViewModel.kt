@@ -30,6 +30,7 @@ class GameViewModel : ViewModel() {
     var hindranceBlockCount = 0
     private val _currentBlocks = MutableStateFlow<Pair<Spirit, Spirit>>(Empty to Empty)
     val currentBlocks: StateFlow<Pair<Spirit, Spirit>> = _currentBlocks
+    private var isHindranceTimerStarted = false
 
     init {
         startHindranceTimer()
