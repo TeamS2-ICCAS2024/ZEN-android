@@ -36,10 +36,33 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
+import java.lang.reflect.Array.set
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun CharScreen(navController: NavController, characterViewModel: CharacterViewModel = viewModel()) {
     val user = characterViewModel.user
+    val testDate = user?.lastTestAt ?: "Loading..."
+
+    if (testDate != "Loading...") {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        try {
+            val lastTestDateTime = LocalDateTime.parse(testDate, formatter)
+            val currentDateTime = LocalDateTime.now()
+            // 현재 date와 마지막 test date를 로깅
+            Log.d("CharScreen", "Last test date: $lastTestDateTime, Current date: $currentDateTime")
+
+            val daysBetween = ChronoUnit.DAYS.between(lastTestDateTime, currentDateTime)
+            if (daysBetween > 7) {
+                navController.navigate("survey")
+            }
+        } catch (e: DateTimeParseException) {
+            Log.e("CharScreen", "Date parsing error: ${e.message}")
+        }
+    }
 
     // 캐릭터 선택 로직
     val selectedCharacter = user?.let {

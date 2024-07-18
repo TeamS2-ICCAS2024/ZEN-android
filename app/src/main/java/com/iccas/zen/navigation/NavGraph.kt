@@ -34,7 +34,7 @@ fun NavGraph(
     val navController = rememberNavController()
 
 
-    NavHost(navController, startDestination = "onboarding1") {
+    NavHost(navController, startDestination = "char_main") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }
@@ -164,6 +164,11 @@ composable("heartreport")
             AngerGameSelect(navController = navController)
         }
 
+        composable("report/self_diagnosis/{test_id}",
+            arguments = listOf(navArgument("test_id") { type = NavType.IntType })
+        ) {
+            SelfDiagnosisReport(navController = navController, testId = it.arguments?.getInt("test_id") ?: 0)
+        }
         composable(
             route = "anger_game_report/{gameName}",
             arguments = listOf(navArgument("gameName") { type = NavType.StringType })
