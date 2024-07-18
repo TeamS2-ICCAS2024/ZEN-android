@@ -128,8 +128,6 @@ composable("heartreport")
                 navController = navController
             )
         }
-
-
         composable(
             "chat_screen/{emojiResId}?prompt={prompt}",
             arguments = listOf(
@@ -195,6 +193,5 @@ composable("heartreport")
         composable("personal_setting") {
             PersonalSettingScreen(navController = navController)
         }
-
     }
 }

@@ -16,7 +16,7 @@ object RetrofitModule {
         .addInterceptor(loggingInterceptor)
         .build()
 
-    val retrofit: Retrofit by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
