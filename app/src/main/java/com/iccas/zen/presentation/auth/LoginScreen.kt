@@ -99,7 +99,7 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(100.dp))
 
                 Button(
-                    onClick = { authViewModel.login(emailState.value.toString(), passwordState.value.toString() ) },
+                    onClick = { authViewModel.login(emailState.value, passwordState.value ) },
                     colors = ButtonDefaults.buttonColors(containerColor = Brown40),
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
@@ -116,9 +116,9 @@ fun LoginScreen(navController: NavController) {
             }
             authentication?.let { response ->
                 LaunchedEffect(response) {
-                    Log.d("SignupViewModel", "Status: ${response.status}")
-                    Log.d("SignupViewModel", "Message: ${response.message}")
-                    Log.d("SignupViewModel", "Data: ${response.data}")
+                    Log.d("login", "Status: ${response.status}")
+                    Log.d("login", "Message: ${response.message}")
+                    Log.d("login", "Data: ${response.data}")
 
                     if (response.status == 200) {
                         navController.navigate("char_main")
