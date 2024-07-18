@@ -3,12 +3,30 @@ package com.iccas.zen.presentation.diagnosis
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +46,7 @@ import com.iccas.zen.ui.theme.Brown40
 fun SurveyScreen(navController: NavController) {
     BasicBackgroundWithLogo {
         var selectedAnswers by remember { mutableStateOf(List(10) { "" }) }
+        var showWarning by remember { mutableStateOf(false) }
 
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -48,7 +67,11 @@ fun SurveyScreen(navController: NavController) {
                         .background(Color.White)
                         .padding(4.dp)
                 ) {
+
+
                     item {
+                        Spacer(modifier = Modifier.height(10.dp))
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(4.dp)
@@ -70,6 +93,7 @@ fun SurveyScreen(navController: NavController) {
                                 fontSize = 24.sp,
                             )
                         }
+                        Spacer(modifier = Modifier.height(30.dp))
                     }
 
                     val questions = listOf(
@@ -101,30 +125,27 @@ fun SurveyScreen(navController: NavController) {
                     item {
                         val totalScore = calculateTotalScore(selectedAnswers)
                         Spacer(modifier = Modifier.height(20.dp))
-                        Button(
-                            onClick = { navController.navigate("result/$totalScore") },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF705E5E)
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp)
-                        ) {
+                        if (showWarning) {
                             Text(
-                                text = "Check the result",
-                                color = Color.White,
+                                text = "Check all questions",
+                                color = Color.Red,
+                                fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
+                                modifier = Modifier.padding(16.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = "Your total score is: $totalScore",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = Color.Black,
-                            modifier = Modifier.padding(16.dp)
-                        )
+                        Button(
+                            onClick = {
+                                if (totalScore < 10) {
+                                    showWarning = true
+                                } else {
+                                    navController.navigate("result/$totalScore")
+                                }
+                            },
+                            // Button styling...
+                        ) {
+                            Text("Check the result")
+                        }
                     }
                 }
             }

@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,16 +29,22 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.components.CommonViewModel
 import com.iccas.zen.ui.theme.Brown40
 import com.iccas.zen.ui.theme.Gray80
 
 @Composable
 fun SelfDiagnosisSelect(
-    navController: NavController
+    navController: NavController,
+    commonViewModel: CommonViewModel = viewModel()
 ) {
+    val selfTestResults by commonViewModel.selfTestResults.collectAsState(initial = emptyList())
+
+
     BasicBackgroundWithLogo {
         Spacer(modifier = Modifier.height(20.dp))
         Row(
@@ -100,11 +109,15 @@ fun SelfDiagnosisSelect(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DiagnosisBox(navController = navController, diagnosisName = "Diagnosis", date = "24/03/03")
-                DiagnosisBox(navController = navController, diagnosisName = "Diagnosis", date = "24/03/10")
-                DiagnosisBox(navController = navController, diagnosisName = "Diagnosis", date = "24/03/11")
-                DiagnosisBox(navController = navController, diagnosisName = "Diagnosis", date = "24/03/12")
-                DiagnosisBox(navController = navController, diagnosisName = "Diagnosis", date = "24/03/13")
+                selfTestResults.forEach { result ->
+                    val formattedDate = result.createdAt.substring(0, 10) // "YYYY-MM-DD" 형식으로 변환
+                    DiagnosisBox(
+                        navController = navController,
+                        diagnosisName = "Diagnosis",
+                        date = formattedDate,
+                        id = result.id
+                    )
+                }
             }
         }
     }
@@ -112,7 +125,10 @@ fun SelfDiagnosisSelect(
 
 @Composable
 fun DiagnosisBox(
-    navController: NavController, diagnosisName: String, date: String,
+    navController: NavController,
+    diagnosisName: String,
+    date: String,
+    id: Int
 ) {
     Box(
         modifier = Modifier
@@ -120,7 +136,7 @@ fun DiagnosisBox(
             .height(80.dp)
             .background(Gray80, RoundedCornerShape(50))
             .border(2.dp, Brown40, RoundedCornerShape(50))
-            .clickable { navController.navigate("survey") },
+            .clickable { navController.navigate("report/self_diagnosis/$id") },
         contentAlignment = Alignment.Center
     ) {
         Row(
