@@ -11,7 +11,6 @@
     import com.iccas.zen.navigation.NavGraph
     import com.iccas.zen.presentation.tetris.logic.GameViewModel
 
-
     class MainActivity : ComponentActivity() {
         private val measureHeartViewModel: MeasureHeartViewModel by viewModels()
         private val gameViewModel: GameViewModel by viewModels()

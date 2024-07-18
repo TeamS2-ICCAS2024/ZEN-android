@@ -55,7 +55,7 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
         }
     }
 
-    val selectedBG = user?.background_id ?: 0
+    val selectedBG = user?.backgroundId ?: 0
 
     // 배경 이미지 선택 로직
     val backgroundResource = when (selectedBG) {
