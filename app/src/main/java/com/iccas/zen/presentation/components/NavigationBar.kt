@@ -1,13 +1,12 @@
 package com.iccas.zen.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.*
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,30 +21,30 @@ import com.iccas.zen.R
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     BottomAppBar(
-        backgroundColor = Color.Transparent,
+        modifier = Modifier
+            .height(100.dp)
+            .background(color = Color.Transparent)
+            .padding(horizontal = 0.dp),
         contentColor = Color.Black,
-        elevation = 0.dp,
-        modifier = Modifier.height(50.dp),  // 높이를 명시적으로 설정
-        contentPadding = PaddingValues(start = 0.dp, end = 0.dp)
+        containerColor = Color.Transparent
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            NavigationBarItem(Icons.Default.Home, "Main") {
+            NavigationBarItem(R.drawable.main_icon, "Main") {
                 navController.navigate("char_main")
             }
-            NavigationBarItem(Icons.Default.Home, "Game") {
+            NavigationBarItem(R.drawable.game_icon, "Game") {
                 navController.navigate("game_select")
             }
-            NavigationBarItem(Icons.Default.Home, "Diary") {
+            NavigationBarItem(R.drawable.diary_icon, "Diary") {
                 navController.navigate("select_emotion")
             }
-            NavigationBarItem(Icons.Default.Home, "Report") {
+            NavigationBarItem(R.drawable.report_icon, "Report") {
                 navController.navigate("report")
-
             }
-            NavigationBarItem(Icons.Default.Home, "Collection") {
+            NavigationBarItem(R.drawable.collect2_icon, "Collection") {
                 navController.navigate("collection")
             }
         }
@@ -54,21 +53,26 @@ fun BottomNavigationBar(navController: NavController) {
 
 @Composable
 fun NavigationBarItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconResId: Int,
     label: String,
     onClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(vertical = 8.dp)  // 패딩을 넉넉히 설정
+        modifier = Modifier.padding(vertical = 2.dp)
     ) {
         IconButton(
             onClick = onClick,
-            modifier = Modifier.size(24.dp)  // 아이콘 크기를 작게 설정
+            modifier = Modifier.size(55.dp)
         ) {
-            Icon(imageVector = icon, contentDescription = label, tint = Color.Black)
+            Image(
+                painter = painterResource(id = iconResId),
+                contentDescription = label,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(50.dp)
+            )
         }
-        Text(text = label, fontSize = 10.sp, color = Color.Black)
+        Text(text = label, fontSize = 15.sp, color = Color.Black)
     }
 }

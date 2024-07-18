@@ -40,7 +40,7 @@ fun ReportScreen(
 
             ReportSelectBox(
                 type = "Anger Control",
-                onClick = { navController.navigate("report/anger_game") })
+                onClick = { navController.navigate("heartreport") })
             Spacer(modifier = Modifier.height(60.dp))
 
             ReportSelectBox(

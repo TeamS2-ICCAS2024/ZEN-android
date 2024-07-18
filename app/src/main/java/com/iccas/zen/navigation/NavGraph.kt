@@ -1,5 +1,6 @@
 package com.iccas.zen.navigation
 
+
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,6 +19,11 @@ import com.iccas.zen.presentation.report.*
 import com.iccas.zen.presentation.auth.*
 import com.iccas.zen.presentation.tetris.TetrisGameScreen
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
+import com.iccas.zen.presentation.diagnosis.DiagnosisScreen
+import com.iccas.zen.presentation.diagnosis.SurveyScreen
+import com.iccas.zen.presentation.diagnosis.ResultScreen
+import com.iccas.zen.presentation.heartreport.HeartReportScreen
+import com.iccas.zen.presentation.heartreport.HeartReport2Screen
 import com.iccas.zen.presentation.yoga.*
 
 @Composable
@@ -26,6 +32,7 @@ fun NavGraph(
     gameViewModel: GameViewModel
 ) {
     val navController = rememberNavController()
+
 
     NavHost(navController, startDestination = "onboarding1") {
         composable("onboarding1") { OnboardingPage1(navController) }
@@ -73,9 +80,31 @@ fun NavGraph(
                 navController = navController
             )
         }
+        composable("diagnosis") {
+            DiagnosisScreen(navController)
+        }
+        composable("survey") {
+            SurveyScreen(navController)
+        }
+        composable(
+            "result/{score}",
+            arguments = listOf(navArgument("score") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val score = backStackEntry.arguments?.getInt("score") ?: 0
+            ResultScreen(score = score, navController = navController)
+        }
+composable("heartreport")
+{
+    HeartReportScreen(navController)
+}
+        composable("heartreport2")
+        {
+           HeartReport2Screen(navController)
+        }
         composable("high_heart_rate") {
             HighHeartRateScreen()
         }
+
 
         composable("select_emotion") {
             SelectEmotionScreen(navController = navController)
@@ -116,7 +145,7 @@ fun NavGraph(
         composable(route = "yoga_game") {
             YogaGameScreen(initialPoseIndex = 0, navController = navController)
         }
-        composable("char_main") {
+        composable("char_main ") {
             CharScreen(navController = navController)
         }
         composable("collection") {
@@ -134,9 +163,7 @@ fun NavGraph(
         composable("report/anger_game") {
             AngerGameSelect(navController = navController)
         }
-        composable("report/anger_game/select") {
-            AngerGameSelect(navController = navController)
-        }
+
         composable(
             route = "anger_game_report/{gameName}",
             arguments = listOf(navArgument("gameName") { type = NavType.StringType })
