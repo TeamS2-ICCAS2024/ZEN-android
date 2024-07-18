@@ -87,6 +87,10 @@ fun TetrisGameScreen(
     modifier: Modifier = Modifier,
     commonViewModel: CommonViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        gameViewModel.startHindranceTimer()
+    }
+
     val viewState by gameViewModel.viewState
     val isHeartRateHigh by measureHeartViewModel.isHeartRateHigh.collectAsState()
     val lives = remember { mutableIntStateOf(5) }
