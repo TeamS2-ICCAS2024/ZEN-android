@@ -11,5 +11,5 @@ interface UserApi {
     suspend fun getUser(): UserResponse
 
     @POST("api/v1/background")
-    suspend fun changeBackground(@Query("background_id") backgroundId: Int): ChangeBackgroundResponse
+    suspend fun changeBackground(@Query("background_id") backgroundId: Int)
 }

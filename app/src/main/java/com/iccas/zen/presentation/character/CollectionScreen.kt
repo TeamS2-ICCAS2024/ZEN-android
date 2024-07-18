@@ -54,17 +54,6 @@ fun CollectionScreen(
     if (leaf >= 600)
         charactersToShowInSection3 = minOf(3, (leaf - 600) / 100 + 1)
 
-    // API 요청 함수
-    fun changeBackground(backgroundId: Int) {
-        coroutineScope.launch {
-            try {
-                val response = userApi.changeBackground(backgroundId)
-                // Handle response if needed
-            } catch (e: Exception) {
-                // Handle error
-            }
-        }
-    }
 
     BasicBackgroundWithNavBar(navController = navController) {
         Spacer(modifier = Modifier.height(40.dp))
@@ -200,7 +189,7 @@ fun CollectionScreen(
                             imageResId = R.drawable.background2,
                             label = "flower",
                             onClick = {
-                                changeBackground(1)
+                                characterViewModel.changeBackground(1)
                             }
                         )
                     } else {
@@ -216,7 +205,7 @@ fun CollectionScreen(
                             imageResId = R.drawable.background3,
                             label = "house",
                             onClick = {
-                                changeBackground(2)
+                            characterViewModel.changeBackground(2)
                             }
                         )
                     } else {
@@ -232,7 +221,7 @@ fun CollectionScreen(
                             imageResId = R.drawable.background4,
                             label = "room",
                             onClick = {
-                                changeBackground(3)
+                                characterViewModel.changeBackground(3)
                             }
                         )
                     } else {
