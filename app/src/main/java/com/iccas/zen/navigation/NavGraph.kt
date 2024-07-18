@@ -34,7 +34,7 @@ fun NavGraph(
     val navController = rememberNavController()
 
 
-    NavHost(navController, startDestination = "onboarding1") {
+    NavHost(navController, startDestination = "diagnosis") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }
@@ -145,7 +145,7 @@ composable("heartreport")
         composable(route = "yoga_game") {
             YogaGameScreen(initialPoseIndex = 0, navController = navController)
         }
-        composable("char_main ") {
+        composable("char_main") {
             CharScreen(navController = navController)
         }
         composable("collection") {
