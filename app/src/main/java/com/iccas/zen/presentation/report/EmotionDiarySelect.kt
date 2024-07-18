@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,26 +26,38 @@ import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
 import com.iccas.zen.presentation.report.ReportBox.ReportSelectBox
+import com.iccas.zen.ui.theme.Brown30
+import com.iccas.zen.ui.theme.Brown40
 
 @Composable
 fun EmotionDiarySelect(navController: NavController) {
     BasicBackgroundWithLogo {
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 1.dp)
         ) {
-
+            IconButton(
+                onClick = {navController.navigate("report") },
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 0.dp) // Remove padding to align with ZEN
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_left),
+                    contentDescription = "Back"
+                )
+            }
             Text(
                 text = "Emotional Diary",
-                fontSize = 30.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFFFA500) // 주황색
             )
             Text(
                 text = " Report",
-                fontSize = 30.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black // 검정색
             )
@@ -68,14 +83,14 @@ fun EmotionDiarySelect(navController: NavController) {
             ) {
                 Box(
                     modifier = Modifier
-                        .background(Color(0xFF8B4513).copy(alpha = 0.2f), RoundedCornerShape(4.dp)) // 어두운 갈색 형광펜 효과
+                        .background(Color(0xFF8B4513).copy(alpha = 0.1f), RoundedCornerShape(20.dp)) // 어두운 갈색 형광펜 효과
                 ) {
                     Text(
                         text = "recent conversation",
-                        fontSize = 16.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(8.dp) // 내부 패딩 추가
+                        color = Brown40,
+                        modifier = Modifier.padding(2.dp) // 내부 패딩 추가
                     )
                 }
             }
