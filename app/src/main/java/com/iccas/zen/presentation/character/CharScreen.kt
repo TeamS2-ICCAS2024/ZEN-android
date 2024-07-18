@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.character
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,7 +56,7 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
         }
     }
 
-    val selectedBG = user?.backgroundId ?: 0
+    val selectedBG = user?.background_id ?: 0
 
     // 배경 이미지 선택 로직
     val backgroundResource = when (selectedBG) {
@@ -64,6 +65,8 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
         3 -> R.drawable.background4
         else -> R.drawable.background1
     }
+    Log.d("SignupViewModel", "Status: "+backgroundResource.toString())
+
 
     // 경험치 및 레벨 계산 로직
     val (level, experience) = user?.leaf?.let { leaf ->

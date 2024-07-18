@@ -30,4 +30,16 @@ class CharacterViewModel : ViewModel() {
             }
         }
     }
+
+    fun changeBackground(backgroundId: Int) {
+        viewModelScope.launch {
+            try {
+                userApi.changeBackground(backgroundId)
+                Log.d("CharacterViewModel", "Background changed successfully")
+            } catch (e: Exception) {
+                Log.e("CharacterViewModel", "Error changing background", e)
+            }
+        }
+    }
+
 }

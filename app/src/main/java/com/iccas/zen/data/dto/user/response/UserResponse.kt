@@ -4,5 +4,5 @@ data class UserResponse(
     val id: Int,
     val nickname: String,
     val leaf: Int,
-    val backgroundId: Int
+    val background_id: Int
 )
