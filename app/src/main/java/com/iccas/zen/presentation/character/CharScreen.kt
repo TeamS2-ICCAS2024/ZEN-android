@@ -55,6 +55,16 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
         }
     }
 
+    val selectedBG = user?.background_id ?: 0
+
+    // 배경 이미지 선택 로직
+    val backgroundResource = when (selectedBG) {
+        1 -> R.drawable.background2
+        2 -> R.drawable.background3
+        3 -> R.drawable.background4
+        else -> R.drawable.background1
+    }
+
     // 경험치 및 레벨 계산 로직
     val (level, experience) = user?.leaf?.let { leaf ->
         val level = (leaf / 100) % 3 + 1
@@ -130,7 +140,7 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.temp_background), // 첫 번째 이미지
+                    painter = painterResource(id = backgroundResource), // 선택된 배경 이미지
                     contentDescription = "Character Background",
                     modifier = Modifier
                         .fillMaxSize()
@@ -140,7 +150,7 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
                 )
                 selectedCharacter?.let {
                     Image(
-                        painter = painterResource(id = it.charImgId), // 두 번째 이미지
+                        painter = painterResource(id = it.charImgId), // 캐릭터 이미지
                         contentDescription = "Character",
                         modifier = Modifier.size(250.dp)
                     )

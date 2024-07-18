@@ -14,20 +14,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
+import com.iccas.zen.presentation.components.RetrofitInstance
 import com.iccas.zen.presentation.home.components.TitleSticker
+import kotlinx.coroutines.launch
 
 @Composable
 fun CollectionScreen(
     navController: NavController,
     characterViewModel: CharacterViewModel = viewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     var selectedCharacter by remember { mutableStateOf<CharacterInfo?>(null) }
     val user = characterViewModel.user
 
@@ -35,13 +41,27 @@ fun CollectionScreen(
     val leaf = user?.leaf ?: 0
 
     // Leaf 수치에 따라 보여줄 캐릭터 수 계산
-    var charactersToShowInSection1 = minOf(3, leaf / 100)
+    var charactersToShowInSection1 = 0
+    if(leaf >= 0)
+         charactersToShowInSection1 = minOf(3, leaf / 100 + 1)
     var charactersToShowInSection2 = 0
     var charactersToShowInSection3 = 0
     if (leaf >= 300)
         charactersToShowInSection2 = minOf(3, (leaf - 300) / 100 + 1)
     if (leaf >= 600)
         charactersToShowInSection3 = minOf(3, (leaf - 600) / 100 + 1)
+
+    // API 요청 함수
+    fun changeBackground(backgroundId: Int) {
+        coroutineScope.launch {
+            try {
+                val response = RetrofitInstance.api.changeBackground(backgroundId)
+                // Handle response if needed
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
 
     BasicBackgroundWithNavBar(navController = navController) {
         Spacer(modifier = Modifier.height(40.dp))
@@ -57,7 +77,7 @@ fun CollectionScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 // First section
-                SectionTitle(charactersToShowInSection1.toString() +"/3 Red House", R.drawable.temp_background)
+                SectionTitle(charactersToShowInSection1.toString() + "/3 Flower", R.drawable.background1)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -79,21 +99,22 @@ fun CollectionScreen(
                         )
                     }
 
-
                     if (charactersToShowInSection1 < 3) {
                         // Placeholder for remaining items
-                        CollectionItem(
-                            imageResId = R.drawable.question_mark,
-                            label = "?",
-                            onClick = {}
-                        )
+                        for (i in 0 until 3 - charactersToShowInSection1) {
+                            CollectionItem(
+                                imageResId = R.drawable.question_mark,
+                                label = "?",
+                                onClick = {}
+                            )
+                        }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 // Second section
-                SectionTitle(charactersToShowInSection2.toString() +"/3 Blue House", R.drawable.temp_background)
+                SectionTitle(charactersToShowInSection2.toString() + "/3 House", R.drawable.background2)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -128,7 +149,7 @@ fun CollectionScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 // Third section
-                SectionTitle(charactersToShowInSection3.toString() +"/3 Green House", R.drawable.temp_background)
+                SectionTitle(charactersToShowInSection3.toString() + "/3 Room", R.drawable.background3)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -161,6 +182,64 @@ fun CollectionScreen(
                 }
 
                 Spacer(modifier = Modifier.height(60.dp))
+
+                // Background Change Section
+                SectionTitle2("Change Background")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    // First background
+                    if (leaf >= 200) {
+                        CollectionItem(
+                            imageResId = R.drawable.background2,
+                            label = "flower",
+                            onClick = {
+                                changeBackground(1)
+                            }
+                        )
+                    } else {
+                        CollectionItem(
+                            imageResId = R.drawable.question_mark,
+                            label = "?",
+                            onClick = {}
+                        )
+                    }
+                    // Second background
+                    if (leaf >= 500) {
+                        CollectionItem(
+                            imageResId = R.drawable.background3,
+                            label = "house",
+                            onClick = {
+                                changeBackground(2)
+                            }
+                        )
+                    } else {
+                        CollectionItem(
+                            imageResId = R.drawable.question_mark,
+                            label = "?",
+                            onClick = {}
+                        )
+                    }
+                    // Third background
+                    if (leaf >= 800) {
+                        CollectionItem(
+                            imageResId = R.drawable.background4,
+                            label = "room",
+                            onClick = {
+                                changeBackground(3)
+                            }
+                        )
+                    } else {
+                        CollectionItem(
+                            imageResId = R.drawable.question_mark,
+                            label = "?",
+                            onClick = {}
+                        )
+                    }
+                }
             }
         }
     }
@@ -231,5 +310,23 @@ fun SectionTitle(text: String, iconResId: Int? = null) {
                 modifier = Modifier.size(24.dp)
             )
         }
+    }
+}
+
+@Composable
+fun SectionTitle2(text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 24.sp, // 글씨 크기 조절
+            color = Color.Black,
+            modifier = Modifier.weight(1f) // 텍스트를 왼쪽 정렬하기 위한 weight 추가
+        )
     }
 }
