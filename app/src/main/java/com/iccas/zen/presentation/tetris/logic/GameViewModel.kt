@@ -304,11 +304,6 @@ class GameViewModel : ViewModel() {
         return Triple(bricks, clearing, cleared) to clearLines.size
     }
 
-    private fun isGameOver(state: ViewState): Boolean {
-        val gameOverLine = state.matrix.second - 1
-        state.gameStatus = GameStatus.GameOver
-        return state.bricks.any { it.location.y <= gameOverLine }
-    }
 
     data class ViewState(
         val bricks: List<Brick> = emptyList(),

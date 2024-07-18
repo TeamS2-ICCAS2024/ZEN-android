@@ -12,4 +12,7 @@ interface UserApi {
 
     @POST("api/v1/background")
     suspend fun changeBackground(@Query("background_id") backgroundId: Int)
+
+    @POST("api/v1/leaf")
+    suspend fun addLeaf(@Query("leaf") leaf: Int)
 }
