@@ -15,7 +15,7 @@ import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.home.*
 import com.iccas.zen.presentation.onBoarding.*
 import com.iccas.zen.presentation.report.*
-import com.iccas.zen.presentation.signup.*
+import com.iccas.zen.presentation.auth.*
 import com.iccas.zen.presentation.tetris.TetrisGameScreen
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.yoga.*
@@ -27,7 +27,7 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "char_main") {
+    NavHost(navController, startDestination = "onboarding1") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }

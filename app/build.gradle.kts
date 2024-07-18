@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
+    implementation(libs.transport.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -94,10 +95,6 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.ktx.v231)
     implementation(libs.androidx.activity.compose.v130)
-
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
 
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)
@@ -129,4 +126,10 @@ dependencies {
     implementation ("org.tensorflow:tensorflow-lite:2.7.0")
     implementation ("org.tensorflow:tensorflow-lite-metadata:0.1.0")
     implementation ("org.tensorflow:tensorflow-lite-support:0.2.0")
+
+    // Retrofit and OkHttp
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
 }

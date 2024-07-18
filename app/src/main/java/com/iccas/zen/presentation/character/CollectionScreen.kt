@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.character
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,8 +23,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
+import com.iccas.zen.data.remote.AuthApi
+import com.iccas.zen.data.remote.RetrofitModule
+import com.iccas.zen.data.remote.UserApi
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
-import com.iccas.zen.presentation.components.RetrofitInstance
 import com.iccas.zen.presentation.home.components.TitleSticker
 import kotlinx.coroutines.launch
 
@@ -36,6 +39,8 @@ fun CollectionScreen(
 
     var selectedCharacter by remember { mutableStateOf<CharacterInfo?>(null) }
     val user = characterViewModel.user
+
+    val userApi: UserApi = RetrofitModule.createService(UserApi::class.java)
 
     // 캐릭터 선택 로직
     val leaf = user?.leaf ?: 0
@@ -55,7 +60,7 @@ fun CollectionScreen(
     fun changeBackground(backgroundId: Int) {
         coroutineScope.launch {
             try {
-                val response = RetrofitInstance.api.changeBackground(backgroundId)
+                val response = userApi.changeBackground(backgroundId)
                 // Handle response if needed
             } catch (e: Exception) {
                 // Handle error
