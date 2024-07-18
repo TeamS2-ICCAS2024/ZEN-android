@@ -54,8 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
+import com.iccas.zen.presentation.components.CommonViewModel
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.tetris.logic.Action
 import com.iccas.zen.presentation.tetris.logic.Brick
@@ -82,7 +84,8 @@ fun TetrisGameScreen(
     measureHeartViewModel: MeasureHeartViewModel,
     gameViewModel: GameViewModel,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    commonViewModel: CommonViewModel = viewModel()
 ) {
     LaunchedEffect(Unit) {
         gameViewModel.startHindranceTimer()
@@ -149,7 +152,12 @@ fun TetrisGameScreen(
                         gameViewModel.dispatch(Action.Reset)
                         lives.value = 5
                     },
-                    onExit = { navController.navigate("game_select") }
+                    onExit = {
+                        if (viewState.score >= 100) {
+                            commonViewModel.addLeaf(50)
+                        }
+                        navController.navigate("game_select")
+                    }
                 )
             } else {
                 GameBody(
