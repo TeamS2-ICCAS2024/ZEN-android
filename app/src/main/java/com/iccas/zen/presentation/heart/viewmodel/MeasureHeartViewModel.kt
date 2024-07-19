@@ -58,13 +58,15 @@ class MeasureHeartViewModel : ViewModel() {
     }
 
     private fun checkHeartRateThreshold() {
-        val average = _averageHeartRate.value ?: return
+        val average = _latestBaseData.value?.data?.baseHeart
         val currentRate = _heartRates.value.filter { it > 0 }.lastOrNull() ?: return
 
-        if (currentRate > average + 10) {
-            _isHeartRateHigh.value = true
-        } else if (currentRate <= average + 5) {
-            _isHeartRateHigh.value = false
+        if (average != null) {
+            if (currentRate > average + 10) {
+                _isHeartRateHigh.value = true
+            } else if (currentRate <= average + 5) {
+                _isHeartRateHigh.value = false
+            }
         }
     }
 
@@ -87,4 +89,25 @@ class MeasureHeartViewModel : ViewModel() {
             }
         }
     }
+
+    fun saveBase(userId: Long, baseHeart: Int, measureTime: String) {
+        viewModelScope.launch {
+            try {
+                val response = baseHeartApi.saveBase(SaveBaseRequest(userId, baseHeart, measureTime));
+                if (response.code() == 200) {
+                    _latestBaseData.value = response.body()
+                } else {
+                    _latestBaseData.value = SaveBaseResponse(
+                        status = response.code(),
+                        message = response.message(),
+                        data = null
+                    )
+                }
+                Log.d("MeasureHeartViewModel", "save base: $response")
+            } catch (e: Exception) {
+                Log.e("MeasureHeartViewModel", "Error save base", e)
+            }
+        }
+    }
+
 }

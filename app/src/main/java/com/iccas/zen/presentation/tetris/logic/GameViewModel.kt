@@ -18,16 +18,14 @@ enum class Hindrance {
     RandomDirection,
     DisableRotation,
     ReverseControl;
-
-
 }
 
 class GameViewModel : ViewModel() {
     private val _viewState: MutableState<ViewState> = mutableStateOf(ViewState())
     val viewState: State<ViewState> = _viewState
 
-    var hindranceActive = false
-    var hindranceBlockCount = 0
+    private var hindranceActive = false
+    private var hindranceBlockCount = 0
     private val _currentBlocks = MutableStateFlow<Pair<Spirit, Spirit>>(Empty to Empty)
     val currentBlocks: StateFlow<Pair<Spirit, Spirit>> = _currentBlocks
     private var isHindranceTimerStarted = false

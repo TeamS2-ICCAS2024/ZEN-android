@@ -39,6 +39,7 @@ import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import kotlinx.coroutines.delay
 import java.io.IOException
 import java.io.InputStream
+import java.time.LocalDateTime
 import java.util.*
 
 @Composable
@@ -108,6 +109,12 @@ fun MeasureBaseScreen(
             }
             timerRunning = false
             measureHeartViewModel.calculateAverageHeartRate()
+            val  currentTime = LocalDateTime.now().toString()
+            measureHeartViewModel.averageHeartRate.value?.let {
+                measureHeartViewModel.saveBase(1,
+                    it, currentTime)
+            }
+
             navController.navigate("base_result")
         }
     }
