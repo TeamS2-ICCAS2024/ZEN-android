@@ -1,12 +1,12 @@
 package com.iccas.zen.navigation
 
-
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.iccas.zen.R
 import com.iccas.zen.SelectEmotionScreen
 import com.iccas.zen.presentation.character.CharScreen
 import com.iccas.zen.presentation.character.CollectionScreen
@@ -34,8 +34,7 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-
-    NavHost(navController, startDestination = "recommend_measure_base") {
+    NavHost(navController, startDestination = "emotion_diary") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }
@@ -71,9 +70,6 @@ fun NavGraph(
             val route = backStackEntry.arguments?.getString("route") ?: "tetris_game"
             CountDownScreen(navController = navController, route = route)
         }
-        /* composable("game_select") {
-             GameSelectScreen(navController = navController)
-         }*/
         composable("tetris_game") {
             TetrisGameScreen(
                 measureHeartViewModel = measureHeartViewModel,
@@ -94,21 +90,24 @@ fun NavGraph(
             val score = backStackEntry.arguments?.getInt("score") ?: 0
             ResultScreen(score = score, navController = navController)
         }
-composable("heartreport")
-{
-    HeartReportScreen(navController)
-}
-        composable("heartreport2")
-        {
-           HeartReport2Screen(navController)
+        composable("heartreport") {
+            HeartReportScreen(navController)
+        }
+        composable("heartreport2") {
+            HeartReport2Screen(navController)
         }
         composable("high_heart_rate") {
             HighHeartRateScreen()
         }
-
-
-        composable("select_emotion") {
-            SelectEmotionScreen(navController = navController)
+        composable("select_emotion/{characterImageRes}/{characterDescription}",
+            arguments = listOf(
+                navArgument("characterImageRes") { type = NavType.IntType },
+                navArgument("characterDescription") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val characterImageRes = backStackEntry.arguments?.getInt("characterImageRes") ?: R.drawable.char_mozzi1
+            val characterDescription = backStackEntry.arguments?.getString("characterDescription") ?: "Mozzi"
+            SelectEmotionScreen(navController = navController, characterImageRes = characterImageRes, characterDescription = characterDescription)
         }
         composable(
             route = "tetris_game_over/level={level}/score={score}/lives={lives}/dateTime={dateTime}",
@@ -130,15 +129,17 @@ composable("heartreport")
             )
         }
         composable(
-            "chat_screen/{emojiResId}?prompt={prompt}",
+            "chat_screen/{emojiResId}?prompt={prompt}&characterDescription={characterDescription}",
             arguments = listOf(
                 navArgument("emojiResId") { type = NavType.IntType },
-                navArgument("prompt") { type = NavType.StringType; defaultValue = "" }
+                navArgument("prompt") { type = NavType.StringType; defaultValue = "" },
+                navArgument("characterDescription") { type = NavType.StringType; defaultValue = "Mozzi" }
             )
         ) { backStackEntry ->
             val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: 0
             val prompt = backStackEntry.arguments?.getString("prompt") ?: ""
-            ChatScreen(navController, emojiResId, prompt)
+            val characterDescription = backStackEntry.arguments?.getString("characterDescription") ?: "Mozzi"
+            ChatScreen(navController, emojiResId, prompt, characterDescription)
         }
         composable("start_yoga") {
             StartYogaGameScreen(navController = navController)
@@ -164,7 +165,6 @@ composable("heartreport")
         composable("report/anger_game") {
             AngerGameSelect(navController = navController)
         }
-
         composable("report/self_diagnosis/{test_id}",
             arguments = listOf(navArgument("test_id") { type = NavType.IntType })
         ) {
@@ -197,6 +197,5 @@ composable("heartreport")
         composable("emotion_diary") {
             DiaryCharSelectScreen(navController = navController)
         }
-
     }
 }

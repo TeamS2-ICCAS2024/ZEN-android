@@ -91,7 +91,7 @@ fun CharacterRow(character: String, characterImageRes: Int, navController: NavCo
             color = Color.Black
         )
         Button(
-            onClick = { navController.navigate("select_emotion") },
+            onClick = { navController.navigate("select_emotion/$characterImageRes/$characterDescription") },
             colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
             Text(text = "chat", color = Color.Black, fontSize = 20.sp)

@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iccas.zen.BuildConfig
+import com.iccas.zen.data.dto.auth.request.EmotionDiaryPostRequest
+import com.iccas.zen.data.remote.DiaryApi
+import com.iccas.zen.data.remote.RetrofitModule
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.headers
@@ -24,6 +27,24 @@ class ChatViewModel : ViewModel() {
     val messages: StateFlow<List<Message>> get() = _messages
 
     private val client = HttpClient()
+
+    private val diaryApi = RetrofitModule.createService(DiaryApi::class.java)
+
+    fun postEmotionDiary(userInput: String, character: String, emotionState: String) {
+        viewModelScope.launch {
+            try {
+                val response = diaryApi.postEmotionDiary(
+                    EmotionDiaryPostRequest(
+                        userInput = userInput,
+                        character = character,
+                        emotionState = emotionState
+                    )
+                )
+            } catch (e: Exception) {
+                Log.e("ChatViewModel", "Error posting diary", e)
+            }
+        }
+    }
 
     fun sendMessage(userInput: String, prompt: String? = null) {
         val finalText = prompt?.let { "$it $userInput" } ?: userInput

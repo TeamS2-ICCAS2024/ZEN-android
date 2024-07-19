@@ -30,10 +30,15 @@ import com.iccas.zen.presentation.chatBot.components.TopBar
 import com.iccas.zen.ui.theme.Blue90
 
 @Composable
-fun ChatScreen(navController: NavHostController, emojiResId: Int, basicPrompt: String, viewModel: ChatViewModel = viewModel()) {
+fun ChatScreen(
+    navController: NavHostController,
+    emojiResId: Int,
+    basicPrompt: String,
+    characterDescription: String,
+    viewModel: ChatViewModel = viewModel()
+) {
     var userInput by remember { mutableStateOf("") }
     val messages by viewModel.messages.collectAsState()
-
 
     BasicBackgroundWithLogo {
         val coroutineScope = rememberCoroutineScope()
@@ -76,7 +81,7 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, basicPrompt: S
                     verticalArrangement = Arrangement.Top
                 ) {
                     items(messages.asReversed()) { message ->
-                        MessageItem(message, emojiResId)
+                        MessageItem(message, emojiResId, characterDescription)
                     }
                 }
             }
@@ -121,7 +126,9 @@ fun ChatScreen(navController: NavHostController, emojiResId: Int, basicPrompt: S
 }
 
 @Composable
-fun MessageItem(message: Message, emojiResId: Int) {
+fun MessageItem(message: Message, emojiResId: Int, characterDescription: String) {
+    val characterImageRes = getCharacterImageRes(characterDescription)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,8 +138,8 @@ fun MessageItem(message: Message, emojiResId: Int) {
     ) {
         if (!message.isUser) {
             Image(
-                painter = painterResource(id = R.drawable.chat_bao),
-                contentDescription = "BAO",
+                painter = painterResource(id = characterImageRes),
+                contentDescription = characterDescription,
                 modifier = Modifier
                     .size(50.dp)
                     .padding(end = 8.dp)
@@ -142,12 +149,12 @@ fun MessageItem(message: Message, emojiResId: Int) {
             modifier = Modifier
                 .background(
                     color = if (message.isUser) Blue90 else Color.White,
-                    shape = RoundedCornerShape(12.dp) // 둥근 모서리를 위해 RoundedCornerShape 사용
+                    shape = RoundedCornerShape(12.dp)
                 )
                 .padding(16.dp)
         ) {
             Text(
-                text = message.text, // 사용자에게는 입력한 내용만 표시
+                text = message.text,
                 color = if (message.isUser) Color.Black else Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
@@ -162,5 +169,14 @@ fun MessageItem(message: Message, emojiResId: Int) {
                     .padding(start = 8.dp)
             )
         }
+    }
+}
+
+fun getCharacterImageRes(characterDescription: String): Int {
+    return when (characterDescription) {
+        "Mozzi" -> R.drawable.char_mozzi1
+        "BAO" -> R.drawable.char_bao1
+        "SKY" -> R.drawable.char_sky1
+        else -> R.drawable.char_mozzi1
     }
 }

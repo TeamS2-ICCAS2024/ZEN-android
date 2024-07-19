@@ -12,19 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.iccas.zen.R
+import com.iccas.zen.presentation.chatBot.ChatViewModel
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
 import com.iccas.zen.presentation.chatBot.components.TopBar
 import com.iccas.zen.presentation.chatBot.components.EmotionHeader
 
 @Composable
-fun SelectEmotionScreen(navController: NavHostController) {
+fun SelectEmotionScreen(navController: NavHostController, characterImageRes: Int, characterDescription: String) {
     val whatHappenedState = remember { mutableStateOf("") }
     val howFeelingState = remember { mutableStateOf("") }
     val whyFeelingState = remember { mutableStateOf("") }
@@ -38,30 +38,30 @@ fun SelectEmotionScreen(navController: NavHostController) {
 
             // 감정 헤더 추가
             EmotionHeader(
-                imageResId = R.drawable.chat_bao,
-                imageDescription = "Bao",
+                imageResId = characterImageRes,
+                imageDescription = characterDescription,
                 imageSize = 60.dp,
-                title = "BAO",
+                title = characterDescription,
                 message = "What happened today?",
                 question = "Can you describe what happened?",
                 inputState = whatHappenedState
             )
 
             EmotionHeader(
-                imageResId = R.drawable.chat_bao,
-                imageDescription = "Bao",
+                imageResId = characterImageRes,
+                imageDescription = characterDescription,
                 imageSize = 60.dp,
-                title = "BAO",
+                title = characterDescription,
                 message = "How are you feeling today?",
                 question = "How are you feeling?",
                 inputState = howFeelingState
             )
 
             EmotionHeader(
-                imageResId = R.drawable.chat_bao,
-                imageDescription = "Bao",
+                imageResId = characterImageRes,
+                imageDescription = characterDescription,
                 imageSize = 60.dp,
-                title = "BAO",
+                title = characterDescription,
                 message = "Why do you feel that way?",
                 question = "Can you explain why you feel that way?",
                 inputState = whyFeelingState
@@ -80,28 +80,32 @@ fun SelectEmotionScreen(navController: NavHostController) {
                     R.drawable.chat_happy,
                     "Happy",
                     70.dp,
-                    "You feel happy because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}."
+                    "You feel happy because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
+                    characterDescription
                 )
                 EmotionButton(
                     navController,
                     R.drawable.chat_soso,
                     "Soso",
                     70.dp,
-                    "You feel so-so because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}."
+                    "You feel so-so because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
+                    characterDescription
                 )
                 EmotionButton(
                     navController,
                     R.drawable.chat_sad,
                     "Sad",
                     70.dp,
-                    "You feel sad because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}."
+                    "You feel sad because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
+                    characterDescription
                 )
                 EmotionButton(
                     navController,
                     R.drawable.chat_angry,
                     "Angry",
                     70.dp,
-                    "You feel angry because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}."
+                    "You feel angry because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
+                    characterDescription
                 )
             }
         }
@@ -109,13 +113,23 @@ fun SelectEmotionScreen(navController: NavHostController) {
 }
 
 @Composable
-fun EmotionButton(navController: NavHostController, imageResId: Int, label: String, size: Dp, promptPrefix: String) {
+fun EmotionButton(
+    navController: NavHostController,
+    imageResId: Int,
+    label: String,
+    size: Dp,
+    promptPrefix: String,
+    characterDescription: String
+) {
+    val viewModel: ChatViewModel = viewModel()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable {
                 Log.d("EmotionButton", "Prompt Prefix: $promptPrefix")
-                navController.navigate("chat_screen/$imageResId?prompt=${promptPrefix.encode()}")
+                viewModel.postEmotionDiary(promptPrefix, characterDescription, label)
+                navController.navigate("chat_screen/$imageResId?prompt=${promptPrefix.encode()}&characterDescription=$characterDescription")
             }
             .padding(8.dp)
     ) {
