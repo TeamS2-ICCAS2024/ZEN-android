@@ -23,8 +23,10 @@ android {
 
         // Get the API key from local.properties
         val openAiApiKey: String = properties.getProperty("openai_api_key") ?: ""
+        val BASE_URL: String = properties.getProperty("BASE_URL") ?: ""
         // Add API key to build config
         buildConfigField("String", "OPENAI_API_KEY", "\"$openAiApiKey\"")
+        buildConfigField("String", "BASE_URL", "\"$BASE_URL\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

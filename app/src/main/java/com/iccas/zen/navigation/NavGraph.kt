@@ -35,7 +35,7 @@ fun NavGraph(
     val navController = rememberNavController()
 
 
-    NavHost(navController, startDestination = "char_main") {
+    NavHost(navController, startDestination = "recommend_measure_base") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }

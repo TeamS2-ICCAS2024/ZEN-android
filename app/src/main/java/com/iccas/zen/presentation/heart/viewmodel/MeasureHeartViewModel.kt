@@ -1,8 +1,17 @@
 package com.iccas.zen.presentation.heart.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.iccas.zen.data.dto.baseHeart.request.SaveBaseRequest
+import com.iccas.zen.data.dto.baseHeart.response.SaveBaseResponse
+import com.iccas.zen.data.remote.BaseHeartApi
+import com.iccas.zen.data.remote.RetrofitModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
 class MeasureHeartViewModel : ViewModel() {
@@ -20,6 +29,11 @@ class MeasureHeartViewModel : ViewModel() {
 
     private val _isHeartRateHigh = MutableStateFlow(false)
     val isHeartRateHigh: StateFlow<Boolean> = _isHeartRateHigh
+
+    private val baseHeartApi: BaseHeartApi = RetrofitModule.createService(BaseHeartApi::class.java)
+
+    private val _latestBaseData = MutableStateFlow<SaveBaseResponse?>(null)
+    val latestBaseData: StateFlow<SaveBaseResponse?> = _latestBaseData.asStateFlow()
 
     fun updateHeartRate(heartRate: Int) {
         _heartRates.value += heartRate
@@ -51,6 +65,26 @@ class MeasureHeartViewModel : ViewModel() {
             _isHeartRateHigh.value = true
         } else if (currentRate <= average + 5) {
             _isHeartRateHigh.value = false
+        }
+    }
+
+    fun getLatestBase(userId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = baseHeartApi.getLatestBase(userId);
+                if (response.code() == 200) {
+                    _latestBaseData.value = response.body()
+                } else {
+                    _latestBaseData.value = SaveBaseResponse(
+                        status = response.code(),
+                        message = response.message(),
+                        data = null
+                    )
+                }
+                Log.d("MeasureHeartViewModel", "get latest base: $response")
+            } catch (e: Exception) {
+                Log.e("MeasureHeartViewModel", "Error get latest base", e)
+            }
         }
     }
 }

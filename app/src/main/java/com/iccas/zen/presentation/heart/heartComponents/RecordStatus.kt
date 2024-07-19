@@ -54,5 +54,10 @@ fun BluetoothRecord(type: String) {
     RecordStatus(iconId = R.drawable.heart_bluetooth, type = type, modifier = Modifier.size(17.dp))
 }
 
+@Composable
+fun MeasureTimeRecord(type: String) {
+    RecordStatus(iconId = R.drawable.heart_measure_calendar, type = type, modifier = Modifier.size(17.dp))
+}
+
 
 
