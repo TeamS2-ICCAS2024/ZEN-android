@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.report
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +47,6 @@ fun SelfDiagnosisSelect(
     commonViewModel: CommonViewModel = viewModel()
 ) {
     val selfTestResults by commonViewModel.selfTestResults.collectAsState(initial = emptyList())
-
 
     BasicBackgroundWithLogo {
         Spacer(modifier = Modifier.height(20.dp))
@@ -115,7 +118,8 @@ fun SelfDiagnosisSelect(
                         navController = navController,
                         diagnosisName = "Diagnosis",
                         date = formattedDate,
-                        id = result.id
+                        id = result.id,
+                        score = result.score
                     )
                 }
             }
@@ -128,11 +132,20 @@ fun DiagnosisBox(
     navController: NavController,
     diagnosisName: String,
     date: String,
-    id: Int
+    id: Int,
+    score: Int
 ) {
+    val emojiResId = when (score) {
+        in 10..15 -> R.drawable.chat_happy
+        in 16..25 -> R.drawable.chat_soso
+        in 26..28 -> R.drawable.chat_sad
+        in 29..40 -> R.drawable.chat_angry
+        else -> R.drawable.chat_soso // Default icon
+    }
+
     Box(
         modifier = Modifier
-            .width(300.dp)
+            .width(400.dp)
             .height(80.dp)
             .background(Gray80, RoundedCornerShape(50))
             .border(2.dp, Brown40, RoundedCornerShape(50))
@@ -143,16 +156,26 @@ fun DiagnosisBox(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Image(
+                painter = painterResource(id = emojiResId),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(45.dp)
+                    .background(Color.Transparent, CircleShape),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(modifier = Modifier.width(8.dp)) // 이모티콘과 글씨 사이 간격 조정
             Text(
                 text = diagnosisName,
                 fontWeight = FontWeight.Bold,
-                fontSize = 26.sp,
+                fontSize = 25.sp,
                 fontFamily = FontFamily.Serif,
                 color = Brown40
             )
+            Spacer(modifier = Modifier.weight(1f)) // 진단명과 날짜 사이 간격 자동 조정
             Text(
                 text = date,
                 fontSize = 16.sp,
