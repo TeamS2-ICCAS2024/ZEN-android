@@ -39,7 +39,7 @@ fun BottomNavigationBar(navController: NavController) {
                 navController.navigate("game_select")
             }
             NavigationBarItem(R.drawable.diary_icon, "Diary") {
-                navController.navigate("select_emotion")
+                navController.navigate("emotion_diary")
             }
             NavigationBarItem(R.drawable.report_icon, "Report") {
                 navController.navigate("report")
