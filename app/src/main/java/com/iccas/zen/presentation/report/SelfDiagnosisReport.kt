@@ -42,6 +42,15 @@ fun SelfDiagnosisReport(
     val selfTestResults = commonViewModel.selfTestResults.collectAsState()
 
     val testResult = selfTestResults.value.find { it.id == testId }
+    val recentTestResults = selfTestResults.value.takeLast(4)
+
+    val scoreMessage = when (testResult?.score) {
+        in 10..15 -> "Your score is within a normal range."
+        in 16..25 -> "You experience mild anger. It is not a significant problem and you can control your anger well. Try to have a little more peace of mind."
+        in 26..28 -> "You likely experience considerable anger. You may have had moments where you regret your actions or face difficulties in relationships. Seeking professional help is recommended."
+        in 29..40 -> "You often experience anger. You may find it difficult to maintain normal relationships. Seeking professional help is strongly recommended for your well-being and the well-being of those around you."
+        else -> "Loading..."
+    }
 
     BasicBackgroundWithLogo {
         Column(
@@ -70,10 +79,16 @@ fun SelfDiagnosisReport(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                EmojiIcon(R.drawable.chat_angry)
-                EmojiIcon(R.drawable.chat_sad)
-                EmojiIcon(R.drawable.chat_soso)
-                EmojiIcon(R.drawable.chat_happy)
+                recentTestResults.forEach { result ->
+                    val emojiResId = when (result.score) {
+                        in 10..15 -> R.drawable.chat_happy
+                        in 16..25 -> R.drawable.chat_soso
+                        in 26..28 -> R.drawable.chat_sad
+                        in 29..40 -> R.drawable.chat_angry
+                        else -> R.drawable.chat_soso // Default icon
+                    }
+                    EmojiIcon(emojiResId)
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -106,18 +121,11 @@ fun SelfDiagnosisReport(
                     contentScale = ContentScale.Crop
                 )
                 Text(
-                    text = """
-                        Dear Mr. One.
-                        in April, the anger index 
-                        was lower than in March.
-                        You decreased a lot!
-                        i hope May will be full of
-                        smiling days
-                    """.trimIndent(),
+                    text = scoreMessage,
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Medium,
                     textAlign = TextAlign.Center,
-                    color = Color.Black, // Adjust the text color if necessary
+                    color = Color.Black,
                     modifier = Modifier.padding(16.dp)
                 )
             }

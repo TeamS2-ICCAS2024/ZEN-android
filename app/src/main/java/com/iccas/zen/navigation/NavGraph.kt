@@ -17,6 +17,7 @@ import com.iccas.zen.presentation.home.*
 import com.iccas.zen.presentation.onBoarding.*
 import com.iccas.zen.presentation.report.*
 import com.iccas.zen.presentation.auth.*
+import com.iccas.zen.presentation.chatBot.DiaryCharSelectScreen
 import com.iccas.zen.presentation.tetris.TetrisGameScreen
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.diagnosis.DiagnosisScreen
@@ -193,5 +194,9 @@ composable("heartreport")
         composable("personal_setting") {
             PersonalSettingScreen(navController = navController)
         }
+        composable("emotion_diary") {
+            DiaryCharSelectScreen(navController = navController)
+        }
+
     }
 }
