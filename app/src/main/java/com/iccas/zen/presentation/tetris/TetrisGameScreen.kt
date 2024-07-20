@@ -143,6 +143,7 @@ fun TetrisGameScreen(
                 showGameOverScreen = true
             }
             if (showGameOverScreen) {
+                gameViewModel.saveTetrisResult(measureHeartViewModel, 1, lives.value)
                 TetrisGameOverScreen(
                     level = viewState.level,
                     score = viewState.score,

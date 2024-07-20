@@ -1,17 +1,21 @@
 package com.iccas.zen.presentation.tetris.logic
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iccas.zen.data.dto.tetris.request.TetrisResultRequest
+import com.iccas.zen.data.remote.RetrofitModule
+import com.iccas.zen.data.remote.TetrisApi
+import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.tetris.logic.Spirit.Companion.Empty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import kotlin.math.min
 
 enum class Hindrance {
@@ -26,16 +30,39 @@ class GameViewModel : ViewModel() {
 
     private var hindranceActive = false
     private var hindranceBlockCount = 0
-    private val _currentBlocks = MutableStateFlow<Pair<Spirit, Spirit>>(Empty to Empty)
-    val currentBlocks: StateFlow<Pair<Spirit, Spirit>> = _currentBlocks
-    private var isHindranceTimerStarted = false
+    private var gameStartTime: String = LocalDateTime.now().toString()
+    private val tetrisApi: TetrisApi = RetrofitModule.createService(TetrisApi::class.java)
 
     init {
+        gameStartTime = LocalDateTime.now().toString()
         startHindranceTimer()
     }
 
     fun dispatch(action: Action) = reduce(viewState.value, action)
-    var currentDirection = Direction.Right // 초기 방향
+
+    fun saveTetrisResult(measureHeartViewModel: MeasureHeartViewModel, userId: Long, lives: Int) {
+        val tetrisResultRequest = measureHeartViewModel.latestBaseData.value?.data?.baseHeartId?.let {
+            TetrisResultRequest(
+                userId = userId,
+                heartRateList = measureHeartViewModel.heartRates.value,
+                baseHeartId = it,
+                level = viewState.value.level,
+                score = viewState.value.score,
+                lives = lives,
+                gameStartTime = gameStartTime,
+                gameEndTime = LocalDateTime.now().toString()
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                val response = tetrisResultRequest?.let { tetrisApi.saveTetrisResult(it) }
+                Log.d("GameViewModel", "Tetris result saved successfully")
+            } catch (e: Exception) {
+                Log.e("GameViewModel", "Error saving tetris result", e)
+            }
+        }
+    }
 
     fun startHindranceTimer() {
         viewModelScope.launch {

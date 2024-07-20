@@ -57,7 +57,7 @@ fun BaseResultScreen(
                     contentColor = Color.White
                 ),
                 onClick = {
-                    navController.navigate("countdown")
+                    navController.navigate("countdown/tetris_game")
                 }) {
                 Text("Start game !")
             }
