@@ -86,7 +86,6 @@ fun TetrisGameScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     commonViewModel: CommonViewModel = viewModel(),
-
 ) {
     // Initialize states
     val viewState by gameViewModel.viewState
@@ -121,6 +120,7 @@ fun TetrisGameScreen(
             gameViewModel.dispatch(Action.GameTick)
         }
     }
+
     LaunchedEffect(Unit) {
         showGameOverScreen = false
         lives.value = 5
@@ -128,6 +128,7 @@ fun TetrisGameScreen(
         gameViewModel.dispatch(Action.Reset)
         gameViewModel.dispatch(Action.Resume)
     }
+
     Surface(modifier = Modifier.fillMaxSize()) {
         if (isHeartRateHigh) {
             if (!heartRateExceeded.value) {
@@ -145,9 +146,12 @@ fun TetrisGameScreen(
             }
             if (viewState.gameStatus == GameStatus.GameOver) {
                 showGameOverScreen = true
+                gameViewModel.saveTetrisResult(
+                    measureHeartViewModel,
+                    1, lives.value
+                )
             }
             if (showGameOverScreen) {
-                gameViewModel.saveTetrisResult(measureHeartViewModel, 1, lives.value)
                 TetrisGameOverScreen(
                     level = viewState.level,
                     score = viewState.score,

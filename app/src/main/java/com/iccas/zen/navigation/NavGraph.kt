@@ -110,25 +110,6 @@ fun NavGraph(
             SelectEmotionScreen(navController = navController, characterImageRes = characterImageRes, characterDescription = characterDescription)
         }
         composable(
-            route = "tetris_game_over/level={level}/score={score}/lives={lives}/dateTime={dateTime}",
-            arguments = listOf(
-                navArgument("level") { type = NavType.IntType },
-                navArgument("score") { type = NavType.IntType },
-                navArgument("lives") { type = NavType.IntType },
-                navArgument("dateTime") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val level = backStackEntry.arguments?.getInt("level")
-            val score = backStackEntry.arguments?.getInt("score")
-            val lives = backStackEntry.arguments?.getInt("lives")
-            val dateTime = backStackEntry.arguments?.getString("dateTime")
-            TetrisGameScreen(
-                measureHeartViewModel = measureHeartViewModel,
-                gameViewModel = gameViewModel,
-                navController = navController
-            )
-        }
-        composable(
             "chat_screen/{emojiResId}?prompt={prompt}&characterDescription={characterDescription}",
             arguments = listOf(
                 navArgument("emojiResId") { type = NavType.IntType },
