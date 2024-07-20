@@ -252,7 +252,7 @@ fun CollectionItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier
-            .width(110.dp)
+            .width(95.dp)
             .padding(4.dp)
             .background(Color.White)
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))

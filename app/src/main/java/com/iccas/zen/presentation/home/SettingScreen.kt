@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Slider
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.ui.theme.Brown30
+import com.iccas.zen.ui.theme.Brown40
 
 @Composable
 fun SettingScreen(navController: NavController) {
@@ -43,7 +45,7 @@ fun SettingScreen(navController: NavController) {
                 text = "Settings",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Brown40
             )
 
             VolumeSettingItem(title = "Volume", description = "Adjust the volume")
@@ -64,15 +66,15 @@ fun VolumeSettingItem(title: String, description: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFFE0E0E0))
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.White)
             .padding(15.dp)
     ) {
         Text(
             text = title,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF8A8A8A)
+            color = Brown30
         )
         Text(
             text = description,
@@ -98,8 +100,8 @@ fun SettingItem(title: String, description: String, isClickable: Boolean = false
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color(0xFFE0E0E0))
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.White)
             .padding(15.dp)
             .clickable(enabled = isClickable, onClick = { onClick?.invoke() }),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -110,7 +112,7 @@ fun SettingItem(title: String, description: String, isClickable: Boolean = false
                 text = title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF8A8A8A)
+                color = Brown30
             )
             Text(
                 text = description,

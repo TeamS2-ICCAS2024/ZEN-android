@@ -85,12 +85,10 @@ fun TetrisGameScreen(
     gameViewModel: GameViewModel,
     navController: NavController,
     modifier: Modifier = Modifier,
-    commonViewModel: CommonViewModel = viewModel()
-) {
-    LaunchedEffect(Unit) {
-        gameViewModel.startHindranceTimer()
-    }
+    commonViewModel: CommonViewModel = viewModel(),
 
+) {
+    // Initialize states
     val viewState by gameViewModel.viewState
     val isHeartRateHigh by measureHeartViewModel.isHeartRateHigh.collectAsState()
     val lives = remember { mutableIntStateOf(5) }
@@ -99,7 +97,7 @@ fun TetrisGameScreen(
 
     // Lifecycle observer for the viewModel
     val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(key1 = Unit) {
+    DisposableEffect(Unit) {
         val observer = object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
                 gameViewModel.dispatch(Action.Resume)
@@ -123,7 +121,13 @@ fun TetrisGameScreen(
             gameViewModel.dispatch(Action.GameTick)
         }
     }
-
+    LaunchedEffect(Unit) {
+        showGameOverScreen = false
+        lives.value = 5
+        heartRateExceeded.value = false
+        gameViewModel.dispatch(Action.Reset)
+        gameViewModel.dispatch(Action.Resume)
+    }
     Surface(modifier = Modifier.fillMaxSize()) {
         if (isHeartRateHigh) {
             if (!heartRateExceeded.value) {
@@ -152,12 +156,16 @@ fun TetrisGameScreen(
                         showGameOverScreen = false
                         gameViewModel.dispatch(Action.Reset)
                         lives.value = 5
+                        gameViewModel.dispatch(Action.Resume)
                     },
                     onExit = {
                         if (viewState.score >= 100) {
                             commonViewModel.addLeaf(50)
                         }
                         navController.navigate("game_select")
+                        {
+                            popUpTo("tetris_game") { inclusive = true }
+                        }
                     }
                 )
             } else {
@@ -171,7 +179,6 @@ fun TetrisGameScreen(
                         onRestart = {
                             gameViewModel.dispatch(Action.Reset)
                             lives.value = 5
-
                         },
                         onPause = {
                             if (viewState.isRunning) {
@@ -238,12 +245,12 @@ fun TetrisGameScreen(
                             gameViewModel.dispatch(Action.Resume)
                         }
                     )
-
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
