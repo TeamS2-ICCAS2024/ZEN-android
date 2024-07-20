@@ -98,6 +98,7 @@ fun MeasureBaseScreen(
         } else {
             startServer(bluetoothAdapter, handler, measureHeartViewModel)
         }
+        measureHeartViewModel.clearHeartRates()
     }
 
     LaunchedEffect(timerRunning) {
@@ -109,7 +110,7 @@ fun MeasureBaseScreen(
             }
             timerRunning = false
             measureHeartViewModel.calculateAverageHeartRate()
-            val  currentTime = LocalDateTime.now().toString()
+            val currentTime = LocalDateTime.now().toString()
             measureHeartViewModel.averageHeartRate.value?.let {
                 measureHeartViewModel.saveBase(1,
                     it, currentTime)

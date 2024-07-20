@@ -87,9 +87,6 @@ fun TetrisGameScreen(
     modifier: Modifier = Modifier,
     commonViewModel: CommonViewModel = viewModel()
 ) {
-    LaunchedEffect(Unit) {
-        gameViewModel.startHindranceTimer()
-    }
 
     val viewState by gameViewModel.viewState
     val isHeartRateHigh by measureHeartViewModel.isHeartRateHigh.collectAsState()
@@ -124,6 +121,14 @@ fun TetrisGameScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        showGameOverScreen = false
+        lives.value = 5
+        heartRateExceeded.value = false
+        gameViewModel.dispatch(Action.Reset)
+        gameViewModel.dispatch(Action.Resume)
+    }
+
     Surface(modifier = Modifier.fillMaxSize()) {
         if (isHeartRateHigh) {
             if (!heartRateExceeded.value) {
@@ -141,9 +146,12 @@ fun TetrisGameScreen(
             }
             if (viewState.gameStatus == GameStatus.GameOver) {
                 showGameOverScreen = true
+                gameViewModel.saveTetrisResult(
+                    measureHeartViewModel,
+                    1, lives.value
+                )
             }
             if (showGameOverScreen) {
-                gameViewModel.saveTetrisResult(measureHeartViewModel, 1, lives.value)
                 TetrisGameOverScreen(
                     level = viewState.level,
                     score = viewState.score,

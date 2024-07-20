@@ -32,8 +32,10 @@ class GameViewModel : ViewModel() {
     private var hindranceBlockCount = 0
     private var gameStartTime: String = LocalDateTime.now().toString()
     private val tetrisApi: TetrisApi = RetrofitModule.createService(TetrisApi::class.java)
+    private var resultSaved = false
 
     init {
+        resultSaved = false
         gameStartTime = LocalDateTime.now().toString()
         startHindranceTimer()
     }
@@ -41,7 +43,9 @@ class GameViewModel : ViewModel() {
     fun dispatch(action: Action) = reduce(viewState.value, action)
 
     fun saveTetrisResult(measureHeartViewModel: MeasureHeartViewModel, userId: Long, lives: Int) {
+        if (resultSaved) return
         val tetrisResultRequest = measureHeartViewModel.latestBaseData.value?.data?.baseHeartId?.let {
+
             TetrisResultRequest(
                 userId = userId,
                 heartRateList = measureHeartViewModel.heartRates.value,
@@ -55,8 +59,9 @@ class GameViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
+            resultSaved = true
             try {
-                val response = tetrisResultRequest?.let { tetrisApi.saveTetrisResult(it) }
+                tetrisResultRequest?.let { tetrisApi.saveTetrisResult(it) }
                 Log.d("GameViewModel", "Tetris result saved successfully")
             } catch (e: Exception) {
                 Log.e("GameViewModel", "Error saving tetris result", e)
@@ -64,7 +69,7 @@ class GameViewModel : ViewModel() {
         }
     }
 
-    fun startHindranceTimer() {
+    private fun startHindranceTimer() {
         viewModelScope.launch {
             delay(15000) // Initial delay before the first hindrance
             while (true) {
@@ -121,6 +126,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun reduce(state: ViewState, action: Action) {
+        gameStartTime = LocalDateTime.now().toString()
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 emit(when (action) {
@@ -128,6 +134,7 @@ class GameViewModel : ViewModel() {
                         hindranceActive = false
                         hindranceBlockCount = 0
                         startHindranceTimer() // Reset 시 타이머 다시 시작
+                        resultSaved = false
                         ViewState(
                             gameStatus = GameStatus.Running,
                             isMute = state.isMute
