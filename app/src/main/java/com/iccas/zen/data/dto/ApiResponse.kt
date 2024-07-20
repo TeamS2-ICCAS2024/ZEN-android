@@ -1,4 +1,4 @@
-package com.iccas.zen.data.dto.auth.response
+package com.iccas.zen.data.dto
 
 data class ApiResponse(
     val status: Int,
