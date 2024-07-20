@@ -86,7 +86,7 @@ fun CharacterRow(character: String, characterImageRes: Int, navController: NavCo
         )
         Text(
             text = characterDescription,
-            fontSize = 40.sp,
+            fontSize = 38.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
@@ -94,7 +94,7 @@ fun CharacterRow(character: String, characterImageRes: Int, navController: NavCo
             onClick = { navController.navigate("select_emotion/$characterImageRes/$characterDescription") },
             colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
-            Text(text = "chat", color = Color.Black, fontSize = 20.sp)
+            Text(text = "chat", color = Color.Black, fontSize = 18.sp)
         }
     }
 }

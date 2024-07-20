@@ -72,7 +72,7 @@ fun HeartReportScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
@@ -87,7 +87,6 @@ fun HeartReportScreen(navController: NavController) {
                     )
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color(0xFFFFA500))) {
@@ -97,7 +96,7 @@ fun HeartReportScreen(navController: NavController) {
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 24.sp
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // 8sp 공백 추가
+                Spacer(modifier = Modifier.width(4.dp)) // 8sp 공백 추가
                 Text(
                     "Report",
                     fontWeight = FontWeight.ExtraBold,
