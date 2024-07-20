@@ -9,6 +9,8 @@ import com.iccas.zen.data.remote.DiaryApi
 import com.iccas.zen.data.remote.RetrofitModule
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
@@ -21,12 +23,27 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.internal.concurrent.TaskRunner.Companion.logger
+import javax.net.ssl.X509TrustManager
+import java.security.cert.X509Certificate
 
 class ChatViewModel : ViewModel() {
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages
 
-    private val client = HttpClient()
+    private val client = HttpClient(CIO) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30000
+            connectTimeoutMillis = 30000
+            socketTimeoutMillis = 30000
+        }
+
+        engine {
+            https {
+                trustManager = TrustAllCertificates()
+            }
+        }
+    }
 
     private val diaryApi = RetrofitModule.createService(DiaryApi::class.java)
 
@@ -48,10 +65,10 @@ class ChatViewModel : ViewModel() {
 
     fun sendMessage(userInput: String, prompt: String? = null) {
         val finalText = prompt?.let { "$it $userInput" } ?: userInput
-        _messages.value = _messages.value + Message(userInput, true) // 사용자 입력만 표시
+        _messages.value += Message(userInput, true) // 사용자 입력만 표시
         viewModelScope.launch {
             val response = getResponseFromApi(finalText)
-            _messages.value = _messages.value + Message(response, false)
+            _messages.value += Message(response, false)
         }
     }
 
@@ -85,5 +102,12 @@ class ChatViewModel : ViewModel() {
         val json = kotlinx.serialization.json.Json.parseToJsonElement(responseBody)
         val messageContent = json.jsonObject["choices"]?.jsonArray?.get(0)?.jsonObject?.get("message")?.jsonObject?.get("content")?.jsonPrimitive?.content
         return messageContent ?: "Error parsing response"
+    }
+
+
+    class TrustAllCertificates : X509TrustManager {
+        override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+        override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+        override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
     }
 }
