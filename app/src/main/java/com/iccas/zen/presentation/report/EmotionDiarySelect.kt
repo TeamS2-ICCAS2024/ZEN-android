@@ -29,8 +29,9 @@ fun EmotionDiarySelect(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 1.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 1.dp)
         ) {
             IconButton(
                 onClick = {navController.navigate("report") },
@@ -43,19 +44,22 @@ fun EmotionDiarySelect(navController: NavController) {
                     contentDescription = "Back"
                 )
             }
+Row(            verticalAlignment = Alignment.CenterVertically,
+) {
+    Text(
+        text = "Emotional Diary",
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color(0xFFFFA500) // 주황색
+    )
+    Text(
+        text = " Report",
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.Black // 검정색
+    )
+}
 
-            Text(
-                text = "Emotional Diary",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFA500) // 주황색
-            )
-            Text(
-                text = " Report",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black // 검정색
-            )
         }
         Spacer(modifier = Modifier.height(10.dp))
 

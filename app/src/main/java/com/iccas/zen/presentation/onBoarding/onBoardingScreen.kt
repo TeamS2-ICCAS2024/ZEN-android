@@ -43,13 +43,13 @@ fun OnboardingPage(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Image with taped paper background and text content
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 8.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
                 Image(
@@ -57,7 +57,7 @@ fun OnboardingPage(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(600.dp) // 높이를 더 키움
+                        .height(700.dp) // 높이를 더 키움
                         .align(Alignment.Center)
                         .clipToBounds()
                 )
@@ -76,13 +76,13 @@ fun OnboardingPage(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = title,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = description,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -109,7 +109,7 @@ fun OnboardingPage(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp)
+                    .padding(bottom = 4.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

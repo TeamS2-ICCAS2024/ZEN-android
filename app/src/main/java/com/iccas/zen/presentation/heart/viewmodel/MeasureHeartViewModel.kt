@@ -21,7 +21,7 @@ class MeasureHeartViewModel : ViewModel() {
     private val _statusText = MutableStateFlow("Disconnected")
     val statusText: StateFlow<String> = _statusText
 
-    private val _receivedData = MutableStateFlow("Waiting for data...")
+    private val _receivedData = MutableStateFlow("Waiting...")
     val receivedData: StateFlow<String> = _receivedData
 
     private val _averageHeartRate = MutableStateFlow<Int?>(null)

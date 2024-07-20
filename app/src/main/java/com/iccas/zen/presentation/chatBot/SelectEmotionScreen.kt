@@ -68,46 +68,48 @@ fun SelectEmotionScreen(navController: NavHostController, characterImageRes: Int
             )
 
             // 버튼들을 화면에 꽉 차게 배치
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                EmotionButton(
-                    navController,
-                    R.drawable.chat_happy,
-                    "Happy",
-                    70.dp,
-                    "You feel happy because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
-                    characterDescription
-                )
-                EmotionButton(
-                    navController,
-                    R.drawable.chat_soso,
-                    "Soso",
-                    70.dp,
-                    "You feel so-so because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
-                    characterDescription
-                )
-                EmotionButton(
-                    navController,
-                    R.drawable.chat_sad,
-                    "Sad",
-                    70.dp,
-                    "You feel sad because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
-                    characterDescription
-                )
-                EmotionButton(
-                    navController,
-                    R.drawable.chat_angry,
-                    "Angry",
-                    70.dp,
-                    "You feel angry because ${whatHappenedState.value}, ${howFeelingState.value}, and ${whyFeelingState.value}.",
-                    characterDescription
-                )
-            }
+            EmotionButtonsRow(
+                navController,
+                whatHappenedState.value,
+                howFeelingState.value,
+                whyFeelingState.value,
+                characterDescription
+            )
+        }
+    }
+}
+
+@Composable
+fun EmotionButtonsRow(
+    navController: NavHostController,
+    whatHappened: String,
+    howFeeling: String,
+    whyFeeling: String,
+    characterDescription: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+
+    ) {
+        val emotions = listOf(
+            Triple(R.drawable.chat_happy, "Happy", "You feel happy because $whatHappened, $howFeeling, and $whyFeeling."),
+            Triple(R.drawable.chat_soso, "Soso", "You feel so-so because $whatHappened, $howFeeling, and $whyFeeling."),
+            Triple(R.drawable.chat_sad, "Sad", "You feel sad because $whatHappened, $howFeeling, and $whyFeeling."),
+            Triple(R.drawable.chat_angry, "Angry", "You feel angry because $whatHappened, $howFeeling, and $whyFeeling.")
+        )
+
+        emotions.forEach { (imageResId, label, promptPrefix) ->
+            EmotionButton(
+                navController = navController,
+                imageResId = imageResId,
+                label = label,
+                size = 50.dp,
+                promptPrefix = promptPrefix,
+                characterDescription = characterDescription
+            )
         }
     }
 }
