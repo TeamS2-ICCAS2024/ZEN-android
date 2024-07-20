@@ -37,7 +37,6 @@ class GameViewModel : ViewModel() {
     init {
         resultSaved = false
         gameStartTime = LocalDateTime.now().toString()
-        startHindranceTimer()
     }
 
     fun dispatch(action: Action) = reduce(viewState.value, action)
