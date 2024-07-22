@@ -3,16 +3,8 @@ package com.iccas.zen.presentation.heartreport
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,11 +12,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -34,69 +27,63 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.report.viewModel.ReportViewModel
 import com.iccas.zen.ui.theme.Brown40
 import com.iccas.zen.ui.theme.Gray80
+import com.iccas.zen.ui.theme.Orange30
+import com.iccas.zen.utils.formatLocalDateTime
+import java.time.LocalDate
 
 @Composable
-fun HeartReportScreen(navController: NavController) {
-    val currentMonth = remember { mutableStateOf(6) } // 6월로 초기화
-    val currentYear = remember { mutableStateOf(24) } // 24년으로 초기화
-    val heartLives = mapOf(
-        Pair(24 to 6, listOf(
-            "game6" to 3,
-            "game5" to 2,
-            "game4" to 5,
-            "game3" to 4,
-            "game2" to 3,
-            "game1" to 3
-        ))
-        ,Pair(24 to 5, listOf(
-            "game5" to 5,
-            "game4" to 4,
-            "game3" to 3,
-            "game2" to 2,
-            "game1" to 1))
+fun HeartReportScreen(navController: NavController, userId: Long = 1) {
+    val currentDate = LocalDate.now()
+    val currentMonth = remember { mutableStateOf(currentDate.monthValue) }
+    val currentYear = remember { mutableStateOf(currentDate.year) }
 
-        // 다른 달과 연도의 기록을 추가할 수 있습니다.
-    )
+    val viewModel: ReportViewModel = viewModel()
+
+    LaunchedEffect(currentYear.value, currentMonth.value) {
+        viewModel.getTetrisResultList(currentYear.value, currentMonth.value, userId)
+    }
+
+    val tetrisResultList = viewModel.tetrisResultList.collectAsState().value
 
     BasicBackgroundWithLogo {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(2.dp),
+                    .padding(end = 35.dp),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { navController.navigate("report") },
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(start = 0.dp) // Remove padding to align with ZEN
+                    onClick = { navController.navigate("report") }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_left),
-                        contentDescription = "Back"
+                        contentDescription = "Back",
+                        modifier = Modifier.size(25.dp)
                     )
                 }
 
                 Text(
                     buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color(0xFFFFA500))) {
+                        withStyle(style = SpanStyle(color = Orange30)) {
                             append("Anger Control")
                         }
                     },
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 24.sp
                 )
-                Spacer(modifier = Modifier.width(4.dp)) // 8sp 공백 추가
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     "Report",
                     fontWeight = FontWeight.ExtraBold,
@@ -110,15 +97,25 @@ fun HeartReportScreen(navController: NavController) {
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            )
-            {
-                IconButton(onClick = {
-                    if (currentMonth.value > 1) currentMonth.value--
-                }
+            ) {
+                val isPreviousMonthDisabled = currentMonth.value == 1 && currentYear.value == currentDate.year
+                IconButton(
+                    onClick = {
+                        if (!isPreviousMonthDisabled) {
+                            if (currentMonth.value > 1) {
+                                currentMonth.value--
+                            } else {
+                                currentMonth.value = 12
+                                currentYear.value--
+                            }
+                        }
+                    },
+                    enabled = !isPreviousMonthDisabled
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.go_left), // 왼쪽 화살표 아이콘 사용
-                        contentDescription = "Previous Month"
+                        painter = painterResource(id = R.drawable.go_left),
+                        contentDescription = "Previous Month",
+                        tint = if (isPreviousMonthDisabled) Color.Gray else Color.Unspecified
                     )
                 }
 
@@ -130,34 +127,56 @@ fun HeartReportScreen(navController: NavController) {
                     fontSize = 40.sp
                 )
 
-                // 다음 달로 이동하는 버튼
-                IconButton(onClick = {
-                    if (currentMonth.value < 12) currentMonth.value++
-                }
+                val isNextMonthDisabled = (currentMonth.value == 12 && currentYear.value >= currentDate.year) ||
+                        (currentMonth.value == currentDate.monthValue && currentYear.value == currentDate.year)
+                IconButton(
+                    onClick = {
+                        if (!isNextMonthDisabled) {
+                            if (currentMonth.value < 12) {
+                                currentMonth.value++
+                            } else {
+                                currentMonth.value = 1
+                                currentYear.value++
+                            }
+                        }
+                    },
+                    enabled = !isNextMonthDisabled
                 ) {
-
                     Icon(
-                        painter = painterResource(id = R.drawable.go_right),// 오른쪽 화살표 아이콘 사용
-                        contentDescription = "Next Month"// 오른쪽 화살표로 변경
-
+                        painter = painterResource(id = R.drawable.go_right),
+                        contentDescription = "Next Month",
+                        tint = if (isNextMonthDisabled) Color.Gray else Color.Unspecified
                     )
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            val currentGameRecords = heartLives[Pair(currentYear.value, currentMonth.value)]
-            if (currentGameRecords != null) {
-                currentGameRecords.forEach { (game, lives) ->
-                    GameScoreRow(game = game, lives = lives, navController = navController)
-                    Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                tetrisResultList?.let { resultList ->
+                    if (resultList.data.isNotEmpty()) {
+                        items(resultList.data.size) { index ->
+                            val result = resultList.data[index]
+                            GameScoreRow(
+                                game = formatLocalDateTime(result.startTime),
+                                lives = result.lives,
+                                navController = navController
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
+                    } else {
+                        item {
+                            Text(
+                                text = "No game records !",
+                                color = Brown40,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 25.sp,
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                        }
+                    }
                 }
-            } else {
-                Text(
-                    text = "No game records for this month.",
-                    color = Brown40,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
             }
         }
     }
@@ -178,7 +197,7 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController) {
         Button(
             onClick = { navController.navigate("heartreport2") },
             modifier = Modifier
-                .padding(start = 4.dp)
+                .padding(horizontal = 5.dp)
                 .fillMaxWidth()
                 .padding(4.dp)
                 .height(60.dp)
@@ -193,12 +212,11 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController) {
                 text = game,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                modifier = Modifier.padding(start = 4.dp),
                 fontFamily = FontFamily.Serif
             )
-            Row(
-                modifier = Modifier.padding(end = 16.dp)
-            ) {
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Row() {
                 repeat(5) { index ->
                     val heartIcon = if (index < lives) {
                         R.drawable.tetris_game_heart_filled
