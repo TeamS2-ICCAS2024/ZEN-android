@@ -1,4 +1,4 @@
-package com.iccas.zen.presentation.character
+package com.iccas.zen.presentation.character.characterViewModel
 
 import android.util.Log
 import androidx.compose.runtime.getValue

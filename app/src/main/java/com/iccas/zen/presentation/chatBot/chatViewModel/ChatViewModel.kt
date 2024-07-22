@@ -1,4 +1,4 @@
-package com.iccas.zen.presentation.chatBot
+package com.iccas.zen.presentation.chatBot.chatViewModel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -7,6 +7,7 @@ import com.iccas.zen.BuildConfig
 import com.iccas.zen.data.dto.emotionDiary.request.EmotionDiaryPostRequest
 import com.iccas.zen.data.remote.DiaryApi
 import com.iccas.zen.data.remote.RetrofitModule
+import com.iccas.zen.presentation.chatBot.Message
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO

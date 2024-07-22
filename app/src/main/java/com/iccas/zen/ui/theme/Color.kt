@@ -37,4 +37,7 @@ val Green30 = Color(0xFF45A186)
 // report
 val Orange30 = Color(0xFFFF6F02)
 
+// home
+val Grenn30 = Color(0xFF66CC66)
+
 

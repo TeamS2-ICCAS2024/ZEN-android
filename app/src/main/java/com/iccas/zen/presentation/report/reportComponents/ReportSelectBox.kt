@@ -26,8 +26,8 @@ fun ReportSelectBox(
 ) {
     Box(
         modifier = Modifier
-            .width(300.dp)
-            .height(80.dp)
+            .width(280.dp)
+            .height(75.dp)
             .background(Gray80, RoundedCornerShape(50))
             .border(2.dp, Brown40, RoundedCornerShape(50))
             .clickable { onClick() },
@@ -36,7 +36,7 @@ fun ReportSelectBox(
         Text(
             modifier = Modifier.padding(bottom = 5.dp),
             text = type,
-            fontSize = 30.sp,
+            fontSize = 26.sp,
             fontWeight = FontWeight.ExtraBold,
             fontFamily = FontFamily.Serif,
             color = Brown40

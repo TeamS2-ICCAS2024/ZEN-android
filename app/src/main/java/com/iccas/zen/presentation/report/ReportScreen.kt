@@ -28,19 +28,19 @@ fun ReportScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 100.dp),
+                .padding(bottom = 50.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ReportSelectBox(
                 type = "Emotion Diary",
                 onClick = { navController.navigate("report/emotion_diary") })
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             ReportSelectBox(
                 type = "Anger Control",
                 onClick = { navController.navigate("report/game") })
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             ReportSelectBox(
                 type = "Self Diagnosis",

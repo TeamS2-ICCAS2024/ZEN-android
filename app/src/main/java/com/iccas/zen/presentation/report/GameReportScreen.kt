@@ -70,7 +70,6 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                     Spacer(modifier = Modifier.height(8.dp))
                     GraphLegend(
                         baseHeartRate = result.baseHeartRate.baseHeart,
-                        averageHeartRate = result.averageHearRate,
                         maxHeartRate = result.heartRateList.maxOrNull() ?: 100,
                         minHeartRate = result.heartRateList.minOrNull() ?: 0
                     )
@@ -78,13 +77,13 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                 Spacer(modifier = Modifier.height(25.dp))
 
                 TitleWithHighligher(title = "overview", highLighterWidth = 95.dp)
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // 3행 2열 형식의 Overview details
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp)
+                        .padding(horizontal = 15.dp)
                         .padding(end = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -97,7 +96,6 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                         Spacer(modifier = Modifier.height(20.dp))
                         OverviewColumn(title = "when", value = formatLocalDateTime(result.gameStartTime, pattern =
                         "yyyy-MM-dd\nHH:mm"))
-                        Spacer(modifier = Modifier.height(20.dp))
                     }
 
                     Column(
@@ -107,6 +105,7 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                         Spacer(modifier = Modifier.height(20.dp))
                         OverviewColumn(title = "lives", value = result.lives.toString())
                         Spacer(modifier = Modifier.height(20.dp))
+                        OverviewColumn(title = "average HR", value = result.averageHearRate.toInt().toString())
                     }
                 }
             } ?: run {
@@ -167,19 +166,19 @@ fun HeartRateGraph(
             strokeWidth = 3.dp.toPx()
         )
 
-        // Draw average heart rate line
-        val averageY = size.height - (averageHeartRate - minRate) * yInterval
+        // Draw limit heart rate line
+        val limitY = size.height - (baseHeartRate + 10 - minRate) * yInterval
         drawLine(
             color = Color.DarkGray,
-            start = androidx.compose.ui.geometry.Offset(0f, averageY),
-            end = androidx.compose.ui.geometry.Offset(size.width, averageY),
+            start = androidx.compose.ui.geometry.Offset(0f, limitY),
+            end = androidx.compose.ui.geometry.Offset(size.width, limitY),
             strokeWidth = 3.dp.toPx()
         )
     }
 }
 
 @Composable
-fun GraphLegend(baseHeartRate: Int, averageHeartRate: Float, maxHeartRate: Int, minHeartRate: Int) {
+fun GraphLegend(baseHeartRate: Int, maxHeartRate: Int, minHeartRate: Int) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -189,7 +188,7 @@ fun GraphLegend(baseHeartRate: Int, averageHeartRate: Float, maxHeartRate: Int, 
             verticalArrangement = Arrangement.Center
         ) {
             LegendItem(color = Color.Blue, label = "Base HR: $baseHeartRate")
-            LegendItem(color = Color.DarkGray, label = "Average HR: ${averageHeartRate.toInt()}")
+            LegendItem(color = Color.DarkGray, label = "Limit HR: ${baseHeartRate + 10}")
         }
         Column(
             modifier = Modifier.padding(horizontal = 5.dp),
