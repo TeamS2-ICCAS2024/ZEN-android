@@ -3,10 +3,8 @@ package com.iccas.zen.presentation.report
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,13 +15,14 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.components.TitleWithHighligher
+import com.iccas.zen.presentation.report.reportComponents.ReportTitle
 import com.iccas.zen.presentation.report.viewModel.ReportViewModel
 
 @Composable
@@ -34,9 +33,16 @@ fun DiaryDetailScreen(
 ) {
     val context = LocalContext.current
     val diaryDetail by reportViewModel.diaryDetail.collectAsState()
+    val diaryByEmotion by reportViewModel.diaryByEmotion.collectAsState()
 
     LaunchedEffect(emotionDiaryId) {
         reportViewModel.getDiaryDetail(emotionDiaryId)
+    }
+
+    LaunchedEffect(diaryDetail) {
+        diaryDetail?.data?.emotion?.let { emotion ->
+            reportViewModel.getDiaryByEmotion(emotion)
+        }
     }
 
     BasicBackgroundWithLogo {
@@ -46,9 +52,10 @@ fun DiaryDetailScreen(
                 .padding(16.dp)
         ) {
             item {
-                diaryDetail?.data?.let { detail ->
-                    TextWithBackground("Analysis")
+                ReportTitle(backOnClick = { navController.navigateUp() }, highlightText = "Emotional Diary")
 
+                diaryDetail?.data?.let { detail ->
+                    TitleWithHighligher(title = "Analysis", highLighterWidth = 100.dp)
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
@@ -58,22 +65,23 @@ fun DiaryDetailScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            TextWithBackground("When")
+                            TitleWithHighligher(title = "When", highLighterWidth = 75.dp)
                             Text(text = detail.whenDetail, fontSize = 18.sp)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            TextWithBackground("Emotion")
+                            TitleWithHighligher(title = "Emotion", highLighterWidth = 100.dp)
+                            val emotionImageRes = getEmotionImageRes(detail.emotion ?: "Soso")
                             Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
+                                painter = painterResource(id = emotionImageRes), // 감정 이미지 리소스
                                 contentDescription = "Emotion",
                                 modifier = Modifier.size(32.dp)
                             )
-                            Text(text = detail.emotion, fontSize = 18.sp)
+                            Text(text = detail.emotion ?: "Unknown", fontSize = 18.sp)
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    TextWithBackground("Summary")
+                    TitleWithHighligher(title = "Summary", highLighterWidth = 110.dp)
                     Text(
                         text = detail.summary,
                         fontSize = 18.sp,
@@ -82,7 +90,7 @@ fun DiaryDetailScreen(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    TextWithBackground("Solution")
+                    TitleWithHighligher(title = "Solution", highLighterWidth = 100.dp)
                     Text(
                         text = detail.solution,
                         fontSize = 18.sp,
@@ -90,18 +98,16 @@ fun DiaryDetailScreen(
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    TextWithBackground("Anger Frequency")
-
+                    TitleWithHighligher(title = "Emotion Frequency", highLighterWidth = 210.dp)
                     Spacer(modifier = Modifier.height(20.dp))
                     Column {
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "2 days ago", fontSize = 18.sp)
-                            Text(text = "21 days ago", fontSize = 18.sp)
-                            Text(text = "4 days ago", fontSize = 18.sp)
-                            Text(text = "Now", fontSize = 18.sp)
+                            diaryByEmotion.forEach { date ->
+                                Text(text = date, fontSize = 10.sp)
+                            }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
@@ -109,29 +115,17 @@ fun DiaryDetailScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
-                            DashedDivider()
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
-                            DashedDivider()
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
-                            DashedDivider()
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
+                            repeat(diaryByEmotion.size) {
+                                val emotionImageRes = getEmotionImageRes(detail.emotion ?: "Soso")
+                                Image(
+                                    painter = painterResource(id = emotionImageRes), // 감정 이미지 리소스
+                                    contentDescription = detail.emotion,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                if (it < diaryByEmotion.size - 1) {
+                                    DashedDivider()
+                                }
+                            }
                         }
                     }
                 } ?: run {
@@ -143,18 +137,6 @@ fun DiaryDetailScreen(
             }
         }
     }
-}
-
-@Composable
-fun TextWithBackground(text: String) {
-    Text(
-        text = text,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .background(Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp) // Add padding to the text
-    )
 }
 
 @Composable
@@ -180,5 +162,15 @@ fun DashedDivider() {
                 )
             )
         )
+    }
+}
+
+fun getEmotionImageRes(emotion: String): Int {
+    return when (emotion) {
+        "Angry" -> R.drawable.chat_angry
+        "Happy" -> R.drawable.chat_happy
+        "Soso" -> R.drawable.chat_soso
+        "Sad" -> R.drawable.chat_sad
+        else -> R.drawable.chat_soso // 기본 이미지 설정
     }
 }

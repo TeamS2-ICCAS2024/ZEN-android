@@ -1,31 +1,30 @@
 package com.iccas.zen.presentation.report
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.components.TitleWithHighligher
+import com.iccas.zen.presentation.report.reportComponents.ReportTitle
+import com.iccas.zen.presentation.report.viewModel.ReportViewModel
+import com.iccas.zen.R
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.iccas.zen.R
 import com.iccas.zen.data.dto.emotionDiary.response.DiaryEntry
-import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
-import com.iccas.zen.presentation.report.viewModel.ReportViewModel
-import com.iccas.zen.ui.theme.Brown40
 
 @Composable
 fun EmotionDiarySelectScreen(navController: NavController, reportViewModel: ReportViewModel = viewModel()) {
@@ -43,31 +42,7 @@ fun EmotionDiarySelectScreen(navController: NavController, reportViewModel: Repo
                 .fillMaxWidth()
                 .padding(horizontal = 1.dp)
         ) {
-            IconButton(
-                onClick = { navController.navigate("report") },
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 0.dp) // Remove padding to align with ZEN
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_left),
-                    contentDescription = "Back"
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "Emotional Diary",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFFFA500) // 주황색
-                )
-                Text(
-                    text = " Report",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black // 검정색
-                )
-            }
+            ReportTitle(backOnClick = { navController.navigateUp() }, highlightText = "Emotional Diary")
         }
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -87,26 +62,21 @@ fun EmotionDiarySelectScreen(navController: NavController, reportViewModel: Repo
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(Color(0xFF8B4513).copy(alpha = 0.1f), RoundedCornerShape(20.dp)) // 어두운 갈색 형광펜 효과
-                    ) {
-                        Text(
-                            text = "recent conversation",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Brown40,
-                            modifier = Modifier.padding(2.dp) // 내부 패딩 추가
-                        )
+                    Box {
+                        TitleWithHighligher(title = "recent conversation", highLighterWidth = 230.dp)
                     }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
             }
-
             // 서버에서 가져온 일기 목록을 표시
             items(diaryListState.value) { diary ->
-                ReportSelectBox(navController, R.drawable.char_mozzi1, diary)
+                ReportSelectBoxWithDetails(
+                    diary = diary,
+                    onClick = {
+                        navController.navigate("emotion_detail/${diary.emotionDiaryId}")
+                    }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -114,15 +84,24 @@ fun EmotionDiarySelectScreen(navController: NavController, reportViewModel: Repo
 }
 
 @Composable
-fun ReportSelectBox(navController: NavController, imageRes: Int, diary: DiaryEntry) {
+fun ReportSelectBoxWithDetails(
+    diary: DiaryEntry,
+    onClick: () -> Unit
+) {
+    val imageRes = when (diary.character) {
+        "BAO" -> R.drawable.char_bao1
+        "Mozzi" -> R.drawable.char_mozzi1
+        "SKY" -> R.drawable.char_sky1
+        else -> R.drawable.chat_bao
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray, RoundedCornerShape(8.dp))
             .padding(16.dp)
-            .clickable {
-                navController.navigate("emotion_detail/${diary.emotionDiaryId}")
-            }
+            .clickable { onClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
