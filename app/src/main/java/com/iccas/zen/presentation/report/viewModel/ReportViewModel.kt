@@ -1,7 +1,11 @@
 package com.iccas.zen.presentation.report.viewModel
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iccas.zen.data.dto.emotionDiary.response.DiaryEntry
+import com.iccas.zen.data.dto.tetris.response.TetrisResultListResponse
+import com.iccas.zen.data.remote.DiaryApi
 import com.iccas.zen.data.remote.RetrofitModule
 import com.iccas.zen.data.remote.TetrisApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,13 +22,17 @@ class ReportViewModel : ViewModel() {
 
     private val _tetrisResult = MutableStateFlow<TetrisResultResponse?>(null)
     val tetrisResult: StateFlow<TetrisResultResponse?> = _tetrisResult.asStateFlow()
+    
+    private val _diaryList = MutableStateFlow<List<DiaryEntry>>(emptyList())
+    val diaryList: StateFlow<List<DiaryEntry>> = _diaryList.asStateFlow()
 
     private val tetrisApi: TetrisApi = RetrofitModule.createService(TetrisApi::class.java)
+    private val diaryApi: DiaryApi = RetrofitModule.createService(DiaryApi::class.java)
 
     fun getTetrisResultList(year: Int, month: Int, userId: Long) {
         viewModelScope.launch {
             try {
-                val response = tetrisApi.getTetrisResultList(year, month, userId);
+                val response = tetrisApi.getTetrisResultList(year, month, userId)
                 _tetrisResultList.value = response.body()
                 Log.d("ReportViewModel", "get tetris result list: $response")
             } catch (e: Exception) {
@@ -41,6 +49,27 @@ class ReportViewModel : ViewModel() {
                 Log.d("ReportViewModel", "get tetris result: $response")
             } catch (e: Exception) {
                 Log.e("ReportViewModel", "Error get tetris result", e)
+            }
+        }
+    }
+}
+
+    fun getDiaryList() {
+        viewModelScope.launch {
+            try {
+                val response = diaryApi.getDiaryList()
+                if (response.isSuccessful) {
+                    val diaryListResponse = response.body()
+                    if (diaryListResponse != null && diaryListResponse.status == 200) {
+                        _diaryList.value = diaryListResponse.data
+                    } else {
+                        Log.e("ReportViewModel", "Failed to load diary list: ${diaryListResponse?.message}")
+                    }
+                } else {
+                    Log.e("ReportViewModel", "Error response code: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("ReportViewModel", "Error getting diary list", e)
             }
         }
     }
