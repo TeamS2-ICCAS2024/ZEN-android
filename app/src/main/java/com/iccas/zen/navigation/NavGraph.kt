@@ -23,8 +23,7 @@ import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.diagnosis.DiagnosisScreen
 import com.iccas.zen.presentation.diagnosis.SurveyScreen
 import com.iccas.zen.presentation.diagnosis.ResultScreen
-import com.iccas.zen.presentation.heartreport.HeartReportScreen
-import com.iccas.zen.presentation.heartreport.HeartReport2Screen
+import com.iccas.zen.presentation.report.GameReportScreen
 import com.iccas.zen.presentation.yoga.*
 
 @Composable
@@ -34,7 +33,7 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = "onboarding1") {
+    NavHost(navController, startDestination = "report/game") {
         composable("onboarding1") { OnboardingPage1(navController) }
         composable("onboarding2") { OnboardingPage2(navController) }
         composable("onboarding3") { OnboardingPage3(navController) }
@@ -90,11 +89,15 @@ fun NavGraph(
             val score = backStackEntry.arguments?.getInt("score") ?: 0
             ResultScreen(score = score, navController = navController)
         }
-        composable("heartreport") {
-            HeartReportScreen(navController)
+        composable("report/game") {
+            GameReportListScreen(navController)
         }
-        composable("heartreport2") {
-            HeartReport2Screen(navController)
+        composable(
+            route = "report/game/{gameId}",
+            arguments = listOf(navArgument("gameId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val gameId = backStackEntry.arguments?.getLong("gameId") ?: 0L
+            GameReportScreen(navController = navController, gameId = gameId)
         }
         composable("high_heart_rate") {
             HighHeartRateScreen()
@@ -143,20 +146,10 @@ fun NavGraph(
         composable("report/self_diagnosis") {
             SelfDiagnosisSelect(navController = navController)
         }
-        composable("report/anger_game") {
-            AngerGameSelect(navController = navController)
-        }
         composable("report/self_diagnosis/{test_id}",
             arguments = listOf(navArgument("test_id") { type = NavType.IntType })
         ) {
             SelfDiagnosisReport(navController = navController, testId = it.arguments?.getInt("test_id") ?: 0)
-        }
-        composable(
-            route = "anger_game_report/{gameName}",
-            arguments = listOf(navArgument("gameName") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val gameName = backStackEntry.arguments?.getString("gameName") ?: "unknown"
-            AngerGameReport(navController = navController, gameName = gameName)
         }
         composable(
             route = "report_detail/{character}/{date}",

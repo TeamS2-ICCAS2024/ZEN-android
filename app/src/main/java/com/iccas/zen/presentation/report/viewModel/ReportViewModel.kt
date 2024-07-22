@@ -12,11 +12,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModel
+import com.iccas.zen.data.dto.tetris.response.TetrisResultListResponse
+import com.iccas.zen.data.dto.tetris.response.TetrisResultResponse
 
 class ReportViewModel : ViewModel() {
     private val _tetrisResultList = MutableStateFlow<TetrisResultListResponse?>(null)
     val tetrisResultList: StateFlow<TetrisResultListResponse?> = _tetrisResultList.asStateFlow()
 
+    private val _tetrisResult = MutableStateFlow<TetrisResultResponse?>(null)
+    val tetrisResult: StateFlow<TetrisResultResponse?> = _tetrisResult.asStateFlow()
+    
     private val _diaryList = MutableStateFlow<List<DiaryEntry>>(emptyList())
     val diaryList: StateFlow<List<DiaryEntry>> = _diaryList.asStateFlow()
 
@@ -34,6 +40,19 @@ class ReportViewModel : ViewModel() {
             }
         }
     }
+
+    fun getTetrisResult(gameId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = tetrisApi.getTetrisResult(gameId);
+                _tetrisResult.value = response.body()
+                Log.d("ReportViewModel", "get tetris result: $response")
+            } catch (e: Exception) {
+                Log.e("ReportViewModel", "Error get tetris result", e)
+            }
+        }
+    }
+}
 
     fun getDiaryList() {
         viewModelScope.launch {

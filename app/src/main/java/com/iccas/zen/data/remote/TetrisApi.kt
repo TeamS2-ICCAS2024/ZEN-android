@@ -16,5 +16,7 @@ interface TetrisApi {
 
     @GET("api/v1/tetris/list/year/{year}/month/{month}/user/{userId}")
     suspend fun getTetrisResultList(@Path("year") year: Int, @Path("month") month: Int, @Path("userId") userId: Long): Response<TetrisResultListResponse>
+    @GET("api/v1/tetris/game/{gameId}")
+    suspend fun getTetrisResult(@Path("gameId") gameId: Long): Response<TetrisResultResponse>
 }
 

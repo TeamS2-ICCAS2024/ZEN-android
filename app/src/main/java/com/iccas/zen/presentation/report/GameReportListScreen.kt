@@ -1,5 +1,6 @@
-package com.iccas.zen.presentation.heartreport
+package com.iccas.zen.presentation.report
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,26 +21,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.report.reportComponents.ReportTitle
 import com.iccas.zen.presentation.report.viewModel.ReportViewModel
 import com.iccas.zen.ui.theme.Brown40
 import com.iccas.zen.ui.theme.Gray80
-import com.iccas.zen.ui.theme.Orange30
 import com.iccas.zen.utils.formatLocalDateTime
 import java.time.LocalDate
 
 @Composable
-fun HeartReportScreen(navController: NavController, userId: Long = 1) {
+fun GameReportListScreen(navController: NavController, userId: Long = 1) {
     val currentDate = LocalDate.now()
     val currentMonth = remember { mutableStateOf(currentDate.monthValue) }
     val currentYear = remember { mutableStateOf(currentDate.year) }
@@ -56,45 +53,16 @@ fun HeartReportScreen(navController: NavController, userId: Long = 1) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(25.dp))
+            ReportTitle(
+                backOnClick = { navController.navigate("report") },
+                highlightText = "Anger Control"
+            )
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 35.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { navController.navigate("report") }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.arrow_left),
-                        contentDescription = "Back",
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Orange30)) {
-                            append("Anger Control")
-                        }
-                    },
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 24.sp
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    "Report",
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 24.sp
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -156,12 +124,15 @@ fun HeartReportScreen(navController: NavController, userId: Long = 1) {
             ) {
                 tetrisResultList?.let { resultList ->
                     if (resultList.data.isNotEmpty()) {
+                        Log.d("result", resultList.data.toString())
                         items(resultList.data.size) { index ->
                             val result = resultList.data[index]
+                            Log.d("gameId", result.id.toString())
                             GameScoreRow(
                                 game = formatLocalDateTime(result.startTime),
                                 lives = result.lives,
-                                navController = navController
+                                navController = navController,
+                                gameId = result.id
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                         }
@@ -183,7 +154,7 @@ fun HeartReportScreen(navController: NavController, userId: Long = 1) {
 }
 
 @Composable
-fun GameScoreRow(game: String, lives: Int, navController: NavController) {
+fun GameScoreRow(game: String, lives: Int, navController: NavController, gameId: Long) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -195,11 +166,9 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
-            onClick = { navController.navigate("heartreport2") },
+            onClick = { navController.navigate("report/game/$gameId") },
             modifier = Modifier
-                .padding(horizontal = 5.dp)
                 .fillMaxWidth()
-                .padding(4.dp)
                 .height(60.dp)
                 .background(Color.Transparent, RoundedCornerShape(50))
                 .border(0.dp, Color.Transparent, RoundedCornerShape(50)),
@@ -211,10 +180,9 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController) {
             Text(
                 text = game,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                fontFamily = FontFamily.Serif
+                fontSize = 21.sp
             )
-            Spacer(modifier = Modifier.width(15.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
             Row() {
                 repeat(5) { index ->
@@ -226,7 +194,7 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController) {
                     Image(
                         painter = painterResource(id = heartIcon),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(21.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                 }
