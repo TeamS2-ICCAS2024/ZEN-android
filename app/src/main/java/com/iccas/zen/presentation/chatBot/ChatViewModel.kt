@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iccas.zen.BuildConfig
-import com.iccas.zen.data.dto.auth.request.EmotionDiaryPostRequest
+import com.iccas.zen.data.dto.emotionDiary.request.EmotionDiaryPostRequest
 import com.iccas.zen.data.remote.DiaryApi
 import com.iccas.zen.data.remote.RetrofitModule
 import io.ktor.client.HttpClient
@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import okhttp3.internal.concurrent.TaskRunner.Companion.logger
 import javax.net.ssl.X509TrustManager
 import java.security.cert.X509Certificate
 
