@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.components.TitleWithHighligher
 import com.iccas.zen.presentation.report.viewModel.ReportViewModel
 
 @Composable
@@ -34,9 +35,16 @@ fun DiaryDetailScreen(
 ) {
     val context = LocalContext.current
     val diaryDetail by reportViewModel.diaryDetail.collectAsState()
+    val diaryByEmotion by reportViewModel.diaryByEmotion.collectAsState()
 
     LaunchedEffect(emotionDiaryId) {
         reportViewModel.getDiaryDetail(emotionDiaryId)
+    }
+
+    LaunchedEffect(diaryDetail) {
+        diaryDetail?.data?.emotion?.let { emotion ->
+            reportViewModel.getDiaryByEmotion(emotion)
+        }
     }
 
     BasicBackgroundWithLogo {
@@ -90,7 +98,7 @@ fun DiaryDetailScreen(
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    TextWithBackground("Anger Frequency")
+                    TextWithBackground("Emotion Frequency")
 
                     Spacer(modifier = Modifier.height(20.dp))
                     Column {
@@ -98,10 +106,9 @@ fun DiaryDetailScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "2 days ago", fontSize = 18.sp)
-                            Text(text = "21 days ago", fontSize = 18.sp)
-                            Text(text = "4 days ago", fontSize = 18.sp)
-                            Text(text = "Now", fontSize = 18.sp)
+                            diaryByEmotion.forEach { date ->
+                                Text(text = date, fontSize = 10.sp)
+                            }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
@@ -109,29 +116,16 @@ fun DiaryDetailScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
-                            DashedDivider()
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
-                            DashedDivider()
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
-                            DashedDivider()
-                            Image(
-                                painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
-                                contentDescription = "Angry",
-                                modifier = Modifier.size(32.dp)
-                            )
+                            repeat(diaryByEmotion.size) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
+                                    contentDescription = "Angry",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                if (it < diaryByEmotion.size - 1) {
+                                    DashedDivider()
+                                }
+                            }
                         }
                     }
                 } ?: run {
