@@ -1,13 +1,8 @@
 package com.iccas.zen.navigation
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -254,10 +249,11 @@ fun NavGraph(
             ReportScreen(navController = navController)
         }
         composable("report/emotion_diary") {
+            EmotionDiarySelectScreen(navController = navController)
+
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
             }
-            EmotionDiarySelect(navController = navController)
         }
         composable("report/self_diagnosis") {
             LaunchedEffect(Unit) {
@@ -275,19 +271,15 @@ fun NavGraph(
             SelfDiagnosisReport(navController = navController, testId = testId)
         }
         composable(
-            route = "report_detail/{character}/{date}",
-            arguments = listOf(
-                navArgument("character") { type = NavType.StringType },
-                navArgument("date") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val character = backStackEntry.arguments?.getString("character") ?: ""
-            val date = backStackEntry.arguments?.getString("date") ?: ""
+            route = "emotion_detail/{emotionDiaryId}",
+            arguments = listOf(navArgument("emotionDiaryId") { type = NavType.LongType })
+        )  { backStackEntry ->
+            val emotionDiaryId = backStackEntry.arguments?.getLong("emotionDiaryId") ?: 0L
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
             }
-            ReportDetailScreen(navController, character, date)
-        }
+            DiaryDetailScreen(navController = navController, emotionDiaryId = emotionDiaryId)
+    }
         composable("setting") {
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
@@ -308,4 +300,3 @@ fun NavGraph(
         }
     }
 }
-

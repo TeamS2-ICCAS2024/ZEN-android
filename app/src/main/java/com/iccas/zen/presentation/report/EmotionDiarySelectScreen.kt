@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -20,12 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
+import com.iccas.zen.data.dto.emotionDiary.response.DiaryEntry
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
 import com.iccas.zen.presentation.report.viewModel.ReportViewModel
 import com.iccas.zen.ui.theme.Brown40
 
 @Composable
-fun EmotionDiarySelect(navController: NavController, reportViewModel: ReportViewModel = viewModel()) {
+fun EmotionDiarySelectScreen(navController: NavController, reportViewModel: ReportViewModel = viewModel()) {
     val diaryListState = reportViewModel.diaryList.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -68,41 +71,42 @@ fun EmotionDiarySelect(navController: NavController, reportViewModel: ReportView
         }
         Spacer(modifier = Modifier.height(10.dp))
 
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 100.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Box(
+                Row(
                     modifier = Modifier
-                        .background(Color(0xFF8B4513).copy(alpha = 0.1f), RoundedCornerShape(20.dp)) // 어두운 갈색 형광펜 효과
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
                 ) {
-                    Text(
-                        text = "recent conversation",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Brown40,
-                        modifier = Modifier.padding(2.dp) // 내부 패딩 추가
-                    )
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF8B4513).copy(alpha = 0.1f), RoundedCornerShape(20.dp)) // 어두운 갈색 형광펜 효과
+                    ) {
+                        Text(
+                            text = "recent conversation",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Brown40,
+                            modifier = Modifier.padding(2.dp) // 내부 패딩 추가
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
-
             // 서버에서 가져온 일기 목록을 표시
-            diaryListState.value.forEach { diary ->
-                ReportSelectBox(navController, R.drawable.char_mozzi1, diary.character, diary.date)
+            items(diaryListState.value) { diary ->
+                ReportSelectBox(navController, R.drawable.char_mozzi1, diary)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -110,14 +114,14 @@ fun EmotionDiarySelect(navController: NavController, reportViewModel: ReportView
 }
 
 @Composable
-fun ReportSelectBox(navController: NavController, imageRes: Int, character: String, date: String) {
+fun ReportSelectBox(navController: NavController, imageRes: Int, diary: DiaryEntry) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray, RoundedCornerShape(8.dp))
             .padding(16.dp)
             .clickable {
-                navController.navigate("report_detail/${character.encode()}/${date.encode()}")
+                navController.navigate("emotion_detail/${diary.emotionDiaryId}")
             }
     ) {
         Row(
@@ -130,11 +134,9 @@ fun ReportSelectBox(navController: NavController, imageRes: Int, character: Stri
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(text = character, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                Text(text = date, color = Color.Gray, fontSize = 14.sp)
+                Text(text = diary.character, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(text = diary.date, color = Color.Gray, fontSize = 14.sp)
             }
         }
     }
 }
-
-fun String.encode(): String = java.net.URLEncoder.encode(this, "UTF-8")
