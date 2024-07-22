@@ -48,15 +48,15 @@ fun SurveyScreen(navController: NavController) {
         var selectedAnswers by remember { mutableStateOf(List(10) { "" }) }
         var showWarning by remember { mutableStateOf(false) }
 
+        Spacer(modifier = Modifier.height(20.dp))
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(2.dp),
-                shape = RoundedCornerShape(16.dp), // 둥근 모서리
+                    .fillMaxSize(),
+                shape = RoundedCornerShape(10.dp), // 둥근 모서리
                 border = BorderStroke(1.dp, color = Brown40) // 검은색 테두리
             ) {
                 LazyColumn(
@@ -67,7 +67,6 @@ fun SurveyScreen(navController: NavController) {
                         .background(Color.White)
                         .padding(4.dp)
                 ) {
-
 
                     item {
                         Spacer(modifier = Modifier.height(10.dp))
@@ -155,7 +154,7 @@ fun SurveyScreen(navController: NavController) {
 
 @Composable
 fun QuestionRow(question: String, selectedAnswer: String, onAnswerSelected: (String) -> Unit) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = question,
             fontSize = 18.sp,
