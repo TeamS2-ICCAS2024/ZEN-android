@@ -32,12 +32,43 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.iccas.zen.R
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.tetris.logic.Direction
 import com.iccas.zen.presentation.tetris.tetrisComponents.GameButton
 import com.iccas.zen.presentation.components.BasicBackground
 
+
+
+class MusicViewModel : ViewModel() {
+    private val isMute = mutableStateOf(true)
+
+    fun toggleMute() {
+        isMute.value = !isMute.value
+        // 여기에 배경음악을 제어하는 로직을 추가하세요.
+        if (isMute.value) {
+            // 배경음악 끄기
+            stopBackgroundMusic()
+        } else {
+            // 배경음악 켜기
+            startBackgroundMusic()
+        }
+    }
+
+    fun stopBackgroundMusic() {
+        // 배경음악을 끄는 실제 로직을 여기에 구현하세요.
+    }
+
+    fun startBackgroundMusic() {
+        // 배경음악을 켜는 실제 로직을 여기에 구현하세요.
+    }
+
+    fun mute() {
+        isMute.value = true
+        stopBackgroundMusic()
+    }
+}
 @Composable
 fun GameBody(
     clickable: Clickable = combinedClickable(),

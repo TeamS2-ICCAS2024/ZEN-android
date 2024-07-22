@@ -40,6 +40,7 @@ import com.iccas.zen.presentation.components.BasicBackground
 import com.iccas.zen.presentation.components.CommonViewModel
 import com.iccas.zen.presentation.components.PlayControlButton
 import com.iccas.zen.ui.theme.Red50
+import com.iccas.zen.utils.MusicManager
 import kotlinx.coroutines.delay
 
 @Composable
@@ -57,6 +58,12 @@ fun YogaGameScreen(
     var leafCount by remember { mutableIntStateOf(initialPoseIndex) }
     var isTimerPaused by remember { mutableStateOf(true) }
     var isInstructionShowing by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        MusicManager.stopMainMusic()
+        MusicManager.initializeYogaMusic(context)
+        MusicManager.playYogaMusic()
+    }
 
     if (showDialog) {
         AlertDialog(
@@ -87,7 +94,9 @@ fun YogaGameScreen(
                     modifier = Modifier
                         .size(50.dp, 40.dp)
                         .border(2.dp, Color.Black, RoundedCornerShape(50)),
-                    onClick = { showDialog = true },
+                    onClick = {
+                        MusicManager.stopMusic()
+                        showDialog = true },
                     background = Red50,
                     imageVector = Icons.Filled.ExitToApp,
                     contentDescription = "quit game",

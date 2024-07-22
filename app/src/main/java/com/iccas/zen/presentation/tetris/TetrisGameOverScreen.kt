@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,7 @@ import com.iccas.zen.R
 import com.iccas.zen.presentation.components.ReplayAndExitControlButtons
 import com.iccas.zen.ui.theme.Green50
 import com.iccas.zen.ui.theme.Red50
+import com.iccas.zen.utils.MusicManager
 
 @Composable
 fun TetrisGameOverScreen(
@@ -40,7 +42,10 @@ fun TetrisGameOverScreen(
     onReplay: () -> Unit,
     onExit: () -> Unit
 ) {
-    val tetrisMediaPlayer = remember { mutableStateOf<MediaPlayer?>(null) }
+    val context = LocalContext.current
+
+    val musicInitialized = remember { mutableStateOf(false) }
+
     val stats = listOf(
         "level" to (level ?: 0),
         "score" to (score ?: 0)
@@ -48,9 +53,13 @@ fun TetrisGameOverScreen(
 
     // 게임 오버 시 배경 음악을 정지
     DisposableEffect(Unit) {
-        tetrisMediaPlayer.value?.pause()
+        if (!musicInitialized.value) {
+            MusicManager.initializeTetrisMusic(context)
+            musicInitialized.value = true
+        }
+        MusicManager.stopTetrisMusic()
         onDispose {
-            tetrisMediaPlayer.value?.release()
+            MusicManager.stopTetrisMusic()
         }
     }
 
@@ -106,7 +115,10 @@ fun TetrisGameOverScreen(
         ReplayAndExitControlButtons(
             modifier = Modifier.size(110.dp, 50.dp),
             onReplay = onReplay,
-            onExit = onExit,
+            onExit = {
+                // 메인 음악을 재생한 후 onExit 호출
+            onExit()
+            },
             replayButtonBackground = Green50,
             exitButtonBackground = Red50,
             replayIconColor = Color.Black,
