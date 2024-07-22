@@ -113,7 +113,6 @@ fun EmotionButtonsRow(
         }
     }
 }
-
 @Composable
 fun EmotionButton(
     navController: NavHostController,
@@ -131,7 +130,9 @@ fun EmotionButton(
             .clickable {
                 Log.d("EmotionButton", "Prompt Prefix: $promptPrefix")
                 viewModel.postEmotionDiary(promptPrefix, characterDescription, label)
-                navController.navigate("chat_screen/$imageResId?prompt=${promptPrefix.encode()}&characterDescription=$characterDescription")
+                val encodedPrompt = promptPrefix.encode()
+                Log.d("EmotionButton", "Navigating to chat_screen with prompt: $encodedPrompt")
+                navController.navigate("chat_screen/$imageResId?prompt=$encodedPrompt&characterDescription=$characterDescription")
             }
             .padding(8.dp)
     ) {
