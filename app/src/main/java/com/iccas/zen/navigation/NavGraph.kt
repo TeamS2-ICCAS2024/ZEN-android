@@ -180,14 +180,13 @@ fun NavGraph(
         composable(
             route = "report/game/{gameId}",
             arguments = listOf(navArgument("gameId") { type = NavType.LongType })
-        ) { 
-            LaunchedEffect(Unit) {
-                MusicManager.playMainMusic()
-            }
-          
+        ) {
             backStackEntry ->
             val gameId = backStackEntry.arguments?.getLong("gameId") ?: 0L
             GameReportScreen(navController = navController, gameId = gameId)
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
         }
         composable("high_heart_rate") {
             LaunchedEffect(Unit) {
