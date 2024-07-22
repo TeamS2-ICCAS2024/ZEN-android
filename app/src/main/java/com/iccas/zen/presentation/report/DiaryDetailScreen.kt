@@ -55,8 +55,7 @@ fun DiaryDetailScreen(
         ) {
             item {
                 diaryDetail?.data?.let { detail ->
-                    TextWithBackground("Analysis")
-
+                    TitleWithHighligher(title = "Analysis", highLighterWidth = 100.dp)
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
@@ -66,11 +65,11 @@ fun DiaryDetailScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            TextWithBackground("When")
+                            TitleWithHighligher(title = "When", highLighterWidth = 75.dp)
                             Text(text = detail.whenDetail, fontSize = 18.sp)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            TextWithBackground("Emotion")
+                            TitleWithHighligher(title = "Emotion", highLighterWidth = 100.dp)
                             Image(
                                 painter = painterResource(id = R.drawable.chat_angry), // 감정 이미지 리소스
                                 contentDescription = "Emotion",
@@ -81,7 +80,7 @@ fun DiaryDetailScreen(
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    TextWithBackground("Summary")
+                    TitleWithHighligher(title = "Summary", highLighterWidth = 110.dp)
                     Text(
                         text = detail.summary,
                         fontSize = 18.sp,
@@ -90,7 +89,7 @@ fun DiaryDetailScreen(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    TextWithBackground("Solution")
+                    TitleWithHighligher(title = "Solution", highLighterWidth = 100.dp)
                     Text(
                         text = detail.solution,
                         fontSize = 18.sp,
@@ -98,8 +97,7 @@ fun DiaryDetailScreen(
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    TextWithBackground("Emotion Frequency")
-
+                    TitleWithHighligher(title = "Emotion Frequency", highLighterWidth = 210.dp)
                     Spacer(modifier = Modifier.height(20.dp))
                     Column {
                         Row(
@@ -137,18 +135,6 @@ fun DiaryDetailScreen(
             }
         }
     }
-}
-
-@Composable
-fun TextWithBackground(text: String) {
-    Text(
-        text = text,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .background(Color.LightGray.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp) // Add padding to the text
-    )
 }
 
 @Composable
