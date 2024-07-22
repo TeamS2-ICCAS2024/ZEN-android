@@ -30,8 +30,7 @@ import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.diagnosis.DiagnosisScreen
 import com.iccas.zen.presentation.diagnosis.SurveyScreen
 import com.iccas.zen.presentation.diagnosis.ResultScreen
-import com.iccas.zen.presentation.heartreport.HeartReportScreen
-import com.iccas.zen.presentation.heartreport.HeartReport2Screen
+import com.iccas.zen.presentation.report.GameReportScreen
 import com.iccas.zen.presentation.yoga.*
 import com.iccas.zen.utils.MusicManager
 
@@ -172,17 +171,23 @@ fun NavGraph(
             }
             ResultScreen(score = score, navController = navController)
         }
-        composable("heartreport") {
+        composable("report/game") {
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
             }
-            HeartReportScreen(navController)
+            GameReportListScreen(navController)
         }
-        composable("heartreport2") {
+        composable(
+            route = "report/game/{gameId}",
+            arguments = listOf(navArgument("gameId") { type = NavType.LongType })
+        ) { 
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
             }
-            HeartReport2Screen(navController)
+          
+            backStackEntry ->
+            val gameId = backStackEntry.arguments?.getLong("gameId") ?: 0L
+            GameReportScreen(navController = navController, gameId = gameId)
         }
         composable("high_heart_rate") {
             LaunchedEffect(Unit) {
@@ -261,12 +266,6 @@ fun NavGraph(
             }
             SelfDiagnosisSelect(navController = navController)
         }
-        composable("report/anger_game") {
-            LaunchedEffect(Unit) {
-                MusicManager.playMainMusic()
-            }
-            AngerGameSelect(navController = navController)
-        }
         composable("report/self_diagnosis/{test_id}",
             arguments = listOf(navArgument("test_id") { type = NavType.IntType })
         ) {
@@ -275,16 +274,6 @@ fun NavGraph(
                 MusicManager.playMainMusic()
             }
             SelfDiagnosisReport(navController = navController, testId = testId)
-        }
-        composable(
-            route = "anger_game_report/{gameName}",
-            arguments = listOf(navArgument("gameName") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val gameName = backStackEntry.arguments?.getString("gameName") ?: "unknown"
-            LaunchedEffect(Unit) {
-                MusicManager.playMainMusic()
-            }
-            AngerGameReport(navController = navController, gameName = gameName)
         }
         composable(
             route = "report_detail/{character}/{date}",

@@ -38,26 +38,21 @@ fun OnboardingPage(
     BasicBackground {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Image with taped paper background and text content
+            Spacer(modifier = Modifier.height(50.dp))
             Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.paper_with_tape), // 테이프가 붙은 종이 이미지
+                    painter = painterResource(id = R.drawable.onboarding_paper_with_tape), // 테이프가 붙은 종이 이미지
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(700.dp) // 높이를 더 키움
+                        .height(380.dp)
                         .align(Alignment.Center)
                         .clipToBounds()
                 )
@@ -74,34 +69,37 @@ fun OnboardingPage(
                         modifier = Modifier.size(imgSize)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
                         text = title,
-                        fontSize = 18.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text(
                         text = description,
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(70.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Get Started Button
             Button(
                 onClick = { navController.navigate("welcome") },
                 colors = ButtonDefaults.buttonColors(containerColor = Brown40),
                 shape = CircleShape,
                 border = BorderStroke(2.dp, color = Brown40),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp)
+
             ) {
                 Text(text = "Get Started!", color = Color.White)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             // Page Indicator and Buttons
             Column(
@@ -109,7 +107,7 @@ fun OnboardingPage(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 4.dp)
+                    .padding(horizontal = 10.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
