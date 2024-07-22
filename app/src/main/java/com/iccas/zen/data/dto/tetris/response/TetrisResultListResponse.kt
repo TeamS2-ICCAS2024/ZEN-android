@@ -7,7 +7,7 @@ data class TetrisResultListResponse(
 )
 
 data class TetrisResultListData(
-    val tetrisResultId: Long,
+    val id: Long,
     val lives: Int,
     val startTime: String
 )

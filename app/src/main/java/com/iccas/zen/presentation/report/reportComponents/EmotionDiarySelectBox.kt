@@ -1,4 +1,4 @@
-package com.iccas.zen.presentation.report.ReportBox
+package com.iccas.zen.presentation.report.reportComponents
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -35,6 +35,6 @@ val Blue90 = Color(135, 206, 235)
 val Green30 = Color(0xFF45A186)
 
 // report
-val Orange30 = Color(0xFFFFA500)
+val Orange30 = Color(0xFFFF6F02)
 
 

@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
 import com.iccas.zen.presentation.home.components.TitleSticker
-import com.iccas.zen.presentation.report.ReportBox.ReportSelectBox
+import com.iccas.zen.presentation.report.reportComponents.ReportSelectBox
 
 @Composable
 fun ReportScreen(
@@ -24,7 +24,6 @@ fun ReportScreen(
         Spacer(modifier = Modifier.height(40.dp))
 
         TitleSticker(R.drawable.home_title_green_sticker, "Report")
-
 
         Column(
             modifier = Modifier
@@ -40,7 +39,7 @@ fun ReportScreen(
 
             ReportSelectBox(
                 type = "Anger Control",
-                onClick = { navController.navigate("heartreport") })
+                onClick = { navController.navigate("report/game") })
             Spacer(modifier = Modifier.height(60.dp))
 
             ReportSelectBox(
