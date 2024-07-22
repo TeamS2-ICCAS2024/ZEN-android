@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.iccas.zen.presentation.chatBot.chatViewModel.ChatViewModel
 import com.iccas.zen.presentation.chatBot.components.TopBar
 import com.iccas.zen.ui.theme.Blue90
 

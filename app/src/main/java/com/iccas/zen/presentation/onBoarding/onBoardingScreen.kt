@@ -42,9 +42,9 @@ fun OnboardingPage(
             modifier = Modifier.fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(50.dp))
+
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -69,14 +69,12 @@ fun OnboardingPage(
                         modifier = Modifier.size(imgSize)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         text = title,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-
                     Text(
                         text = description,
                         fontSize = 16.sp,
@@ -84,8 +82,9 @@ fun OnboardingPage(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
+            // Get Started Button
             Button(
                 onClick = { navController.navigate("welcome") },
                 colors = ButtonDefaults.buttonColors(containerColor = Brown40),
@@ -94,70 +93,60 @@ fun OnboardingPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 15.dp)
-
             ) {
                 Text(text = "Get Started!", color = Color.White)
             }
-
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Page Indicator and Buttons
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                Button(
+                    onClick = { if (showPrev) navController.popBackStack() },
+                    enabled = showPrev, // 비활성화 여부 설정
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (showPrev) Color.White else Color.Gray
+                    ),
+                    shape = CircleShape,
+                    border = BorderStroke(2.dp, color = Brown40),
+                    modifier = Modifier.size(80.dp)
                 ) {
-                    Button(
-                        onClick = { if (showPrev) navController.popBackStack() },
-                        enabled = showPrev, // 비활성화 여부 설정
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (showPrev) Color.White else Color.Gray
-                        ),
-                        shape = CircleShape,
-                        border = BorderStroke(2.dp, color = Brown40),
-                        modifier = Modifier.size(80.dp)
-                    ) {
-                        Text(text = "Prev", color = if (showPrev) Brown40 else Color.DarkGray, textAlign = TextAlign.Center)
-                    }
+                    Text(text = "Prev", color = if (showPrev) Brown40 else Color.DarkGray, textAlign = TextAlign.Center)
+                }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        repeat(totalPages) { index ->
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .background(
-                                        color = if (index == currentPage) Color.Gray else Color.LightGray,
-                                        shape = CircleShape
-                                    )
-                                    .padding(4.dp)
-                            )
-                        }
-                    }
-
-                    Button(
-                        onClick = { if (showNext) navController.navigate(nextPage) },
-                        enabled = showNext, // 비활성화 여부 설정
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (showNext) Color.White else Color.Gray
-                        ),
-                        shape = CircleShape,
-                        border = BorderStroke(2.dp, color = Brown40),
-                        modifier = Modifier.size(80.dp)
-                    ) {
-                        Text(text = "Next", color = if (showNext) Brown40 else Color.DarkGray)
+                Row() {
+                    repeat(totalPages) { index ->
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .background(
+                                    color = if (index == currentPage) Color.Gray else Color.LightGray,
+                                    shape = CircleShape
+                                )
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
                     }
                 }
+
+                Button(
+                    onClick = { if (showNext) navController.navigate(nextPage) },
+                    enabled = showNext, // 비활성화 여부 설정
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (showNext) Color.White else Color.Gray
+                    ),
+                    shape = CircleShape,
+                    border = BorderStroke(2.dp, color = Brown40),
+                    modifier = Modifier.size(80.dp)
+                ) {
+                    Text(text = "Next", color = if (showNext) Brown40 else Color.DarkGray)
+                }
             }
+
         }
     }
 }
@@ -170,7 +159,7 @@ fun OnboardingPage1(navController: NavController) {
         title = "Measure Heart Rate",
         description = "Practice relaxation\nthrough heart rate\nmonitoring.",
         nextPage = "onboarding2",
-        showPrev = false, // Prev 버튼 비활성화
+        showPrev = false,
         showNext = true,
         currentPage = 0,
         totalPages = 4,
@@ -219,7 +208,7 @@ fun OnboardingPage4(navController: NavController) {
         description = "Write an emotion diary\nthrough conversations\nwith the chatbot.",
         nextPage = "main",
         showPrev = true,
-        showNext = false, // Next 버튼 비활성화
+        showNext = false,
         currentPage = 3,
         totalPages = 4,
         imgSize = 170.dp

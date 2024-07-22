@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.iccas.zen.R
-import com.iccas.zen.SelectEmotionScreen
 import com.iccas.zen.presentation.character.CharScreen
 import com.iccas.zen.presentation.character.CollectionScreen
 import com.iccas.zen.presentation.chatBot.ChatScreen
@@ -20,6 +19,7 @@ import com.iccas.zen.presentation.onBoarding.*
 import com.iccas.zen.presentation.report.*
 import com.iccas.zen.presentation.auth.*
 import com.iccas.zen.presentation.chatBot.DiaryCharSelectScreen
+import com.iccas.zen.presentation.chatBot.SelectEmotionScreen
 import com.iccas.zen.presentation.tetris.TetrisGameScreen
 import com.iccas.zen.presentation.tetris.logic.GameViewModel
 import com.iccas.zen.presentation.diagnosis.DiagnosisScreen

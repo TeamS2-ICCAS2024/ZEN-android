@@ -1,6 +1,5 @@
 package com.iccas.zen.presentation.character
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,23 +21,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
-import com.iccas.zen.data.remote.RetrofitModule
-import com.iccas.zen.data.remote.UserApi
+import com.iccas.zen.presentation.character.characterViewModel.CharacterViewModel
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
 import com.iccas.zen.presentation.home.components.TitleSticker
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun CollectionScreen(
     navController: NavController,
     characterViewModel: CharacterViewModel = viewModel()
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     var selectedCharacter by remember { mutableStateOf<CharacterInfo?>(null) }
     val user = characterViewModel.user
-
-    val userApi: UserApi = RetrofitModule.createService(UserApi::class.java)
 
     // 캐릭터 선택 로직
     val leaf = user?.leaf ?: 0
@@ -55,21 +49,22 @@ fun CollectionScreen(
         charactersToShowInSection3 = minOf(3, (leaf - 600) / 100 + 1)
 
 
-    BasicBackgroundWithNavBar(navController = navController) {
+    BasicBackgroundWithNavBar(
+        navController = navController
+    ) {
         Spacer(modifier = Modifier.height(40.dp))
-
         TitleSticker(R.drawable.home_title_blue_sticker, "Collection")
+        Spacer(modifier = Modifier.height(30.dp))
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 100.dp)
+                .padding(bottom = 70.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(40.dp))
-
                 // First section
-                SectionTitle(charactersToShowInSection1.toString() + "/3 Flower", R.drawable.background1)
+                SectionTitle(charactersToShowInSection1.toString() + "/3 Flower", R.drawable.background2
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -106,7 +101,7 @@ fun CollectionScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 // Second section
-                SectionTitle(charactersToShowInSection2.toString() + "/3 House", R.drawable.background2)
+                SectionTitle(charactersToShowInSection2.toString() + "/3 House", R.drawable.background3)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -137,11 +132,10 @@ fun CollectionScreen(
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(30.dp))
 
                 // Third section
-                SectionTitle(charactersToShowInSection3.toString() + "/3 Room", R.drawable.background3)
+                SectionTitle(charactersToShowInSection3.toString() + "/3 Room", R.drawable.background4)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,7 +167,7 @@ fun CollectionScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 // Background Change Section
                 SectionTitle2("Change Background")
@@ -252,32 +246,31 @@ fun CollectionItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier
-            .width(95.dp)
-            .padding(4.dp)
+            .clip(RoundedCornerShape(10))
             .background(Color.White)
-            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+            .border(1.dp, Color.Gray, RoundedCornerShape(10))
             .padding(8.dp)
             .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier
-                .height(120.dp)
-                .width(90.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .height(100.dp)
+                .width(80.dp)
+                .clip(RoundedCornerShape(10))
                 .background(Color.White)
-                .border(2.dp, Color.White, RoundedCornerShape(8.dp))
+                .border(2.dp, Color.White, RoundedCornerShape(10))
         ) {
             Image(
                 painter = painterResource(id = imageResId),
                 contentDescription = label ?: "",
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp),
+                    .padding(12.dp),
                 contentScale = ContentScale.Fit
             )
         }
         if (label != null) {
-            Text(text = label, fontSize = 20.sp, color = Color.Black)
+            Text(text = label, fontSize = 18.sp, color = Color.Black)
         } else {
             Spacer(modifier = Modifier.height(22.dp))
         }
@@ -296,11 +289,14 @@ fun SectionTitle(text: String, iconResId: Int? = null) {
         Text(text = text, fontSize = 20.sp, color = Color.Black)
         if (iconResId != null) {
             Spacer(modifier = Modifier.width(8.dp))
-            Image(
-                painter = painterResource(id = iconResId),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
+            Box(modifier = Modifier.size(24.dp)) {
+                Image(
+                    painter = painterResource(id = iconResId),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -315,8 +311,8 @@ fun SectionTitle2(text: String) {
     ) {
         Text(
             text = text,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 24.sp, // 글씨 크기 조절
+            fontWeight = FontWeight.Bold,
+            fontSize = 21.sp,
             color = Color.Black,
             modifier = Modifier.weight(1f) // 텍스트를 왼쪽 정렬하기 위한 weight 추가
         )

@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,10 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,8 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
+import com.iccas.zen.presentation.character.characterViewModel.CharacterViewModel
 import com.iccas.zen.presentation.components.BasicBackgroundWithNavBar
-import java.lang.reflect.Array.set
+import com.iccas.zen.ui.theme.Grenn30
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -52,7 +48,7 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
         try {
             val lastTestDateTime = LocalDateTime.parse(testDate, formatter)
             val currentDateTime = LocalDateTime.now()
-            // 현재 date와 마지막 test date를 로깅
+
             Log.d("CharScreen", "Last test date: $lastTestDateTime, Current date: $currentDateTime")
 
             val daysBetween = ChronoUnit.DAYS.between(lastTestDateTime, currentDateTime)
@@ -103,27 +99,9 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
 
     BasicBackgroundWithNavBar(navController = navController) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top bar with logo and settings
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Left side is handled by BasicBackgroundWithLogo
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = {
-                    navController.navigate("setting")
-                }) {
-                    Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
-                }
-            }
-
             // Level and Experience bar
             Column(
                 modifier = Modifier
@@ -131,7 +109,7 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Text(text = selectedCharacter?.name ?: "Loading...", fontSize = 40.sp, color = Color.Black)
                 Text(text = "LV. $level  $experience / 100", fontSize = 30.sp, color = Color.Black)
@@ -151,38 +129,38 @@ fun CharScreen(navController: NavController, characterViewModel: CharacterViewMo
                             .fillMaxHeight()
                             .fillMaxWidth(animatedProgress.value) // 경험치 바의 너비를 애니메이션으로 조절
                             .clip(CircleShape)
-                            .background(Color(0xFF66CC66)) // 짙은 녹색
+                            .background(Grenn30)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             // Character and Background
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(12.dp)
+                    .padding(bottom = 70.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = backgroundResource), // 선택된 배경 이미지
+                    painter = painterResource(id = backgroundResource),
                     contentDescription = "Character Background",
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(60.dp))
+                        .clip(RoundedCornerShape(12))
                         .alpha(0.6f),
                     contentScale = ContentScale.Crop
                 )
                 selectedCharacter?.let {
                     Image(
-                        painter = painterResource(id = it.charImgId), // 캐릭터 이미지
+                        painter = painterResource(id = it.charImgId),
                         contentDescription = "Character",
-                        modifier = Modifier.size(250.dp)
+                        modifier = Modifier.size(260.dp)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

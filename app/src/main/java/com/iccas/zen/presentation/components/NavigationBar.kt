@@ -3,7 +3,6 @@ package com.iccas.zen.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,26 +30,22 @@ fun BottomNavigationBar(navController: NavController) {
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            NavigationBarItem(R.drawable.main_icon, "Main",iconSize = 40.dp ) {
+            NavigationBarItem(R.drawable.main_icon, "Main",iconSize = 44.dp ) {
                 navController.navigate("char_main")
             }
-            NavigationBarItem(R.drawable.game_icon, "Game",iconSize = 40.dp) {
+            NavigationBarItem(R.drawable.game_icon, "Game",iconSize = 43.dp) {
                 navController.navigate("game_select")
             }
-            NavigationBarItem(R.drawable.diary_icon, "Diary", iconSize = 40.dp) {
-                // 필요한 매개변수 설정
-                val characterImageRes = R.drawable.char_mozzi1 // 원하는 이미지 리소스 ID
-                val characterDescription = "Mozzi" // 원하는 캐릭터 설명
-
-                // 올바른 네비게이션 경로와 매개변수를 포함하여 navigate 호출
+            NavigationBarItem(R.drawable.diary_icon, "Diary", iconSize = 45.dp) {
                 navController.navigate("emotion_diary")
             }
-            NavigationBarItem(R.drawable.report_icon, "Report", iconSize = 40.dp) {
+            NavigationBarItem(R.drawable.report_icon, "Report", iconSize = 42.dp) {
                 navController.navigate("report")
             }
-            NavigationBarItem(R.drawable.collect_icon, "Collection", iconSize = 50.dp) {
+            NavigationBarItem(R.drawable.collect_icon, "Collection", iconSize = 52.dp) {
                 navController.navigate("collection")
             }
         }
@@ -71,7 +66,7 @@ fun NavigationBarItem(
     ) {
         IconButton(
             onClick = onClick,
-            modifier = Modifier.size(55.dp)
+            modifier = Modifier.size(55.dp, 55.dp)
         ) {
             Image(
                 painter = painterResource(id = iconResId),
@@ -80,6 +75,6 @@ fun NavigationBarItem(
                 modifier = Modifier.size(iconSize)
             )
         }
-        Text(text = label, fontSize = 15.sp, color = Color.Black)
+        Text(text = label, fontSize = 14.sp, color = Color.Black)
     }
 }

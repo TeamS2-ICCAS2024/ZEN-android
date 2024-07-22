@@ -1,5 +1,7 @@
 package com.iccas.zen.presentation.chatBot.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -27,16 +29,17 @@ fun TopBar(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.align(Alignment.CenterStart)
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_left),
-                    contentDescription = "Back"
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.arrow_left),
+                contentDescription = "Back",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { navController.popBackStack() }
+            )
         }
         Text(
             text = "chat",
-            fontSize = 24.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.Center)
         )

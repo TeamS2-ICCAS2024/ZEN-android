@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -138,11 +139,12 @@ fun GameReportListScreen(navController: NavController, userId: Long = 1) {
                         }
                     } else {
                         item {
+                            Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 text = "No game records !",
-                                color = Brown40,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 25.sp,
+                                color = Color.DarkGray,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 22.sp,
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
                         }
@@ -159,7 +161,7 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController, gameId:
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
-            .height(60.dp)
+            .height(70.dp)
             .background(Gray80, RoundedCornerShape(50))
             .border(2.dp, Brown40, RoundedCornerShape(50)),
         verticalAlignment = Alignment.CenterVertically,
@@ -169,7 +171,7 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController, gameId:
             onClick = { navController.navigate("report/game/$gameId") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(70.dp)
                 .background(Color.Transparent, RoundedCornerShape(50))
                 .border(0.dp, Color.Transparent, RoundedCornerShape(50)),
             colors = ButtonDefaults.buttonColors(
@@ -179,7 +181,8 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController, gameId:
         ) {
             Text(
                 text = game,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = FontFamily.SansSerif,
                 fontSize = 21.sp
             )
             Spacer(modifier = Modifier.width(10.dp))
