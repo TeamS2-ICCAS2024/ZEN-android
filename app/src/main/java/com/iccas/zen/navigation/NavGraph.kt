@@ -1,6 +1,13 @@
 package com.iccas.zen.navigation
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.SideEffect
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +32,8 @@ import com.iccas.zen.presentation.diagnosis.SurveyScreen
 import com.iccas.zen.presentation.diagnosis.ResultScreen
 import com.iccas.zen.presentation.report.GameReportScreen
 import com.iccas.zen.presentation.yoga.*
+import com.iccas.zen.utils.MusicManager
+
 
 @Composable
 fun NavGraph(
@@ -32,31 +41,89 @@ fun NavGraph(
     gameViewModel: GameViewModel
 ) {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
-    NavHost(navController, startDestination = "report/game") {
-        composable("onboarding1") { OnboardingPage1(navController) }
-        composable("onboarding2") { OnboardingPage2(navController) }
-        composable("onboarding3") { OnboardingPage3(navController) }
-        composable("onboarding4") { OnboardingPage4(navController) }
-        composable("welcome") { WelcomeScreen(navController) }
-        composable("login") { LoginScreen(navController) }
-        composable("signup") { SignupScreen(navController) }
+    // MusicManager 초기화
+    LaunchedEffect(context) {
+        MusicManager.initializeMainMusic(context)
+        MusicManager.initializeTetrisMusic(context)
+        MusicManager.initializeYogaMusic(context)
+    }
+
+    NavHost(navController, startDestination = "onboarding1") {
+        composable("onboarding1") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            OnboardingPage1(navController)
+        }
+        composable("onboarding2") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            OnboardingPage2(navController)
+        }
+        composable("onboarding3") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            OnboardingPage3(navController)
+        }
+        composable("onboarding4") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            OnboardingPage4(navController)
+        }
+        composable("welcome") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            WelcomeScreen(navController)
+        }
+        composable("login") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            LoginScreen(navController)
+        }
+        composable("signup") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            SignupScreen(navController)
+        }
         composable("game_select") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             GameSelectScreen(navController = navController)
         }
         composable("guide_measure_base") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             GuideMeasureBaseScreen(navController = navController)
         }
         composable("recommend_measure_base") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             RecommendMeasureBaseScreen(navController = navController)
         }
         composable("measure_base") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             MeasureBaseScreen(
                 measureHeartViewModel = measureHeartViewModel,
                 navController = navController
             )
         }
         composable("base_result") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             BaseResultScreen(
                 measureHeartViewModel = measureHeartViewModel,
                 navController = navController
@@ -67,9 +134,15 @@ fun NavGraph(
             arguments = listOf(navArgument("route") { type = NavType.StringType })
         ) { backStackEntry ->
             val route = backStackEntry.arguments?.getString("route") ?: "tetris_game"
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             CountDownScreen(navController = navController, route = route)
         }
         composable("tetris_game") {
+            LaunchedEffect(Unit) {
+                MusicManager.initializeTetrisMusic(context)
+            }
             TetrisGameScreen(
                 measureHeartViewModel = measureHeartViewModel,
                 gameViewModel = gameViewModel,
@@ -77,9 +150,15 @@ fun NavGraph(
             )
         }
         composable("diagnosis") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             DiagnosisScreen(navController)
         }
         composable("survey") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             SurveyScreen(navController)
         }
         composable(
@@ -87,19 +166,33 @@ fun NavGraph(
             arguments = listOf(navArgument("score") { type = NavType.IntType })
         ) { backStackEntry ->
             val score = backStackEntry.arguments?.getInt("score") ?: 0
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             ResultScreen(score = score, navController = navController)
         }
         composable("report/game") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             GameReportListScreen(navController)
         }
         composable(
             route = "report/game/{gameId}",
             arguments = listOf(navArgument("gameId") { type = NavType.LongType })
-        ) { backStackEntry ->
+        ) { 
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+          
+            backStackEntry ->
             val gameId = backStackEntry.arguments?.getLong("gameId") ?: 0L
             GameReportScreen(navController = navController, gameId = gameId)
         }
         composable("high_heart_rate") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             HighHeartRateScreen()
         }
         composable("select_emotion/{characterImageRes}/{characterDescription}",
@@ -110,6 +203,9 @@ fun NavGraph(
         ) { backStackEntry ->
             val characterImageRes = backStackEntry.arguments?.getInt("characterImageRes") ?: R.drawable.char_mozzi1
             val characterDescription = backStackEntry.arguments?.getString("characterDescription") ?: "Mozzi"
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             SelectEmotionScreen(navController = navController, characterImageRes = characterImageRes, characterDescription = characterDescription)
         }
         composable(
@@ -123,33 +219,61 @@ fun NavGraph(
             val emojiResId = backStackEntry.arguments?.getInt("emojiResId") ?: 0
             val prompt = backStackEntry.arguments?.getString("prompt") ?: ""
             val characterDescription = backStackEntry.arguments?.getString("characterDescription") ?: "Mozzi"
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             ChatScreen(navController, emojiResId, prompt, characterDescription)
         }
         composable("start_yoga") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             StartYogaGameScreen(navController = navController)
         }
         composable(route = "yoga_game") {
+            LaunchedEffect(Unit) {
+                MusicManager.playYogaMusic()
+            }
             YogaGameScreen(initialPoseIndex = 0, navController = navController)
         }
         composable("char_main") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             CharScreen(navController = navController)
         }
         composable("collection") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             CollectionScreen(navController = navController)
         }
         composable("report") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             ReportScreen(navController = navController)
         }
         composable("report/emotion_diary") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             EmotionDiarySelect(navController = navController)
         }
         composable("report/self_diagnosis") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             SelfDiagnosisSelect(navController = navController)
         }
         composable("report/self_diagnosis/{test_id}",
             arguments = listOf(navArgument("test_id") { type = NavType.IntType })
         ) {
-            SelfDiagnosisReport(navController = navController, testId = it.arguments?.getInt("test_id") ?: 0)
+            val testId = it.arguments?.getInt("test_id") ?: 0
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
+            SelfDiagnosisReport(navController = navController, testId = testId)
         }
         composable(
             route = "report_detail/{character}/{date}",
@@ -160,16 +284,29 @@ fun NavGraph(
         ) { backStackEntry ->
             val character = backStackEntry.arguments?.getString("character") ?: ""
             val date = backStackEntry.arguments?.getString("date") ?: ""
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             ReportDetailScreen(navController, character, date)
         }
         composable("setting") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             SettingScreen(navController = navController)
         }
         composable("personal_setting") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             PersonalSettingScreen(navController = navController)
         }
         composable("emotion_diary") {
+            LaunchedEffect(Unit) {
+                MusicManager.playMainMusic()
+            }
             DiaryCharSelectScreen(navController = navController)
         }
     }
 }
+

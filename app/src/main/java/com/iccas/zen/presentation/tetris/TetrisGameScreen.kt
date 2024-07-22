@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -75,6 +76,7 @@ import com.iccas.zen.ui.theme.BrickMatrix
 import com.iccas.zen.ui.theme.BrickSpirit
 import com.iccas.zen.ui.theme.Brown40
 import com.iccas.zen.ui.theme.Brown50
+import com.iccas.zen.utils.MusicManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.min
@@ -87,6 +89,7 @@ fun TetrisGameScreen(
     modifier: Modifier = Modifier,
     commonViewModel: CommonViewModel = viewModel(),
 ) {
+    val context= LocalContext.current
     // Initialize states
     val viewState by gameViewModel.viewState
     val isHeartRateHigh by measureHeartViewModel.isHeartRateHigh.collectAsState()
@@ -100,10 +103,13 @@ fun TetrisGameScreen(
         val observer = object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
                 gameViewModel.dispatch(Action.Resume)
+                MusicManager.initializeTetrisMusic(context)
+                MusicManager.playTetrisMusic()
             }
 
             override fun onPause(owner: LifecycleOwner) {
                 gameViewModel.dispatch(Action.Pause)
+MusicManager.stopTetrisMusic()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -111,7 +117,17 @@ fun TetrisGameScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+    LaunchedEffect(Unit) {
+        MusicManager.stopMainMusic()
+        MusicManager.initializeTetrisMusic(context)
+        MusicManager.playTetrisMusic()
 
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            MusicManager.stopTetrisMusic()
+        }
+    }
     // Game tick effect
     LaunchedEffect(key1 = viewState.level) {
         gameViewModel.dispatch(Action.Reset)
@@ -152,6 +168,7 @@ fun TetrisGameScreen(
                 )
             }
             if (showGameOverScreen) {
+
                 TetrisGameOverScreen(
                     level = viewState.level,
                     score = viewState.score,

@@ -58,7 +58,7 @@ fun SelfDiagnosisSelect(
                 .padding(horizontal = 2.dp)
         ) {
             IconButton(
-                onClick = { navController.navigate("heartreport2") },
+                onClick = { navController.navigate("report") },
                 modifier = Modifier
                     .padding(start = 0.dp) // Remove padding to align with ZEN
             ) {
