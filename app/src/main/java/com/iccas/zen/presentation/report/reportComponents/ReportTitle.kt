@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,7 +27,8 @@ import com.iccas.zen.ui.theme.Orange30
 @Composable
 fun ReportTitle(
     backOnClick: () -> Unit,
-    highlightText: String
+    highlightText: String,
+    highlightColor: Color = Color.Black
 ) {
     Row(
         modifier = Modifier
@@ -42,21 +44,20 @@ fun ReportTitle(
                 .size(24.dp)
                 .clickable { backOnClick() }
         )
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(7.dp))
         Text(
             buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Orange30)) {
+                withStyle(style = SpanStyle(color = highlightColor)) {
                     append(highlightText)
                 }
             },
-            fontWeight = FontWeight.Medium,
-            fontSize = 24.sp
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold
         )
-        Spacer(modifier = Modifier.width(6.dp))
         Text(
-            "Report",
-            fontWeight = FontWeight.Medium,
-            fontSize = 24.sp
+            " Report",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }

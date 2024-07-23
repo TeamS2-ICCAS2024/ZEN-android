@@ -1,4 +1,4 @@
-package com.iccas.zen.presentation.components
+package com.iccas.zen.presentation.chatBot.components
 
 import android.util.Log
 import androidx.compose.foundation.Image

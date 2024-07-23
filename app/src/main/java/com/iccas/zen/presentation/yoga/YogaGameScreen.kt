@@ -37,7 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackground
-import com.iccas.zen.presentation.components.CommonViewModel
+import com.iccas.zen.presentation.components.UserViewModel
 import com.iccas.zen.presentation.components.PlayControlButton
 import com.iccas.zen.ui.theme.Red50
 import com.iccas.zen.utils.MusicManager
@@ -47,7 +47,7 @@ import kotlinx.coroutines.delay
 fun YogaGameScreen(
     initialPoseIndex: Int,
     navController: NavController,
-    commonViewModel: CommonViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val currentPoseIndex = remember { mutableIntStateOf(initialPoseIndex) }
@@ -71,7 +71,7 @@ fun YogaGameScreen(
             confirmButton = {},
             title = {},
             text = { ResultContent(onDismiss = {
-                commonViewModel.addLeaf(50)
+                userViewModel.addLeaf(50)
                 navController.navigate("game_select")
                                                },
                 leafCount = leafCount) }

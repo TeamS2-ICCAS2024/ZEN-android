@@ -53,14 +53,7 @@ fun WelcomeScreen(navController: NavController) {
                     text = "Login with email",
                     textColor = Brown40
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                AuthButton(
-                    onClick = { /* Google 로그인 로직 추가 */ },
-                    buttonColor = Brown40,
-                    text = "Continue with Google"
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(13.dp))
 
                 Text("Don't you have an account yet?", color = Brown40, fontSize = 12.sp, fontWeight = FontWeight.Bold)
 

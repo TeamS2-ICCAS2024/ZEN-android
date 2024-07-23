@@ -43,7 +43,7 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             ReportTitle(
                 backOnClick = { navController.navigate("report/game") },
                 highlightText = "Anger Control"
@@ -74,7 +74,7 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                         minHeartRate = result.heartRateList.minOrNull() ?: 0
                     )
                 }
-                Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 TitleWithHighligher(title = "overview", highLighterWidth = 95.dp)
                 Spacer(modifier = Modifier.height(5.dp))
@@ -91,9 +91,9 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         OverviewColumn(title = "level", value = result.level.toString())
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
                         OverviewColumn(title = "play time", value = formatDuration(result.playTime))
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
                         OverviewColumn(title = "when", value = formatLocalDateTime(result.gameStartTime, pattern =
                         "yyyy-MM-dd\nHH:mm"))
                     }
@@ -102,9 +102,9 @@ fun GameReportScreen(navController: NavController, gameId: Long) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         OverviewColumn(title = "score", value = result.score.toString())
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
                         OverviewColumn(title = "lives", value = result.lives.toString())
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
                         OverviewColumn(title = "average HR", value = result.averageHearRate.toInt().toString())
                     }
                 }

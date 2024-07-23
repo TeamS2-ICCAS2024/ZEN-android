@@ -1,5 +1,6 @@
 package com.iccas.zen.presentation.tetris
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -50,6 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +60,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
-import com.iccas.zen.presentation.components.CommonViewModel
+import com.iccas.zen.presentation.components.UserViewModel
 import com.iccas.zen.presentation.heart.viewmodel.MeasureHeartViewModel
 import com.iccas.zen.presentation.tetris.logic.Action
 import com.iccas.zen.presentation.tetris.logic.Brick
@@ -71,23 +73,24 @@ import com.iccas.zen.presentation.heart.HighHeartRateScreen
 import com.iccas.zen.presentation.tetris.logic.Hindrance
 import com.iccas.zen.presentation.tetris.tetrisComponents.LedClock
 import com.iccas.zen.presentation.tetris.tetrisComponents.LedNumber
-import com.iccas.zen.ui.theme.Blue80
 import com.iccas.zen.ui.theme.BrickMatrix
 import com.iccas.zen.ui.theme.BrickSpirit
 import com.iccas.zen.ui.theme.Brown40
 import com.iccas.zen.ui.theme.Brown50
+import com.iccas.zen.ui.theme.Red60
 import com.iccas.zen.utils.MusicManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.math.min
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun TetrisGameScreen(
     measureHeartViewModel: MeasureHeartViewModel,
     gameViewModel: GameViewModel,
     navController: NavController,
     modifier: Modifier = Modifier,
-    commonViewModel: CommonViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel(),
 ) {
     val context= LocalContext.current
     // Initialize states
@@ -109,7 +112,7 @@ fun TetrisGameScreen(
 
             override fun onPause(owner: LifecycleOwner) {
                 gameViewModel.dispatch(Action.Pause)
-MusicManager.stopTetrisMusic()
+                MusicManager.stopTetrisMusic()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -181,7 +184,7 @@ MusicManager.stopTetrisMusic()
                     },
                     onExit = {
                         if (viewState.score >= 100) {
-                            commonViewModel.addLeaf(50)
+                            userViewModel.addLeaf(50)
                         }
                         navController.navigate("game_select")
                         {
@@ -288,7 +291,10 @@ fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp)
             ) {
                 val imageResource = when (hindrance) {
                     Hindrance.RandomDirection -> R.drawable.random3
@@ -300,22 +306,21 @@ fun HindranceAlert(hindrance: Hindrance?, onDismiss: () -> Unit) {
                     contentDescription = null,
                     modifier = Modifier.size(250.dp)
                 )
-                Spacer(modifier = Modifier.height(16.dp)) // 이미지와 텍스트 사이의 공간
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = when (hindrance) {
-                        Hindrance.RandomDirection -> "Now, You can't move as you want."
-                        Hindrance.DisableRotation -> "Now, You can't use the rotate button."
+                        Hindrance.RandomDirection -> "You can't move as you want."
+                        Hindrance.DisableRotation -> "You can't use the rotate button."
                         Hindrance.ReverseControl -> "The left and right are reversed."
                     },
-                    color = Color.White,
-                    fontSize = 24.sp,
+                    color = Color.Black,
+                    fontSize = 22.sp,
                     textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .background(
-                            Color.Red,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(16.dp)
+                        .width(250.dp)
+                        .background(Red60, shape = RoundedCornerShape(20))
+                        .padding(10.dp)
                 )
             }
         }

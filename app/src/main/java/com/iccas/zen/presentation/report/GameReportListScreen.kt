@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
+import com.iccas.zen.presentation.components.TitleWithHighligher
 import com.iccas.zen.presentation.report.reportComponents.ReportTitle
 import com.iccas.zen.presentation.report.viewModel.ReportViewModel
 import com.iccas.zen.ui.theme.Brown40
@@ -52,14 +53,15 @@ fun GameReportListScreen(navController: NavController, userId: Long = 1) {
 
     BasicBackgroundWithLogo {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.Start
         ) {
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             ReportTitle(
                 backOnClick = { navController.navigate("report") },
                 highlightText = "Anger Control"
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(25.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,7 +95,8 @@ fun GameReportListScreen(navController: NavController, userId: Long = 1) {
                     text = "${currentYear.value}.${currentMonth.value.toString().padStart(2, '0')}",
                     color = Brown40,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 40.sp
+                    fontFamily = FontFamily.Serif,
+                    fontSize = 31.sp
                 )
 
                 val isNextMonthDisabled = (currentMonth.value == 12 && currentYear.value >= currentDate.year) ||
@@ -135,7 +138,7 @@ fun GameReportListScreen(navController: NavController, userId: Long = 1) {
                                 navController = navController,
                                 gameId = result.id
                             )
-                            Spacer(modifier = Modifier.height(5.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     } else {
                         item {
@@ -181,9 +184,10 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController, gameId:
         ) {
             Text(
                 text = game,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = FontFamily.SansSerif,
-                fontSize = 21.sp
+                fontSize = 23.sp,
+                fontWeight = FontWeight.ExtraBold,
+                fontFamily = FontFamily.Serif,
+                color = Brown40
             )
             Spacer(modifier = Modifier.width(10.dp))
 
@@ -199,7 +203,7 @@ fun GameScoreRow(game: String, lives: Int, navController: NavController, gameId:
                         contentDescription = null,
                         modifier = Modifier.size(21.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(2.dp))
                 }
             }
         }
