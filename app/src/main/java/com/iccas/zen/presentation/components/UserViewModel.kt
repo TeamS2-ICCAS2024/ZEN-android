@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CommonViewModel : ViewModel() {
+class UserViewModel : ViewModel() {
     private val userApi: UserApi = RetrofitModule.createService(UserApi::class.java)
     var user by mutableStateOf<UserResponse?>(null)
         private set

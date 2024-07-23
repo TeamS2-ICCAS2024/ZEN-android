@@ -86,7 +86,9 @@ fun EmotionHeader(
                     textColor = Color.Black,
                     backgroundColor = Brown40.copy(alpha = 0.3f),
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedLabelColor = Brown40,
+                    cursorColor = Brown40
                 )
             )
         }

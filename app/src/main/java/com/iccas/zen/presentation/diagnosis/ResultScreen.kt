@@ -2,20 +2,17 @@ package com.iccas.zen.presentation.diagnosis
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -26,12 +23,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
-import com.iccas.zen.presentation.components.CommonViewModel
+import com.iccas.zen.presentation.components.UserViewModel
 import com.iccas.zen.ui.theme.Brown40
 import kotlinx.coroutines.delay
 
 @Composable
-fun ResultScreen(score: Int, navController: NavController, commonViewModel: CommonViewModel = viewModel() ) {
+fun ResultScreen(score: Int, navController: NavController, userViewModel: UserViewModel = viewModel() ) {
     val message = when (score) {
         in 10..15 -> "Your score is within a normal range."
         in 16..25 -> "You experience mild anger.It is not a significant problem and you can control your anger well. Try to have a little more peace of mind."
@@ -46,7 +43,7 @@ fun ResultScreen(score: Int, navController: NavController, commonViewModel: Comm
     }
 
     LaunchedEffect(score) {
-        commonViewModel.postscore(score)
+        userViewModel.postscore(score)
     }
     BasicBackgroundWithLogo {
         Column(

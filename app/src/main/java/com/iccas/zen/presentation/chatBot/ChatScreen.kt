@@ -2,10 +2,11 @@ package com.iccas.zen.presentation.chatBot
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -22,13 +23,16 @@ import kotlinx.coroutines.launch
 import com.iccas.zen.R
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.TextStyle
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.iccas.zen.presentation.chatBot.chatViewModel.ChatViewModel
 import com.iccas.zen.presentation.chatBot.components.TopBar
 import com.iccas.zen.ui.theme.Blue90
+import com.iccas.zen.ui.theme.Brown40
 
 @Composable
 fun ChatScreen(
@@ -57,22 +61,19 @@ fun ChatScreen(
                 } else {
                     0.dp
                 }
-
                 insets
             }
             onDispose { ViewCompat.setOnApplyWindowInsetsListener(view, null) }
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
+            Spacer(modifier = Modifier.height(25.dp))
             TopBar(navController)
 
             Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(16.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 LazyColumn(
                     state = listState,
@@ -88,39 +89,46 @@ fun ChatScreen(
             }
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
                     value = userInput,
                     onValueChange = { userInput = it },
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text("Type your message...") },
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White)
-                )
-
-                IconButton(
-                    onClick = {
-                        if (userInput.isNotBlank()) {
-                            coroutineScope.launch {
-                                viewModel.sendMessage(userInput, basicPrompt)
-                                userInput = ""
-                            }
-                        }
-                    },
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(48.dp)
-                        .background(Color(0xFF0087B3), CircleShape)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.chat_arrow_up),
-                        contentDescription = "Send",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .border(1.dp, Brown40, RoundedCornerShape(50))
+                        .clip(RoundedCornerShape(50)),
+                    placeholder = { Text("Type your message...") },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White,
+                        focusedLabelColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        cursorColor = Brown40,
+                        unfocusedIndicatorColor = Color.Transparent // 포커스되지 않은 상태에서 밑줄을 숨김
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 18.sp
+                    ),
+                    trailingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.chat_arrow_up),
+                            contentDescription = "Send",
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    if (userInput.isNotBlank()) {
+                                        coroutineScope.launch {
+                                            viewModel.sendMessage(userInput, basicPrompt)
+                                            userInput = ""
+                                        }
+                                    }
+                                },
+                            tint = Color.Black
+                        )
+                    }
+                )
             }
         }
     }
@@ -133,9 +141,13 @@ fun MessageItem(message: Message, emojiResId: Int, characterDescription: String)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 5.dp)
+            .padding(
+                start = if (message.isUser) 27.dp else 0.dp,
+                end = if (message.isUser) 0.dp else 27.dp
+            ),
         horizontalArrangement = if (message.isUser) Arrangement.End else Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         if (!message.isUser) {
             Image(
@@ -146,21 +158,23 @@ fun MessageItem(message: Message, emojiResId: Int, characterDescription: String)
                     .padding(end = 8.dp)
             )
         }
-        Box(
-            modifier = Modifier
-                .background(
-                    color = if (message.isUser) Blue90 else Color.White,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .padding(16.dp)
-        ) {
+
+        Column() {
+            Spacer(modifier = Modifier.height(5.dp))
             Text(
                 text = message.text,
                 color = if (message.isUser) Color.Black else Color.Black,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .background(
+                        color = if (message.isUser) Brown40.copy(alpha = 0.2f) else Color.White,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
             )
         }
+        
         if (message.isUser) {
             Image(
                 painter = painterResource(id = emojiResId),

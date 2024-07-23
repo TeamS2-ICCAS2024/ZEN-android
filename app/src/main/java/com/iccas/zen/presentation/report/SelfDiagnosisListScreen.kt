@@ -16,16 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,90 +33,53 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iccas.zen.R
 import com.iccas.zen.presentation.components.BasicBackgroundWithLogo
-import com.iccas.zen.presentation.components.CommonViewModel
+import com.iccas.zen.presentation.components.UserViewModel
+import com.iccas.zen.presentation.components.TitleWithHighligher
+import com.iccas.zen.presentation.report.reportComponents.ReportTitle
 import com.iccas.zen.ui.theme.Brown40
 import com.iccas.zen.ui.theme.Gray80
+import com.iccas.zen.utils.formatLocalDateTime
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 @Composable
-fun SelfDiagnosisSelect(
+fun SelfDiagnosisListScreen(
     navController: NavController,
-    commonViewModel: CommonViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel()
 ) {
-    val selfTestResults by commonViewModel.selfTestResults.collectAsState(initial = emptyList())
+    val selfTestResults by userViewModel.selfTestResults.collectAsState(initial = emptyList())
+    val reversedResults = selfTestResults.reversed()
 
     BasicBackgroundWithLogo {
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 2.dp)
-        ) {
-            IconButton(
-                onClick = { navController.navigate("report") },
-                modifier = Modifier
-                    .padding(start = 0.dp) // Remove padding to align with ZEN
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_left),
-                    contentDescription = "Back"
-                )
-            }
-            Text(
-                text = "Self Diagnosis",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFA500) // 주황색
-            )
-            Text(
-                text = " Report",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black // 검정색
-            )
-            Spacer(modifier = Modifier.width(40.dp))
-        }
+        Spacer(modifier = Modifier.height(40.dp))
+        ReportTitle(backOnClick = { navController.navigate("report") }, highlightText = "Self Diagnosis")
         Spacer(modifier = Modifier.height(30.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 7.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            Box(
-                modifier = Modifier
-                    .background(Color(0xFF8B4513).copy(alpha = 0.2f), RoundedCornerShape(20.dp)) // 어두운 갈색 형광펜 효과
-            ) {
-                Text(
-                    text = "diagnosis history",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Brown40,
-                    modifier = Modifier.padding(8.dp) // 내부 패딩 추가
-                )
-            }
+            TitleWithHighligher(title = "diagnosis history", highLighterWidth = 200.dp)
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // Diagnosis list
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                selfTestResults.forEach { result ->
-                    val formattedDate = result.createdAt.substring(0, 10) // "YYYY-MM-DD" 형식으로 변환
+                items(reversedResults) { result ->
+                    val formattedDate = formatLocalDateTime(result.createdAt)
                     DiagnosisBox(
                         navController = navController,
-                        diagnosisName = "Diagnosis",
                         date = formattedDate,
                         id = result.id,
                         score = result.score
                     )
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
             }
         }
@@ -130,7 +89,6 @@ fun SelfDiagnosisSelect(
 @Composable
 fun DiagnosisBox(
     navController: NavController,
-    diagnosisName: String,
     date: String,
     id: Int,
     score: Int
@@ -145,8 +103,8 @@ fun DiagnosisBox(
 
     Box(
         modifier = Modifier
-            .width(400.dp)
-            .height(80.dp)
+            .fillMaxWidth()
+            .height(70.dp)
             .background(Gray80, RoundedCornerShape(50))
             .border(2.dp, Brown40, RoundedCornerShape(50))
             .clickable { navController.navigate("report/self_diagnosis/$id") },
@@ -163,22 +121,14 @@ fun DiagnosisBox(
                 painter = painterResource(id = emojiResId),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(45.dp)
+                    .size(40.dp)
                     .background(Color.Transparent, CircleShape),
                 contentScale = ContentScale.Fit
             )
-            Spacer(modifier = Modifier.width(8.dp)) // 이모티콘과 글씨 사이 간격 조정
-            Text(
-                text = diagnosisName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                fontFamily = FontFamily.Serif,
-                color = Brown40
-            )
-            Spacer(modifier = Modifier.weight(1f)) // 진단명과 날짜 사이 간격 자동 조정
+            Spacer(modifier = Modifier.width(15.dp))
             Text(
                 text = date,
-                fontSize = 16.sp,
+                fontSize = 25.sp,
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily.Serif,
                 color = Brown40

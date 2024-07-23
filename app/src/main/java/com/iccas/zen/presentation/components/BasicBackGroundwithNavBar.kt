@@ -56,15 +56,15 @@ fun BasicBackgroundWithNavBar(
                         modifier = Modifier.width(65.dp),
                         contentScale = ContentScale.Crop
                     )
-                    IconButton(onClick = {
-                        navController.navigate("setting")
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
-                            modifier = Modifier.size(27.dp)
-                        )
-                    }
+//                    IconButton(onClick = {
+//                        navController.navigate("setting")
+//                    }) {
+//                        Icon(
+//                            imageVector = Icons.Default.Settings,
+//                            contentDescription = "Settings",
+//                            modifier = Modifier.size(27.dp)
+//                        )
+//                    }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 content()

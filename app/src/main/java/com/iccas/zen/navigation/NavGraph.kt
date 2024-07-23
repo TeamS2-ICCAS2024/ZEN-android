@@ -259,7 +259,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
             }
-            SelfDiagnosisSelect(navController = navController)
+            SelfDiagnosisListScreen(navController = navController)
         }
         composable("report/self_diagnosis/{test_id}",
             arguments = listOf(navArgument("test_id") { type = NavType.IntType })
@@ -268,7 +268,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 MusicManager.playMainMusic()
             }
-            SelfDiagnosisReport(navController = navController, testId = testId)
+            SelfDiagnosisReportScreen(navController = navController, testId = testId)
         }
         composable(
             route = "emotion_detail/{emotionDiaryId}",
